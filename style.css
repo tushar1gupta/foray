@@ -160,6 +160,8 @@ padding:5px 0 3px;width:100%}
 .formfoot{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:26px}
 .formfoot p{color:var(--mut);font-size:.92em;max-width:44ch}
 .formfoot p.err{color:var(--warn)}
+.formfoot p.done{color:var(--mint2)}
+.btn:disabled{opacity:.55;cursor:default;transform:none}
 @media(max-width:760px){.form{grid-template-columns:1fr}}
 .sec{padding:clamp(58px,7vw,104px) 0;border-top:1px solid var(--rule)}
 .sec.first{border-top:0}

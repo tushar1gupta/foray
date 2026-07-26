@@ -1,0 +1,9 @@
+{
+  "name": "foray",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "pg": "^8.13.1",
+    "@vercel/functions": "^2.0.0"
+  }
+}

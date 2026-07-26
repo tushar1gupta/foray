@@ -165,7 +165,7 @@
       fields[i4].addEventListener('change',clearMiss);
     }
     sendBtn.addEventListener('click',function(){
-      var parts=[],missing=[],f,v,card;
+      var parts=[],data={},missing=[],f,v,card;
       for(var i5=0;i5<fields.length;i5++){
         f=fields[i5];v=(f.value||'').trim();card=f.parentNode;
         if(f.hasAttribute('data-req')&&!v){
@@ -174,7 +174,10 @@
           card.classList.remove('miss');
           if(v){card.classList.add('ok');}else{card.classList.remove('ok');}
         }
-        if(v){parts.push((f.getAttribute('data-label')||'Field')+': '+v);}
+        if(v){
+          var lbl=f.getAttribute('data-label')||'Field';
+          parts.push(lbl+': '+v);data[lbl]=v;
+        }
       }
       if(missing.length){
         if(note){
@@ -187,8 +190,55 @@
         if(first){first.focus();}
         return;
       }
-      window.location.href='mailto:contact@goforay.io?subject='+encodeURIComponent(subject)+
-        '&body='+encodeURIComponent(parts.join('\n')+'\n\n');
+      var mailto=function(){
+        window.location.href='mailto:contact@goforay.io?subject='+encodeURIComponent(subject)+
+          '&body='+encodeURIComponent(parts.join('\n')+'\n\n');
+      };
+      var kind=subjEl?subjEl.getAttribute('data-kind'):null;
+      if(!kind||!window.fetch){mailto();return;}
+
+      var label=sendBtn.textContent;
+      sendBtn.disabled=true;sendBtn.textContent='Sending';
+      if(note){note.classList.remove('err','done');note.textContent='';}
+
+      var done=function(){sendBtn.disabled=false;sendBtn.textContent=label;};
+      var fail=function(msg,missingLabels){
+        done();
+        if(note){note.classList.add('err');note.textContent=msg;}
+        if(missingLabels&&missingLabels.length){
+          for(var i6=0;i6<fields.length;i6++){
+            if(missingLabels.indexOf(fields[i6].getAttribute('data-label'))>-1){
+              fields[i6].parentNode.classList.add('miss');
+            }
+          }
+        }
+      };
+
+      fetch('/api/submit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({kind:kind,fields:data})
+      }).then(function(r){
+        return r.json().then(function(j){return {status:r.status,body:j};},
+                             function(){return {status:r.status,body:{}};});
+      }).then(function(r){
+        if(r.status>=200&&r.status<300&&r.body.ok){
+          done();
+          for(var i7=0;i7<fields.length;i7++){fields[i7].value='';
+            fields[i7].parentNode.classList.remove('ok','miss');}
+          if(note){
+            note.classList.add('done');
+            note.textContent='Received. We reply within a day, to '+(data.Email||'your inbox')+'.';
+          }
+          sendBtn.disabled=true;sendBtn.textContent='Sent';
+          return;
+        }
+        if(r.status>=500||!r.body.error){
+          // our end is down; do not lose the submission
+          done();mailto();return;
+        }
+        fail(r.body.error,r.body.missing);
+      }).catch(function(){done();mailto();});
     });
   }
 
