@@ -147,25 +147,49 @@
     });
   }
 
-  /* onboarding forms compose an email, since there is no backend yet */
-  var forms=document.querySelectorAll('[data-compose]');
-  for(var g2=0;g2<forms.length;g2++){
-    (function(root){
-      var btn=root.querySelector('[data-send]');
-      if(!btn){return;}
-      btn.addEventListener('click',function(){
-        var parts=[],ok=false;
-        var fields=root.querySelectorAll('input,textarea,select');
-        for(var i3=0;i3<fields.length;i3++){
-          var f=fields[i3],v=(f.value||'').trim();
-          if(v){ok=true;parts.push((f.getAttribute('data-label')||f.name||'Field')+': '+v);}
+  /* onboarding forms: validate the required fields, then compose an email */
+  var sendBtn=document.querySelector('[data-send]');
+  if(sendBtn){
+    var subjEl=document.querySelector('[data-compose]');
+    var subject=subjEl?subjEl.getAttribute('data-compose'):'Foray';
+    var fields=document.querySelectorAll('.fld input,.fld textarea,.fld select');
+    var note=document.querySelector('.formfoot p');
+    var noteText=note?note.textContent:'';
+    var clearMiss=function(){
+      var card=this.parentNode;
+      if(card&&card.classList){card.classList.remove('miss');}
+      if(note){note.classList.remove('err');note.textContent=noteText;}
+    };
+    for(var i4=0;i4<fields.length;i4++){
+      fields[i4].addEventListener('input',clearMiss);
+      fields[i4].addEventListener('change',clearMiss);
+    }
+    sendBtn.addEventListener('click',function(){
+      var parts=[],missing=[],f,v,card;
+      for(var i5=0;i5<fields.length;i5++){
+        f=fields[i5];v=(f.value||'').trim();card=f.parentNode;
+        if(f.hasAttribute('data-req')&&!v){
+          card.classList.add('miss');card.classList.remove('ok');missing.push(card);
+        }else{
+          card.classList.remove('miss');
+          if(v){card.classList.add('ok');}else{card.classList.remove('ok');}
         }
-        if(!ok){var first=root.querySelector('input,textarea');if(first){first.focus();}return;}
-        window.location.href='mailto:contact@goforay.io?subject='+
-          encodeURIComponent(root.getAttribute('data-compose'))+
-          '&body='+encodeURIComponent(parts.join('\n')+'\n\n');
-      });
-    })(forms[g2]);
+        if(v){parts.push((f.getAttribute('data-label')||'Field')+': '+v);}
+      }
+      if(missing.length){
+        if(note){
+          note.classList.add('err');
+          note.textContent=missing.length===1?'One required field still to fill.':
+            missing.length+' required fields still to fill.';
+        }
+        missing[0].scrollIntoView({block:'center',behavior:'smooth'});
+        var first=missing[0].querySelector('input,textarea,select');
+        if(first){first.focus();}
+        return;
+      }
+      window.location.href='mailto:contact@goforay.io?subject='+encodeURIComponent(subject)+
+        '&body='+encodeURIComponent(parts.join('\n')+'\n\n');
+    });
   }
 
   /* screen bar */

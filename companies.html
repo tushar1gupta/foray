@@ -20,7 +20,7 @@
 <meta name="twitter:title" content="For companies | Foray">
 <meta name="twitter:description" content="Post an engineering role to Foray. Paste your job description and we reply within a day.">
 <meta name="twitter:image" content="https://goforay.io/og.png">
-<meta name="theme-color" content="#080D0B">
+<meta name="theme-color" content="#0A0A11">
 <!-- /stamp -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,79 +34,84 @@
     <a href="index.html" class="mark" aria-label="Foray home"><b><i></i><i></i><i></i><i></i></b>Foray</a>
     <nav class="links lbl" aria-label="Main"><a href="companies.html" class="on">Companies</a><a href="engineers.html">Engineers</a></nav>
     <div class="clock lbl"><span>San Francisco</span><span id="clk">--:--</span></div>
-    <a href="companies.html" class="navcta lbl">Start a search</a>
   </div>
 </header>
 <main>
   <section class="sec first">
     <div class="wrap">
       <div class="head">
-        <p class="lbl dim">For Companies</p>
+        <p class="lbl dim">For companies</p>
         <div>
-          <h1 class="t2">Post A Role. We Come Back Within A Day.</h1>
+          <h1 class="t2">Post a role. We come back within a day.</h1>
           <p class="lede">Paste the job description you already have. Everything else is optional.</p>
         </div>
       </div>
 
-      <div class="form rv" data-compose="New search">
-        <div class="fld">
-          <label for="c-company">Company</label>
-          <input id="c-company" data-label="Company" type="text" placeholder="Name">
-        </div>
-        <div class="fld">
-          <label for="c-site">Website</label>
-          <input id="c-site" data-label="Website" type="url" placeholder="yourcompany.com">
-        </div>
-        <div class="fld">
-          <label for="c-name">Your name and role</label>
-          <input id="c-name" data-label="Contact" type="text" placeholder="Who we will be working with">
-        </div>
-        <div class="fld">
-          <label for="c-email">Email</label>
-          <input id="c-email" data-label="Email" type="email" placeholder="you@yourcompany.com">
-        </div>
-        <div class="fld">
-          <label for="c-stage">Stage</label>
-          <select id="c-stage" data-label="Stage">
-            <option value="">Select</option>
-            <option>Pre-seed</option>
-            <option>Seed</option>
-            <option>Series A</option>
-            <option>Series B</option>
-            <option>Series C</option>
-            <option>Growth</option>
-          </select>
-        </div>
-        <div class="fld">
-          <label for="c-size">Engineering team size</label>
-          <input id="c-size" data-label="Team size" type="text" placeholder="How many engineers today">
-        </div>
-        <div class="fld">
-          <label for="c-role">Role and level</label>
-          <input id="c-role" data-label="Role" type="text" placeholder="Founding engineer, senior backend, infra lead">
-        </div>
-        <div class="fld">
-          <label for="c-stack">Stack</label>
-          <input id="c-stack" data-label="Stack" type="text" placeholder="Languages, infrastructure, anything non-obvious">
-        </div>
-        <div class="fld">
-          <label for="c-reviewer">Who reviews the code</label>
-          <input id="c-reviewer" data-label="Code reviewer" type="text" placeholder="The engineer who approves the first pull request">
-        </div>
-        <div class="fld">
-          <label for="c-start">When you need someone</label>
-          <input id="c-start" data-label="Start date" type="text" placeholder="A date or a quarter">
-        </div>
-        <div class="fld wide">
-          <label for="c-link">Link to the job posting</label>
-          <input id="c-link" data-label="Job posting link" type="url" placeholder="Your careers page, Ashby, Greenhouse, a Notion doc">
-        </div>
-        <div class="fld wide">
-          <label for="c-jd">Or paste the job description</label>
-          <textarea id="c-jd" data-label="Job description"
-            placeholder="Paste it here. Rough notes are fine, we do not need it polished."></textarea>
+      <div class="fgroup rv">
+        <p class="glbl"><b>Required</b><s></s></p>
+        <div class="form" data-compose="New search">
+          <div class="fld">
+            <label for="c-name">Your name <i>&bull;</i></label>
+            <input id="c-name" data-label="Name" data-req type="text" placeholder="First and last">
+          </div>
+          <div class="fld">
+            <label for="c-company">Company <i>&bull;</i></label>
+            <input id="c-company" data-label="Company" data-req type="text" placeholder="Company name">
+          </div>
+          <div class="fld">
+            <label for="c-email">Email <i>&bull;</i></label>
+            <input id="c-email" data-label="Email" data-req type="email" placeholder="you@yourcompany.com">
+          </div>
+          <div class="fld">
+            <label for="c-link">Link to the job posting <i>&bull;</i></label>
+            <input id="c-link" data-label="Job posting link" data-req type="url" placeholder="Careers page, Ashby, Greenhouse, Notion">
+          </div>
+          <div class="fld wide">
+            <label for="c-jd">Job description <i>&bull;</i></label>
+            <textarea id="c-jd" data-label="Job description" data-req
+              placeholder="Paste it here. Rough notes are fine."></textarea>
+          </div>
         </div>
       </div>
+
+      <div class="fgroup rv">
+        <p class="glbl">Optional<s></s></p>
+        <div class="form">
+          <div class="fld">
+            <label for="c-role">Role and level</label>
+            <input id="c-role" data-label="Role" type="text" placeholder="Founding engineer, senior backend, infra lead">
+          </div>
+          <div class="fld">
+            <label for="c-stage">Stage</label>
+            <select id="c-stage" data-label="Stage">
+              <option value="">Select</option>
+              <option>Pre-seed</option>
+              <option>Seed</option>
+              <option>Series A</option>
+              <option>Series B</option>
+              <option>Series C</option>
+              <option>Growth</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label for="c-stack">Stack</label>
+            <input id="c-stack" data-label="Stack" type="text" placeholder="Anything non-obvious">
+          </div>
+          <div class="fld">
+            <label for="c-size">Engineering team size</label>
+            <input id="c-size" data-label="Team size" type="text" placeholder="How many engineers today">
+          </div>
+          <div class="fld">
+            <label for="c-reviewer">Who reviews the code</label>
+            <input id="c-reviewer" data-label="Code reviewer" type="text" placeholder="Who approves the first pull request">
+          </div>
+          <div class="fld">
+            <label for="c-start">When you need someone</label>
+            <input id="c-start" data-label="Start date" type="text" placeholder="A date or a quarter">
+          </div>
+        </div>
+      </div>
+
       <div class="formfoot rv">
         <button class="btn" type="button" data-send>Send the role</button>
         <p>This opens an email with everything filled in, so you can read it before it goes. No fee is
@@ -118,8 +123,8 @@
   <section class="sec" id="roles">
     <div class="wrap">
       <div class="head rv">
-        <p class="lbl dim">What We Search For</p>
-        <div><h2>Early And Mid-Level Engineering Roles.</h2></div>
+        <p class="lbl dim">What we search for</p>
+        <div><h2>Early and mid-level engineering roles.</h2></div>
       </div>
       <table class="tbl rv">
         <thead>
