@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foray | Engineering search for startups</title>
+<meta name="description" content="Foray runs early and mid-level engineering searches for startups from seed through growth stage.">
+
+<link rel="canonical" href="https://goforay.io/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Foray">
+<meta property="og:title" content="Foray | Engineering search for startups">
+<meta property="og:description" content="Foray runs early and mid-level engineering searches for startups from seed through growth stage.">
+<meta property="og:url" content="https://goforay.io/">
+<meta property="og:image" content="https://goforay.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Foray | Engineering search for startups">
+<meta name="twitter:description" content="Foray runs early and mid-level engineering searches for startups from seed through growth stage.">
+<meta name="twitter:image" content="https://goforay.io/og.png">
+<meta name="theme-color" content="#080D0B">
+<!-- /stamp -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="ticker"><div class="wrap lbl"><s>&mdash;</s>Now booking engineering searches for Q4<s>&mdash;</s></div></div>
+<header>
+  <div class="wrap nav">
+    <a href="index.html" class="mark" aria-label="Foray home"><b><i></i><i></i><i></i><i></i></b>Foray</a>
+    <nav class="links lbl" aria-label="Main"><a href="companies.html">Companies</a><a href="engineers.html">Engineers</a></nav>
+    <div class="clock lbl"><span>San Francisco</span><span id="clk">--:--</span></div>
+    <a href="companies.html" class="navcta lbl">Start a search</a>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <div class="hero-l">
+      <div class="hcopy">
+      <h1>
+        <span class="ln"><span>We Build Early</span></span>
+        <span class="ln"><span><em class="hl">Engineering</em> Teams.</span></span>
+      </h1>
+      <p class="sub">A recruiting firm for startups making early and mid-level engineering hires, from
+        seed through growth stage.</p>
+      </div>
+      <div class="ask">
+        <input id="q" type="text" aria-label="Tell us who you want to hire"
+          placeholder="I want to hire a...">
+        <button class="go" id="go" type="button" aria-label="Continue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+      </div>
+      <ul class="sugg">
+        <li><button type="button" data-q="I want to hire a founding engineer at seed."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/></svg>Founding engineer, seed</button></li>
+        <li><button type="button" data-q="I want to hire a senior backend engineer, Series B."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 14l8 4 8-4"/></svg>Senior backend, Series B</button></li>
+        <li><button type="button" data-q="I want to hire an infrastructure lead at growth stage."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Infrastructure lead, growth</button></li>
+        <li><button type="button" data-q="I want to build out an applied ML team, Series C."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-4 9 4-9 4-9-4z"/><path d="M7 12v4c0 1.7 2.2 3 5 3s5-1.3 5-3v-4"/></svg>Applied ML team, Series C</button></li>
+      </ul>
+    </div>
+    <div class="hero-r"><div class="holo" aria-hidden="true"><div class="stage"><pre class="field" id="field"></pre><pre class="walker"></pre><pre class="walker"></pre><span class="scan"></span></div></div></div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="head rv">
+        <p class="lbl dim">How It Works</p>
+        <div>
+          <h2>Three Steps, Either Side Of The Table.</h2>
+          <div class="tabs" role="tablist" aria-label="Choose your side">
+            <button type="button" role="tab" data-panel="company" aria-selected="true">Company</button>
+            <button type="button" role="tab" data-panel="candidate" aria-selected="false">Candidate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="company">
+        <div class="steps rv">
+          <div class="stp">
+            <p class="no"><b>01</b> Introductory call</p>
+            <p>An hour on the role, the stack, and the bar.</p>
+          </div>
+          <div class="stp">
+            <p class="no"><b>02</b> Targeted outreach</p>
+            <p>We approach a named list, not a job board.</p>
+          </div>
+          <div class="stp">
+            <p class="no"><b>03</b> Introductions</p>
+            <p>Five engineers, with our read on each.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="candidate" hidden>
+        <div class="steps rv">
+          <div class="stp">
+            <p class="no"><b>01</b> Opportunity surfaced</p>
+            <p>One role, with the stage, team, and comp band stated.</p>
+          </div>
+          <div class="stp">
+            <p class="no"><b>02</b> Fit assessed</p>
+            <p>A senior engineer reads your work and tells you what they saw.</p>
+          </div>
+          <div class="stp">
+            <p class="no"><b>03</b> Introduction</p>
+            <p>You meet the founder or the engineer you would work with.</p>
+          </div>
+        </div>
+        <p class="note rv">Timeline, location, visa status, and comp are yours to set. Nothing reaches a
+          company without your say.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="head rv">
+        <p class="lbl dim">The Screen</p>
+        <div><h2>Fifteen Hundred Profiles, Five Introductions.</h2></div>
+      </div>
+      <div class="screen rv">
+        <div class="screen-top lbl">
+          <span>Everyone who could do the job</span>
+          <span>Five reach your calendar</span>
+        </div>
+        <div class="ticks" id="ticks" aria-hidden="true"></div>
+        <p class="readout idle" id="readout">Hover a lit mark to see a profile from a recent search.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="head rv">
+        <p class="lbl dim">What We Do</p>
+        <div><h2>We Specialize In Early And Mid-Level Engineering Hires.</h2></div>
+      </div>
+      <div class="grid rv">
+        <div class="cell">
+          <span class="n">Early hires</span>
+          <h3>Seed to Series A</h3>
+          <p>Founding and first-team engineers who have shipped something end to end with nobody
+            checking on them.</p>
+        </div>
+        <div class="cell">
+          <span class="n">Mid-level hires</span>
+          <h3>Series B through growth</h3>
+          <p>Engineers with three to eight years who have owned a system other teams depended on, and
+            want more scope than their title allows.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="head rv">
+        <p class="lbl dim">Clients</p>
+        <div><h2>What Founders Say.</h2></div>
+      </div>
+      <div class="quotes rv">
+        <div class="q">
+          <p>&ldquo;First introductions landed four days after our call. We had spent two months on the
+            same role with another firm and seen nobody worth a second conversation.&rdquo;</p>
+          <cite>Founder, seed-stage developer tools</cite>
+        </div>
+        <div class="q">
+          <p>&ldquo;Five profiles, four of them we wanted to meet. That hit rate is the whole value. I
+            spent no time filtering.&rdquo;</p>
+          <cite>Head of Engineering, Series B fintech</cite>
+        </div>
+        <div class="q">
+          <p>&ldquo;Signed offer in two weeks without my team running a single throwaway screen. The read
+            attached to each profile did that work for us.&rdquo;</p>
+          <cite>Co-founder, applied ML</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closer">
+    <div class="wrap">
+      <h2 class="rv">Foray Into Your Next Hire.</h2>
+      <div class="acts rv">
+        <a href="companies.html" class="btn">Post a role</a>
+        <a href="engineers.html" class="btn ghost">Join the pool</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+<footer>
+  <div class="wrap">
+    <div class="fcols">
+      <div class="fbrand">
+        <span class="mark" aria-hidden="true"><b><i></i><i></i><i></i><i></i></b>Foray</span>
+        <p>Early and mid-level engineering search for startups.</p>
+      </div>
+      <div>
+        <h4>Hiring</h4>
+        <ul>
+          <li><a href="companies.html">Post a role</a></li>
+          <li><a href="companies.html#roles">What we search for</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Engineers</h4>
+        <ul>
+          <li><a href="engineers.html">Join the pool</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:contact@goforay.io">contact@goforay.io</a></li>
+          <li class="dim">San Francisco, CA</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fbot lbl"><span>&copy; 2026 Foray</span><span>Built in San Francisco</span></div>
+  </div>
+</footer>
+<script src="/app.js" defer></script>
+</body>
+</html>
