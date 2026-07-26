@@ -20,26 +20,6 @@
     tick();setInterval(tick,20000);
   }
 
-  /* ask box -> the company onboarding page, carrying what they typed */
-  var send=function(text){
-    var t=(text||'').trim();
-    if(!t){return;}
-    window.location.href='companies.html?role='+encodeURIComponent(t);
-  };
-  var q=document.getElementById('q');
-  var go=document.getElementById('go');
-  if(q&&go){
-    go.addEventListener('click',function(){send(q.value);});
-    q.addEventListener('keydown',function(e){if(e.key==='Enter'){send(q.value);}});
-    var sg=document.querySelectorAll('.sugg button');
-    for(var k=0;k<sg.length;k++){
-      sg[k].addEventListener('click',function(){
-        q.value=this.getAttribute('data-q');q.focus();
-      });
-    }
-  }
-
-
   /* the static field is deterministic, so it is generated here instead of shipped as markup */
   var fieldEl=document.getElementById('field');
   if(fieldEl){
@@ -166,23 +146,6 @@
       }
     });
   }
-
-  /* carry the hero input into the form */
-  try{
-    var qs=new URLSearchParams(window.location.search).get('role');
-    if(qs){
-      var target=qs.length>90?document.getElementById('c-jd'):document.getElementById('c-role');
-      if(target){
-        target.value=qs;
-        target.classList.add('prefilled');
-        var card=target.closest('.fld');
-        if(card){card.classList.add('prefilled-card');}
-        setTimeout(function(){
-          target.scrollIntoView({block:'center',behavior:'smooth'});
-        },220);
-      }
-    }
-  }catch(e){}
 
   /* onboarding forms compose an email, since there is no backend yet */
   var forms=document.querySelectorAll('[data-compose]');
