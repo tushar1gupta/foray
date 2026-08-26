@@ -8,6 +8,11 @@ Live at **https://goforay.io** (Vercel project `goforay`).
 Static HTML, no framework, no build step at deploy time. The pages are generated
 from Python so the hero scene and the repeated chrome stay in one place.
 
+`portal.html` is a separate, static candidate-portal prototype. It intentionally
+uses its own `portal.css` and `portal.js`, rather than the public-site generator,
+because it represents an authenticated product surface with distinct navigation
+and interaction patterns.
+
 ## Structure
 
 ```

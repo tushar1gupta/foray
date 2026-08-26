@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f5fc">
+  <title>Your Foray | Foray</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/portal.css">
+  <link rel="stylesheet" href="/portal-overrides.css">
+</head>
+<body>
+  <div class="portal-shell">
+    <aside class="sidebar" aria-label="Candidate portal">
+      <a class="brand" href="#home" data-view="home" aria-label="Foray home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>FORAY
+      </a>
+
+      <nav class="portal-nav" aria-label="Portal navigation">
+        <a href="#home" data-view="home" class="nav-link active"><span class="nav-icon">⌂</span>Home</a>
+        <a href="#apply" data-view="apply" class="nav-link apply-link"><span class="nav-icon">↑</span>Apply</a>
+        <a href="#foray" data-view="apply" class="nav-link"><span class="nav-icon">✦</span>Actually discovered</a>
+        <a href="#applications" data-view="applications" class="nav-link"><span class="nav-icon">▣</span>Applications</a>
+        <a href="#profile" data-view="profile" class="nav-link"><span class="nav-icon">◌</span>Profile</a>
+      </nav>
+
+      <button class="account" type="button" data-view="profile">
+        <span class="avatar">TG</span>
+        <span><strong>Tushar Gupta</strong><small>Manage profile</small></span>
+        <b aria-hidden="true">›</b>
+      </button>
+    </aside>
+
+    <main class="main-content">
+      <section class="view active" id="home" aria-labelledby="home-title">
+        <div class="mobile-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>FORAY</div>
+        <div class="greeting-card">
+          <p class="eyebrow">Your career, in motion</p>
+          <h1 id="home-title">Good morning, <span>Tushar.</span></h1>
+          <p>Find a role worth your time. We will make the application feel like an introduction, not paperwork.</p>
+        </div>
+
+        <div class="apply-hero">
+          <div>
+            <p class="eyebrow">Start here</p>
+            <h2>Ready to make a move?</h2>
+            <p>Browse roles selected for you, then Foray into the ones that feel right.</p>
+          </div>
+          <button class="primary-action" type="button" data-view="apply">Apply to a role <span>↑</span></button>
+        </div>
+
+        <section class="home-section" aria-labelledby="shortlist-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">Your shortlist</p><h2 id="shortlist-title">A few places to begin</h2></div>
+            <button class="text-button" type="button" data-view="apply">See all roles <span>→</span></button>
+          </div>
+          <div class="role-grid">
+            <article class="role-card">
+              <span class="company-logo coral">A</span>
+              <div><p class="role-company">Aperture</p><h3>Founding product engineer</h3><p class="role-meta">San Francisco · Hybrid</p></div>
+              <button type="button" class="foray-mini" data-view="apply">Foray <span>↑</span></button>
+            </article>
+            <article class="role-card">
+              <span class="company-logo indigo">M</span>
+              <div><p class="role-company">Mosaic</p><h3>Software engineer, platform</h3><p class="role-meta">New York · Hybrid</p></div>
+              <button type="button" class="foray-mini" data-view="apply">Foray <span>↑</span></button>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="apply" aria-labelledby="apply-title" hidden>
+        <header class="page-heading">
+          <p class="eyebrow">Actually discovered</p>
+          <h1 id="apply-title">Foray into what’s next.</h1>
+          <p>Pull a role upward when you want to explore it. We’ll take care of the rest with your approval.</p>
+        </header>
+
+        <div class="filters" aria-label="Role filters"><button class="filter active">For you</button><button class="filter">Engineering</button><button class="filter">Hybrid</button><button class="filter">Early stage</button></div>
+
+        <article class="foray-card" id="foray-card" tabindex="0" aria-describedby="foray-help">
+          <div class="foray-card-top"><span class="company-logo coral">A</span><span class="match">Strong match</span></div>
+          <div class="foray-copy"><p class="role-company">Aperture · Seed</p><h2>Founding product engineer</h2><p>Build the product surface for an AI-native workflow company alongside its two technical founders.</p></div>
+          <div class="role-details"><span>San Francisco · Hybrid</span><span>$170–210k + 0.5–0.9%</span></div>
+          <div class="foray-gesture" aria-hidden="true"><span>↑</span><b>Swipe up to Foray</b></div>
+          <button class="foray-button" type="button" id="foray-button">Foray <span>↑</span></button>
+        </article>
+        <p id="foray-help" class="gesture-help">Drag the card upward, or use the Foray button. You can always review before anything is sent.</p>
+
+        <div class="next-role" aria-label="Next role">
+          <span class="company-logo indigo">M</span><div><p class="role-company">Mosaic · Series A</p><h3>Software engineer, platform</h3></div><span aria-hidden="true">↓</span>
+        </div>
+      </section>
+
+      <section class="view" id="applications" aria-labelledby="applications-title" hidden>
+        <header class="page-heading"><p class="eyebrow">In progress</p><h1 id="applications-title">Applications</h1><p>Every conversation and next step, in one quiet place.</p></header>
+        <div class="empty-state"><span class="empty-mark">↑</span><h2>Nothing in flight yet.</h2><p>Your next application starts with one small Foray.</p><button class="primary-action" type="button" data-view="apply">Find a role <span>↑</span></button></div>
+      </section>
+
+      <section class="view" id="profile" aria-labelledby="profile-title" hidden>
+        <header class="page-heading"><p class="eyebrow">The whole picture</p><h1 id="profile-title">Your profile</h1><p>Everything a potential employer needs to understand you—kept accurate and ready to share on your terms.</p></header>
+        <div class="profile-complete"><span>Profile strength</span><div class="progress"><i></i></div><strong>80%</strong><button type="button">Finish profile</button></div>
+        <div class="profile-grid">
+          <article class="profile-card about"><div class="card-heading"><h2>About you</h2><button>Edit</button></div><p class="profile-name">Tushar Gupta</p><p>Investor and operator interested in early-stage companies, product, and systems that change how people work.</p><div class="chips"><span>San Francisco</span><span>Open to hybrid</span><span>US authorized</span></div></article>
+          <article class="profile-card"><div class="card-heading"><h2>Experience</h2><button>Edit</button></div><ul class="timeline"><li><strong>WestBridge Capital</strong><span>Investor · Current</span></li><li><strong>Previous experience</strong><span>Add your role history</span></li></ul></article>
+          <article class="profile-card"><div class="card-heading"><h2>Work & links</h2><button>Edit</button></div><ul class="links-list"><li><span>LinkedIn</span><a href="#profile">Add link →</a></li><li><span>Portfolio / work</span><a href="#profile">Add link →</a></li><li><span>Resume</span><a href="#profile">Upload →</a></li></ul></article>
+          <article class="profile-card"><div class="card-heading"><h2>What you want next</h2><button>Edit</button></div><p>Early-stage company, meaningful ownership, and a role close to product and company-building.</p><div class="chips"><span>Early stage</span><span>Product</span><span>Investing</span></div></article>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" role="status" aria-live="polite">You’re foraying into Aperture. Review your application next.</div>
+  <script src="/portal.js"></script>
+</body>
+</html>

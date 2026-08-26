@@ -4,7 +4,9 @@ import re, pathlib
 from html.parser import HTMLParser
 
 SITE = pathlib.Path(__file__).resolve().parent.parent
-FILES = sorted(SITE.glob("*.html"))
+# The checker audits the generated public marketing pages. The candidate portal
+# is a separate authenticated prototype with its own document structure.
+FILES = sorted(path for path in SITE.glob("*.html") if path.name != "portal.html")
 VOID = {"area","base","br","col","embed","hr","img","input","link","meta",
         "param","source","track","wbr"}
 issues, notes = [], []
