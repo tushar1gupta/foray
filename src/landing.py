@@ -174,7 +174,9 @@ CSS = r"""
 .lp-job-body .u{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; color:#9AA9B4}
 .lp-tap{position:absolute; top:-14px; right:-6px; z-index:2; background:var(--imsg-out);
   border:2px solid #fff; border-radius:999px; padding:3px 8px; display:flex;
-  box-shadow:0 3px 8px rgba(42,33,64,.22); animation:lp-pop .4s ease both}
+  box-shadow:0 3px 8px rgba(42,33,64,.22); animation:lp-pop .4s ease both;
+  /* a beat after the card, so it reads as somebody reacting to it */
+  animation-delay:1.05s}
 @keyframes lp-pop{0%{opacity:0;transform:scale(.3)}70%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
 .lp-send{display:flex; gap:8px; align-items:center; border-top:1px solid var(--line); padding-top:12px}
 .lp-send input{flex:1; min-width:0; border:1px solid var(--line2); border-radius:999px;
@@ -313,25 +315,38 @@ CSS = r"""
 .lp-row{display:flex; align-items:flex-start; gap:12px}
 .lp-row .k{width:96px; flex:0 0 auto; font-size:11px; font-weight:600; letter-spacing:.1em;
   text-transform:uppercase; color:var(--muted); padding-top:8px}
-.lp-row .v{flex:1; min-width:0; background:var(--tint3); border:1px solid var(--line);
+.lp-row .v{flex:1; min-width:0; overflow:hidden; background:var(--tint3); border:1px solid var(--line);
   border-radius:8px; padding:7px 12px; font-size:13px}
 .lp-type{display:inline-block; overflow:hidden; white-space:nowrap; vertical-align:bottom;
   max-width:0; animation-duration:7s; animation-timing-function:steps(24); animation-iteration-count:infinite;
   animation-fill-mode:both}
-.lp-type.t1{animation-name:lp-t1} .lp-type.t2{animation-name:lp-t2} .lp-type.t3{animation-name:lp-t3}
-@keyframes lp-t1{0%,6%{max-width:0}16%,100%{max-width:14em}}
-@keyframes lp-t2{0%,22%{max-width:0}34%,100%{max-width:22em}}
-@keyframes lp-t3{0%,48%{max-width:0}64%,100%{max-width:34em}}
+/* One step per character, and a target the width of the actual string --
+   a generous target reaches full width in the first step or two, which reads
+   as a jump rather than typing, and takes the nib with it in one hop. */
+.lp-type.t1{animation-name:lp-t1; animation-timing-function:steps(8)}
+.lp-type.t2{animation-name:lp-t2; animation-timing-function:steps(23)}
+.lp-type.t3{animation-name:lp-t3; animation-timing-function:steps(40)}
+@keyframes lp-t1{0%,6%{max-width:0}16%,100%{max-width:9ch}}
+@keyframes lp-t2{0%,22%{max-width:0}34%,100%{max-width:24ch}}
+@keyframes lp-t3{0%,48%{max-width:0}64%,100%{max-width:100%}}
 .lp-pillin{animation:lp-pillin 7s ease both infinite}
 @keyframes lp-pillin{0%,38%{opacity:0;transform:scale(.6)}42%{opacity:1;transform:scale(1)}100%{opacity:1}}
-.lp-scribe{position:absolute; right:14px; z-index:3; display:flex; align-items:center; gap:6px;
-  animation:lp-scribe 7s ease-in-out infinite}
-@keyframes lp-scribe{0%,14%{top:14px;opacity:1}20%,32%{top:60px;opacity:1}
-  38%,44%{top:106px;opacity:1}50%,68%{top:152px;opacity:1}74%,96%{opacity:0}100%{top:14px;opacity:1}}
-.lp-scribe .who{background:var(--accent-soft); color:var(--accent-deep); border-radius:6px;
-  padding:3px 8px; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase}
-.lp-scribe .pen{width:30px; height:30px; border-radius:8px; background:var(--primary);
-  display:grid; place-items:center; box-shadow:0 6px 14px rgba(42,33,64,.3)}
+/* The nib sits inline directly after the text it is writing, so it travels
+   with the characters instead of hovering at the edge of the field. One per
+   row, each shown only while that row is being filled. */
+.lp-nib{display:inline-flex; align-items:center; gap:5px; vertical-align:middle;
+  margin-left:6px; opacity:0; animation-duration:7s; animation-timing-function:ease;
+  animation-iteration-count:infinite; animation-fill-mode:both}
+.lp-nib b{background:var(--accent-soft); color:var(--accent-deep); border-radius:5px;
+  padding:2px 6px; font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase}
+.lp-nib i{width:22px; height:22px; flex:0 0 auto; border-radius:6px; background:var(--primary);
+  display:grid; place-items:center; box-shadow:0 4px 10px rgba(42,33,64,.3)}
+.lp-nib.n1{animation-name:lp-nib1} .lp-nib.n2{animation-name:lp-nib2}
+.lp-nib.n3{animation-name:lp-nib3} .lp-nib.n4{animation-name:lp-nib4}
+@keyframes lp-nib1{0%,5%{opacity:0}7%,17%{opacity:1}19%,100%{opacity:0}}
+@keyframes lp-nib2{0%,21%{opacity:0}23%,35%{opacity:1}37%,100%{opacity:0}}
+@keyframes lp-nib4{0%,37%{opacity:0}39%,45%{opacity:1}47%,100%{opacity:0}}
+@keyframes lp-nib3{0%,47%{opacity:0}49%,65%{opacity:1}67%,100%{opacity:0}}
 .lp-progress{flex:1; height:6px; background:var(--line); border-radius:999px; overflow:hidden}
 .lp-progress i{display:block; height:100%; width:4%; background:var(--primary); border-radius:999px;
   animation:lp-fill 7s ease-in-out infinite}
@@ -374,9 +389,16 @@ CSS = r"""
 .lp-week .c{height:34px; border-radius:7px; background:rgba(255,255,255,.07); display:grid;
   place-items:center; font-size:9.5px; font-weight:700}
 .lp-ledger{display:flex; flex-direction:column; gap:8px}
-.lp-ledger div{display:flex; align-items:center; gap:8px; font-size:12.5px}
+.lp-ledger div{display:flex; align-items:center; gap:9px; font-size:12.5px}
 .lp-ledger div+div{border-top:1px solid rgba(255,255,255,.1); padding-top:8px}
 .lp-ledger .amt{margin-left:auto; font-weight:700}
+/* The one row that is a good outcome gets to look like one: lifted off the
+   panel and warmed, rather than sharing the flat treatment of the two nils. */
+.lp-ledger .win{background:rgba(233,195,106,.14); border:1px solid rgba(233,195,106,.35);
+  border-radius:10px; padding:9px 11px; margin:-2px 0 2px; color:#fff}
+.lp-ledger .win+div{border-top:0; padding-top:0}
+.lp-ledger .tick{width:20px; height:20px; flex:0 0 auto; border-radius:50%;
+  background:var(--band-acc); display:grid; place-items:center}
 .lp-funnel{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
   border-radius:16px; padding:clamp(20px,3vw,32px); margin-top:16px}
 .lp-funnel-top{display:flex; justify-content:space-between; gap:16px; color:rgba(255,255,255,.7)}
@@ -890,26 +912,6 @@ BODY = """
             <span class="note">Three minutes with Foray. You talk, we take notes.</span>
           </button>
 
-          <button type="button" class="lp-card tap" data-open="lp-email">
-            <span class="lp-chan-top">{icon_mail_p}<span class="lbl">Email</span>
-              <span class="lp-chan-val">apply@goforay.io</span></span>
-            <span class="lp-demo" style="justify-content:center">
-              <span style="display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--line); padding-bottom:8px">
-                <span style="width:24px;height:24px;border-radius:50%;background:var(--primary2);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:700">PS</span>
-                <span style="display:flex;flex-direction:column">
-                  <span style="font-size:12px;font-weight:600">priya &rarr; apply@goforay.io</span>
-                  <span style="font-size:11px;color:var(--muted)">fwd: resume.pdf attached</span></span>
-              </span>
-              <span style="display:flex; align-items:center; gap:8px">
-                <span style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:grid;place-items:center">{icon_send_w}</span>
-                <span style="display:flex;flex-direction:column">
-                  <span style="font-size:12px;font-weight:600">foray &rarr; priya</span>
-                  <span style="font-size:11px;color:var(--primary)">3 roles inside, all above your bar</span></span>
-              </span>
-            </span>
-            <span class="note">Resume, or a job description you found. Just forward it.</span>
-          </button>
-
         </div>
       </div>
     </section>
@@ -1021,20 +1023,18 @@ BODY = """
               <span class="lp-agent-tag">{icon_bolt_a} foray agent typing</span>
             </div>
             <div class="lp-form">
-              <span class="lp-scribe" aria-hidden="true">
-                <span class="who">foray</span><span class="pen">{icon_pen_w}</span>
-              </span>
               <div class="lp-row"><span class="k">Name</span>
-                <span class="v"><span class="lp-type t1">Priya S.</span></span></div>
+                <span class="v"><span class="lp-type t1">Priya S.</span><span class="lp-nib n1" aria-hidden="true"><b>foray</b><i>{icon_pen_w}</i></span></span></div>
               <div class="lp-row"><span class="k">Role</span>
-                <span class="v"><span class="lp-type t2">Senior Backend Engineer</span></span></div>
+                <span class="v"><span class="lp-type t2">Senior Backend Engineer</span><span class="lp-nib n2" aria-hidden="true"><b>foray</b><i>{icon_pen_w}</i></span></span></div>
               <div class="lp-row"><span class="k">Resume</span>
                 <span class="v" style="background:none; border:0; padding:0">
-                  <span class="lp-pill lp-pillin">{icon_doc_p} priya_stripe_tailored.pdf</span></span></div>
+                  <span class="lp-pill lp-pillin">{icon_doc_p} priya_stripe_tailored.pdf</span><span class="lp-nib n4" aria-hidden="true"><b>foray</b><i>{icon_pen_w}</i></span></span></div>
               <div class="lp-row"><span class="k">Note</span>
                 <span class="v" style="color:var(--muted); font-size:12.5px">
-                  <span class="lp-type t3">Six years of Go and Postgres, owned a payments system&hellip;</span></span></div>
+                  <span class="lp-type t3">Six years of Go and Postgres, owned a payments system&hellip;</span><span class="lp-nib n3" aria-hidden="true"><b>foray</b><i>{icon_pen_w}</i></span></span></div>
               <div class="lp-row" style="align-items:center; padding-top:4px">
+                <span class="k" aria-hidden="true"></span>
                 <span class="lp-progress"><i></i></span>
                 <span style="font-family:ui-monospace,monospace; font-size:11px; color:var(--primary)">submitting&hellip;</span>
               </div>
@@ -1078,8 +1078,8 @@ BODY = """
             <h3>We reach the exact engineers you want</h3>
             <span class="lp-mini-panel">
               <span style="align-self:flex-start; background:#fff; color:var(--ink); border-radius:10px 10px 10px 3px; padding:6px 10px; font-size:11.5px">
-                hey jk, staff platform role at a series B. $210k. interested?</span>
-              <span class="lp-out"><span class="av" style="background:var(--primary2); color:#fff">JK</span>
+                hey noah, staff platform role at a series B. $210k. interested?</span>
+              <span class="lp-out"><span class="av" style="background:var(--primary2); color:#fff">N</span>
                 <span class="ln"></span><span class="st">REPLIED</span></span>
               <span class="lp-out"><span class="av" style="background:var(--accent); color:var(--band)">PS</span>
                 <span class="ln"></span><span class="st">REPLIED</span></span>
@@ -1096,7 +1096,7 @@ BODY = """
               <span class="lp-week">
                 <span class="d">MON</span><span class="d">TUE</span><span class="d">WED</span><span class="d">THU</span><span class="d">FRI</span>
                 <span class="c"></span>
-                <span class="c" style="background:var(--primary2); color:#fff">JK 2:30</span>
+                <span class="c" style="background:var(--primary2); color:#fff">N 2:30</span>
                 <span class="c"></span>
                 <span class="c" style="background:var(--accent); color:var(--band)">PS 11:00</span>
                 <span class="c" style="background:var(--band-acc2); color:var(--band)">MT 4:00</span>
@@ -1109,7 +1109,9 @@ BODY = """
             <span class="lbl">Step 3 &middot; Success fee</span>
             <h3>We earn when you hire</h3>
             <span class="lp-mini-panel lp-ledger">
-              <div>{icon_check_g}<span>Offer signed</span><span class="amt" style="color:var(--band-acc)">success fee</span></div>
+              <div class="win"><span class="tick">{icon_check_dark}</span>
+                <span style="font-weight:600">Offer signed</span>
+                <span class="amt" style="color:var(--band-acc)">success fee</span></div>
               <div>{icon_x_m}<span style="color:rgba(255,255,255,.75)">No hire</span><span class="amt" style="color:rgba(255,255,255,.75)">$0</span></div>
               <div>{icon_x_m}<span style="color:rgba(255,255,255,.75)">Retainers</span><span class="amt" style="color:rgba(255,255,255,.75)">never</span></div>
             </span>
@@ -1187,7 +1189,7 @@ BODY = """
       <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
       <span class="lbl" style="color:var(--primary)">Message us</span>
       <h3>One message starts it.</h3>
-      <span class="big">Start a thread.</span>
+      <span class="big">(628) 386-5454</span><p style="margin-top:-8px">Text that number, or start a thread right here. Both reach the same place.</p>
       <p>Send anything: your LinkedIn, a resume, or a posting you found and want us to apply to.
         A real person reviews every match, and we reply in minutes.</p>
       <span class="lp-free" style="align-self:flex-start">10 applications, free</span>
@@ -1280,6 +1282,7 @@ BODY = """
     icon_user_w=_svg(I["user"], 18, "#fff"),
     icon_check_p=_svg(I["check"], 15, "var(--primary)"),
     icon_check_g=_svg(I["check"], 14, "var(--band-acc)"),
+    icon_check_dark=_svg(I["check"], 12, "var(--band)", extra=' stroke-width="3"'),
     icon_x_m=_svg(I["x"], 14, "rgba(255,255,255,.5)"),
     icon_x_i=_svg(I["x"], 14, "var(--ink)"),
     icon_doc_p=_svg(I["doc"], 12, "var(--primary)"),

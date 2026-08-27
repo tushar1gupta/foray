@@ -112,7 +112,8 @@ letter-spacing:.14em; color:var(--primary)}
 .lp-job-body .u{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; color:#9AA9B4}
 .lp-tap{position:absolute; top:-14px; right:-6px; z-index:2; background:var(--imsg-out);
 border:2px solid #fff; border-radius:999px; padding:3px 8px; display:flex;
-box-shadow:0 3px 8px rgba(42,33,64,.22); animation:lp-pop .4s ease both}
+box-shadow:0 3px 8px rgba(42,33,64,.22); animation:lp-pop .4s ease both;
+animation-delay:1.05s}
 @keyframes lp-pop{0%{opacity:0;transform:scale(.3)}70%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
 .lp-send{display:flex; gap:8px; align-items:center; border-top:1px solid var(--line); padding-top:12px}
 .lp-send input{flex:1; min-width:0; border:1px solid var(--line2); border-radius:999px;
@@ -243,25 +244,32 @@ letter-spacing:.12em; text-transform:uppercase; white-space:nowrap}
 .lp-row{display:flex; align-items:flex-start; gap:12px}
 .lp-row .k{width:96px; flex:0 0 auto; font-size:11px; font-weight:600; letter-spacing:.1em;
 text-transform:uppercase; color:var(--muted); padding-top:8px}
-.lp-row .v{flex:1; min-width:0; background:var(--tint3); border:1px solid var(--line);
+.lp-row .v{flex:1; min-width:0; overflow:hidden; background:var(--tint3); border:1px solid var(--line);
 border-radius:8px; padding:7px 12px; font-size:13px}
 .lp-type{display:inline-block; overflow:hidden; white-space:nowrap; vertical-align:bottom;
 max-width:0; animation-duration:7s; animation-timing-function:steps(24); animation-iteration-count:infinite;
 animation-fill-mode:both}
-.lp-type.t1{animation-name:lp-t1} .lp-type.t2{animation-name:lp-t2} .lp-type.t3{animation-name:lp-t3}
-@keyframes lp-t1{0%,6%{max-width:0}16%,100%{max-width:14em}}
-@keyframes lp-t2{0%,22%{max-width:0}34%,100%{max-width:22em}}
-@keyframes lp-t3{0%,48%{max-width:0}64%,100%{max-width:34em}}
+.lp-type.t1{animation-name:lp-t1; animation-timing-function:steps(8)}
+.lp-type.t2{animation-name:lp-t2; animation-timing-function:steps(23)}
+.lp-type.t3{animation-name:lp-t3; animation-timing-function:steps(40)}
+@keyframes lp-t1{0%,6%{max-width:0}16%,100%{max-width:9ch}}
+@keyframes lp-t2{0%,22%{max-width:0}34%,100%{max-width:24ch}}
+@keyframes lp-t3{0%,48%{max-width:0}64%,100%{max-width:100%}}
 .lp-pillin{animation:lp-pillin 7s ease both infinite}
 @keyframes lp-pillin{0%,38%{opacity:0;transform:scale(.6)}42%{opacity:1;transform:scale(1)}100%{opacity:1}}
-.lp-scribe{position:absolute; right:14px; z-index:3; display:flex; align-items:center; gap:6px;
-animation:lp-scribe 7s ease-in-out infinite}
-@keyframes lp-scribe{0%,14%{top:14px;opacity:1}20%,32%{top:60px;opacity:1}
-38%,44%{top:106px;opacity:1}50%,68%{top:152px;opacity:1}74%,96%{opacity:0}100%{top:14px;opacity:1}}
-.lp-scribe .who{background:var(--accent-soft); color:var(--accent-deep); border-radius:6px;
-padding:3px 8px; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase}
-.lp-scribe .pen{width:30px; height:30px; border-radius:8px; background:var(--primary);
-display:grid; place-items:center; box-shadow:0 6px 14px rgba(42,33,64,.3)}
+.lp-nib{display:inline-flex; align-items:center; gap:5px; vertical-align:middle;
+margin-left:6px; opacity:0; animation-duration:7s; animation-timing-function:ease;
+animation-iteration-count:infinite; animation-fill-mode:both}
+.lp-nib b{background:var(--accent-soft); color:var(--accent-deep); border-radius:5px;
+padding:2px 6px; font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase}
+.lp-nib i{width:22px; height:22px; flex:0 0 auto; border-radius:6px; background:var(--primary);
+display:grid; place-items:center; box-shadow:0 4px 10px rgba(42,33,64,.3)}
+.lp-nib.n1{animation-name:lp-nib1} .lp-nib.n2{animation-name:lp-nib2}
+.lp-nib.n3{animation-name:lp-nib3} .lp-nib.n4{animation-name:lp-nib4}
+@keyframes lp-nib1{0%,5%{opacity:0}7%,17%{opacity:1}19%,100%{opacity:0}}
+@keyframes lp-nib2{0%,21%{opacity:0}23%,35%{opacity:1}37%,100%{opacity:0}}
+@keyframes lp-nib4{0%,37%{opacity:0}39%,45%{opacity:1}47%,100%{opacity:0}}
+@keyframes lp-nib3{0%,47%{opacity:0}49%,65%{opacity:1}67%,100%{opacity:0}}
 .lp-progress{flex:1; height:6px; background:var(--line); border-radius:999px; overflow:hidden}
 .lp-progress i{display:block; height:100%; width:4%; background:var(--primary); border-radius:999px;
 animation:lp-fill 7s ease-in-out infinite}
@@ -302,9 +310,14 @@ padding:2px 9px; font-size:10px; font-weight:700; letter-spacing:.08em}
 .lp-week .c{height:34px; border-radius:7px; background:rgba(255,255,255,.07); display:grid;
 place-items:center; font-size:9.5px; font-weight:700}
 .lp-ledger{display:flex; flex-direction:column; gap:8px}
-.lp-ledger div{display:flex; align-items:center; gap:8px; font-size:12.5px}
+.lp-ledger div{display:flex; align-items:center; gap:9px; font-size:12.5px}
 .lp-ledger div+div{border-top:1px solid rgba(255,255,255,.1); padding-top:8px}
 .lp-ledger .amt{margin-left:auto; font-weight:700}
+.lp-ledger .win{background:rgba(233,195,106,.14); border:1px solid rgba(233,195,106,.35);
+border-radius:10px; padding:9px 11px; margin:-2px 0 2px; color:#fff}
+.lp-ledger .win+div{border-top:0; padding-top:0}
+.lp-ledger .tick{width:20px; height:20px; flex:0 0 auto; border-radius:50%;
+background:var(--band-acc); display:grid; place-items:center}
 .lp-funnel{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
 border-radius:16px; padding:clamp(20px,3vw,32px); margin-top:16px}
 .lp-funnel-top{display:flex; justify-content:space-between; gap:16px; color:rgba(255,255,255,.7)}
