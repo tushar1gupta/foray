@@ -90,9 +90,10 @@ CSS = r"""
 .lp-logo i:nth-child(2){opacity:.5} .lp-logo i:nth-child(3){opacity:.4}
 .lp-nav{display:flex; gap:clamp(14px,2vw,28px); margin-left:auto; color:var(--muted)}
 .lp-nav a:hover{color:var(--ink)}
-.lp-clock{display:flex; gap:10px; color:var(--muted); padding-left:20px; border-left:1px solid var(--line)}
+.lp-clock{display:flex; gap:10px; margin-left:auto; color:var(--muted); padding-left:20px;
+  border-left:1px solid var(--line)}
 .lp-clock span{font-variant-numeric:tabular-nums}
-@media(max-width:900px){.lp-clock{display:none}}
+@media(max-width:900px){.lp-clock{display:none} .lp-head .lp-btn{margin-left:auto}}
 
 /* buttons */
 .lp-btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;
@@ -820,10 +821,6 @@ BODY = """
 
   <header class="lp-head">
     <a href="index.html" class="lp-logo" aria-label="Foray home">{logomark}Foray</a>
-    <nav class="lp-nav lbl" aria-label="Main">
-      <a href="companies.html">Companies</a>
-      <a href="engineers.html">Engineers</a>
-    </nav>
     <div class="lp-clock lbl"><span>San Francisco</span><span id="lp-clk">--:--</span></div>
     <button type="button" class="lp-btn" data-open="lp-text">Message Foray</button>
   </header>
@@ -1165,7 +1162,6 @@ BODY = """
         </ul></div>
         <div><h4>Hiring</h4><ul>
           <li><button type="button" data-open="lp-hire">Book 20 minutes</button></li>
-          <li><a href="companies.html">What we search for</a></li>
         </ul></div>
         <div><h4>Contact</h4><ul>
           <li><a href="mailto:{email}">{email}</a></li>

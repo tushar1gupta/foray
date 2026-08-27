@@ -38,9 +38,10 @@ letter-spacing:.2em; text-transform:uppercase; line-height:1}
 .lp-logo i:nth-child(2){opacity:.5} .lp-logo i:nth-child(3){opacity:.4}
 .lp-nav{display:flex; gap:clamp(14px,2vw,28px); margin-left:auto; color:var(--muted)}
 .lp-nav a:hover{color:var(--ink)}
-.lp-clock{display:flex; gap:10px; color:var(--muted); padding-left:20px; border-left:1px solid var(--line)}
+.lp-clock{display:flex; gap:10px; margin-left:auto; color:var(--muted); padding-left:20px;
+border-left:1px solid var(--line)}
 .lp-clock span{font-variant-numeric:tabular-nums}
-@media(max-width:900px){.lp-clock{display:none}}
+@media(max-width:900px){.lp-clock{display:none} .lp-head .lp-btn{margin-left:auto}}
 .lp-btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;
 font:inherit; font-size:11.5px; font-weight:600; letter-spacing:.15em; text-transform:uppercase;
 padding:14px 24px; border:0; border-radius:999px; background:var(--primary); color:#fff;
