@@ -163,24 +163,27 @@
     thread.appendChild(el("span", "lp-meta", "Live"));
   }
 
-  /* The scripted fallback, used when no widget token is configured or the API
-     is unreachable. Same beats as the real intake, so the demo never overstates
-     what the product does; it just cannot remember you afterwards. */
+  /* The fallback, used only when no widget token is configured or the API is
+     unreachable. The copy is the real intake's, not an approximation: the
+     greeting is messaging/prompts.py greeting_for(), the first two asks are
+     messaging/identity.py ASKS in missing_identity() order (name, then email),
+     and the rest are prompts.QUESTIONS in gate order. Keep them in step -- a
+     visitor who types here should get the same conversation the live thread
+     would give them, minus the part where we remember it. */
   var stage = 0;
   function offlineReplies() {
     var s = stage++;
-    if (s === 0) return ["send your linkedin or a resume link and i'll take it from there"];
-    if (s === 1) return ["got it. what comp are you after, and where do you want to be?"];
-    if (s === 2) return [
-      "two worth your time:",
-      "01 — senior backend engineer at stripe. sf hybrid, $185–210k",
-      "02 — member of technical staff at anthropic. sf hybrid, $240k + equity",
-      "reply 1 or 2 and i'll get your application ready"
+    if (s === 0) return [
+      "hey, i'm foray from Foray. i'm an ai, and i'm here to take a few details so we can match you to the right roles. it takes a couple of minutes.",
+      "first things first — what name should i put on this?"
     ];
-    if (s === 3) return ["on it. tailored resume and a short note to the hiring manager. reply YES to send"];
-    if (s === 4) return [
-      "applied. i'll message you the moment they reply",
-      "that's the demo — message foray for the real thing, and your first 10 applications are on us"
+    if (s === 1) return ["and the best email to reach you on?"];
+    if (s === 2) return ["what kind of role are you looking for next?"];
+    if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
+    if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
+    if (s === 5) return [
+      "that's the gate closed — on the live line this is where matches start landing in your thread.",
+      "this page is running the demo script, so nothing here is saved. message foray for the real thing."
     ];
     return ["message foray any time and we pick it up from there"];
   }
