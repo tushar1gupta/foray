@@ -29,17 +29,17 @@ font-weight:600; letter-spacing:-.032em; margin:0; text-wrap:balance;
 .lp-ticker{background:var(--primary); color:#fff; text-align:center; padding:9px var(--gut)}
 .lp-head{
 display:flex; align-items:center; gap:16px; flex-wrap:wrap;
-max-width:var(--wrap); margin:0 auto; padding:14px var(--gut); border-bottom:1px solid var(--line);
+max-width:var(--wrap); margin:0 auto; padding:20px var(--gut); border-bottom:1px solid var(--line);
 }
 .lp-logo{display:inline-flex; align-items:center; gap:12px; font-weight:600; font-size:19px;
 letter-spacing:.2em; text-transform:uppercase; line-height:1}
 .lp-logo b{display:grid; grid-template-columns:repeat(2,5px); gap:2.5px}
+.lp-head .lp-logo{font-size:24px; gap:14px}
+.lp-head .lp-logo b{grid-template-columns:repeat(2,7px); gap:3px}
+.lp-head .lp-logo i{width:7px; height:7px; border-radius:1.5px}
 .lp-logo i{width:5px; height:5px; background:var(--primary); border-radius:1px}
 .lp-logo i:nth-child(2){opacity:.5} .lp-logo i:nth-child(3){opacity:.4}
-.lp-nav{display:flex; gap:clamp(14px,2vw,28px); margin-left:auto; color:var(--muted)}
-.lp-nav a:hover{color:var(--ink)}
-.lp-clock{display:flex; gap:10px; margin-left:auto; color:var(--muted); padding-left:20px;
-border-left:1px solid var(--line)}
+.lp-clock{display:flex; gap:10px; margin-left:auto; color:var(--muted)}
 .lp-clock span{font-variant-numeric:tabular-nums}
 @media(max-width:900px){.lp-clock{display:none} .lp-head .lp-btn{margin-left:auto}}
 .lp-btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;

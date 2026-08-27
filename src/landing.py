@@ -81,17 +81,17 @@ CSS = r"""
 .lp-ticker{background:var(--primary); color:#fff; text-align:center; padding:9px var(--gut)}
 .lp-head{
   display:flex; align-items:center; gap:16px; flex-wrap:wrap;
-  max-width:var(--wrap); margin:0 auto; padding:14px var(--gut); border-bottom:1px solid var(--line);
+  max-width:var(--wrap); margin:0 auto; padding:20px var(--gut); border-bottom:1px solid var(--line);
 }
 .lp-logo{display:inline-flex; align-items:center; gap:12px; font-weight:600; font-size:19px;
   letter-spacing:.2em; text-transform:uppercase; line-height:1}
 .lp-logo b{display:grid; grid-template-columns:repeat(2,5px); gap:2.5px}
+.lp-head .lp-logo{font-size:24px; gap:14px}
+.lp-head .lp-logo b{grid-template-columns:repeat(2,7px); gap:3px}
+.lp-head .lp-logo i{width:7px; height:7px; border-radius:1.5px}
 .lp-logo i{width:5px; height:5px; background:var(--primary); border-radius:1px}
 .lp-logo i:nth-child(2){opacity:.5} .lp-logo i:nth-child(3){opacity:.4}
-.lp-nav{display:flex; gap:clamp(14px,2vw,28px); margin-left:auto; color:var(--muted)}
-.lp-nav a:hover{color:var(--ink)}
-.lp-clock{display:flex; gap:10px; margin-left:auto; color:var(--muted); padding-left:20px;
-  border-left:1px solid var(--line)}
+.lp-clock{display:flex; gap:10px; margin-left:auto; color:var(--muted)}
 .lp-clock span{font-variant-numeric:tabular-nums}
 @media(max-width:900px){.lp-clock{display:none} .lp-head .lp-btn{margin-left:auto}}
 
@@ -885,7 +885,7 @@ BODY = """
 
           <button type="button" class="lp-card tap" data-open="lp-text">
             <span class="lp-chan-top">{icon_chat_p}<span class="lbl">Text</span>
-              <span class="lp-chan-val">Message Foray</span></span>
+              <span class="lp-chan-val">(628) 386-5454</span></span>
             <span class="lp-demo">
               <span class="lp-mini me">hey, looking for a role</span>
               <span class="lp-mini them">2 matches already. sending now</span>
@@ -896,7 +896,7 @@ BODY = """
 
           <button type="button" class="lp-card tap" data-open="lp-call">
             <span class="lp-chan-top">{icon_phone_p}<span class="lbl">Call</span>
-              <span class="lp-chan-val">Request a call</span></span>
+              <span class="lp-chan-val">(628) 386-5454</span></span>
             <span class="lp-demo" style="justify-content:center; gap:12px">
               <span style="display:flex; align-items:center; gap:10px">
                 <span class="lp-rec"></span><span style="font-size:12.5px; font-weight:600">foray &middot; voice</span>
@@ -906,7 +906,7 @@ BODY = """
               <span style="font-size:11.5px; color:var(--muted); text-align:center">
                 &ldquo;&hellip;180k plus, hybrid in SF&rdquo; &middot; noted</span>
             </span>
-            <span class="note">Three minutes with Foray. You talk, we take notes.</span>
+            <span class="note">Call it, or ask in the thread and Foray rings you. Three minutes.</span>
           </button>
 
         </div>
@@ -1199,9 +1199,11 @@ BODY = """
   <dialog class="lp-modal" id="lp-call">
     <div class="box">
       <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
-      <span class="lbl" style="color:var(--primary)">Get a call</span>
-      <h3>Foray calls you.</h3>
-      <p>Ask for a call in the thread and Foray rings you back, usually within minutes.</p>
+      <span class="lbl" style="color:var(--primary)">Call us</span>
+      <h3>Three minutes on the phone.</h3>
+      <span class="big">(628) 386-5454</span>
+      <p style="margin-top:-8px">Call that number, or ask in the thread and Foray rings you back
+        &mdash; usually within minutes.</p>
       <p>That&rsquo;s the real voice below. On the call Foray asks what roles you&rsquo;d like to do,
         your stack, comp, and where you want to work. Three minutes. Then we find roles that fit
         and send them straight back to you.</p>
