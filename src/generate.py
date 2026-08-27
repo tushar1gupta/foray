@@ -6,6 +6,7 @@ Run src/configure.py afterwards to stamp the domain and emit the static assets.
 """
 import json, pathlib
 from scene import field, frames
+from landing import CSS as LP_CSS, JS as LP_JS, BODY as LP_BODY
 
 OUT = pathlib.Path(__file__).resolve().parent.parent
 OUT.mkdir(parents=True, exist_ok=True)
@@ -567,6 +568,34 @@ ICONS = {
 }
 
 
+
+LANDING_FONTS = ("https://fonts.googleapis.com/css2?"
+                 "family=Bricolage+Grotesque:wght@500;600;700"
+                 "&family=Schibsted+Grotesk:wght@400;500;600&display=swap")
+
+
+def landing(title, desc):
+    """index.html — its own chrome, its own palette, its own script."""
+    body = LP_BODY.replace("{email}", EMAIL)
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{LANDING_FONTS}" rel="stylesheet">
+<style>{LP_CSS}</style>
+</head>
+<body>
+{body}
+<script>{LP_JS}</script>
+</body>
+</html>
+"""
+
 def shell(page, title, desc, body):
     nav = "".join('<a href="%s"%s>%s</a>' % (h, ' class="on"' if h == page else "", t)
                   for h, t in NAVLINKS)
@@ -1030,8 +1059,8 @@ companies_body = f"""  <section class="sec first">
 """
 
 pages = {
-    "index.html": ("Foray | Engineering search for startups",
-                   "Foray runs early and mid-level engineering searches for startups from seed through growth stage.",
+    "index.html": ("Foray | Your autonomous recruiting agent",
+                   "Message Foray and we find roles worth your time, write the application, and apply for you. A human reviews everything, and nothing sends without your yes.",
                    index_body),
     "engineers.html": ("For engineers | Foray",
                        "Join the Foray pool with your LinkedIn and GitHub. We contact you only when a role fits.",
@@ -1042,5 +1071,6 @@ pages = {
 }
 
 for name, (title, desc, body) in pages.items():
-    (OUT / name).write_text(shell(name, title, desc, body), encoding="utf-8")
+    html = landing(title, desc) if name == "index.html" else shell(name, title, desc, body)
+    (OUT / name).write_text(html, encoding="utf-8")
     print("wrote", name, f"{len((OUT / name).read_text(encoding='utf-8')) // 1024} KB")
