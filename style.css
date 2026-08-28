@@ -263,3 +263,35 @@ h1 .ln span{transform:none}
 .walker:nth-of-type(2){opacity:1;transform:translateX(45em)}
 .scan{display:none}
 }
+
+/* legal pages (privacy, terms) -- the only long-form prose on the site.
+   Measure is capped at 78ch: the rest of the site is short marketing copy in
+   44ch cells, and that column is unreadable for something somebody actually
+   has to read end to end. Deliberately no .rv on these pages -- they get
+   fetched by carrier reviewers and crawlers, and a scroll-reveal that never
+   fires leaves the page blank to anything that does not run the script. */
+.legal{max-width:78ch}
+.legal h2{font-size:clamp(19px,1.7vw,23px);letter-spacing:-.02em;margin:44px 0 12px;
+padding-top:26px;border-top:1px solid var(--rule)}
+.legal h2:first-of-type{margin-top:34px}
+.legal h3{margin:26px 0 8px;color:var(--text)}
+.legal p{color:var(--mut);margin:0 0 14px}
+.legal p strong,.legal li strong{color:var(--text);font-weight:500}
+.legal ul{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:10px}
+.legal li{color:var(--mut);padding-left:18px;position:relative}
+.legal li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;
+background:var(--mint);border-radius:50%}
+.legal a{color:var(--mint2);text-decoration:underline;text-underline-offset:3px}
+.legal a:hover{color:var(--mint)}
+.legal code{font-family:var(--mono);font-size:.88em;color:var(--mint2);
+background:rgba(70,185,140,.1);padding:.12em .4em;border-radius:5px}
+.legal .note{background:var(--card);border:1px solid var(--rule);border-left:2px solid var(--mint);
+border-radius:var(--r);padding:20px 24px;margin:22px 0}
+.legal .note p:last-child{margin-bottom:0}
+.legal .meta{color:var(--mut);font-size:.9em;margin-bottom:6px}
+.legal table{width:100%;border-collapse:collapse;margin:6px 0 20px}
+.legal th,.legal td{text-align:left;padding:11px 12px 11px 0;border-bottom:1px solid var(--rule);
+color:var(--mut);vertical-align:top;font-weight:400}
+.legal th{color:var(--text);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}
+.legal td:first-child{color:var(--text);white-space:nowrap;padding-right:28px}
+.tablewrap{overflow-x:auto}
