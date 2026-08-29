@@ -458,6 +458,7 @@ CSS = r"""
 .lp-times span.sel{border:1.5px solid var(--primary); color:var(--primary); font-weight:700}
 
 /* ---- waitlist form ---------------------------------------------------- */
+.lp [hidden]{display:none}
 .lp-form-grid{display:grid; gap:12px}
 .lp-field{display:flex; flex-direction:column; gap:6px}
 .lp-field label{font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
@@ -604,6 +605,10 @@ JS = r"""
       wlSubmit.disabled = true;
       wlSubmit.textContent = "Joining\u2026";
 
+      var slow = setTimeout(function () {
+        if (wlSubmit.disabled) wlSubmit.textContent = "Still going…";
+      }, 4000);
+
       fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -615,11 +620,15 @@ JS = r"""
       }).then(function (r) {
         return r.json().catch(function () { return { ok: false }; });
       }).then(function (out) {
+        clearTimeout(slow);
         if (!out || !out.ok) throw new Error((out && out.error) || "That did not go through.");
+        wlSubmit.disabled = false;
+        wlSubmit.textContent = "Join the waitlist";
         wlForm.hidden = true;
         wlDone.hidden = false;
         joined = true;
       }).catch(function (err) {
+        clearTimeout(slow);
         wlSubmit.disabled = false;
         wlSubmit.textContent = "Join the waitlist";
         wlErr.textContent = err.message || "That did not go through. Try again in a moment.";
@@ -640,9 +649,10 @@ JS = r"""
   var busy = false;
   var demoTimers = [];
   /* The agent is a demo until we open. Let somebody get a real feel for it --
-     a few turns is enough to see how it answers -- then hand them to the
-     waitlist rather than letting the conversation run on into nothing. */
-  var TURNS_BEFORE_WAITLIST = 4;
+     long enough to take the brief and come back with roles, which is the part
+     worth showing -- then hand them to the waitlist rather than letting the
+     conversation run on into nothing. */
+  var TURNS_BEFORE_WAITLIST = 7;
   var turns = 0;
   var joined = false;
   var handedOver = false;
@@ -755,7 +765,16 @@ JS = r"""
     if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
     if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
     if (s === 5) return [
-      "that's the gate closed — on the live line this is where matches start landing in your thread."
+      "got it. that's the brief — give me a second.",
+      "three worth your time:",
+      "01 — senior backend engineer at stripe. sf hybrid, $185–210k",
+      "02 — member of technical staff at anthropic. sf hybrid, $240k + equity",
+      "03 — platform engineer at figma. sf hybrid, $195k",
+      "like the one you want and i'll get the application ready"
+    ];
+    if (s === 6) return [
+      "on it. i'd send a resume tailored to that posting and a short note to their hiring manager.",
+      "you'd see both before anything goes out — nothing sends without your yes."
     ];
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
@@ -1120,8 +1139,6 @@ BODY = """
             <span class="note">You said yes and we did the rest. Now it&rsquo;s on your calendar.</span>
           </div>
         </div>
-        <p class="note" style="text-align:center; margin-top:24px; color:var(--muted)">
-          Nothing reaches a company without your say. Timeline, location, visa status, and comp are yours to set.</p>
       </div>
     </section>
 
@@ -1182,11 +1199,6 @@ BODY = """
           </div>
         </div>
 
-        <ul class="lp-assure">
-          <li>{icon_eye_p}<span>You see exactly what sends, before it sends</span></li>
-          <li>{icon_check_p}<span>Tailored one at a time, never mass-applied</span></li>
-          <li>{icon_doc_p}<span>Found a role yourself? Send us the posting and we&rsquo;ll apply</span></li>
-        </ul>
       </div>
     </section>
 
@@ -1229,8 +1241,6 @@ BODY = """
           </div>
         </div>
 
-        <p class="lp-econ">Both tracks cost you nothing. <b>Companies pay us when they hire</b>,
-          which is why the agent is free and why the bar for track two is real.</p>
       </div>
     </section>
 
@@ -1338,13 +1348,12 @@ BODY = """
         <div><h4>Engineers</h4><ul>
           <li><button type="button" data-open="lp-waitlist">Join the waitlist</button></li>
           <li><button type="button" data-chat>Try the agent</button></li>
-          <li><button type="button" data-open="lp-email">apply@goforay.io</button></li>
         </ul></div>
         <div><h4>Hiring</h4><ul>
           <li><button type="button" data-open="lp-hire">Book 20 minutes</button></li>
         </ul></div>
         <div><h4>Contact</h4><ul>
-          <li><a href="mailto:{email}">{email}</a></li>
+          <li><button type="button" data-open="lp-waitlist">Join the waitlist</button></li>
           <li style="color:var(--muted)">San Francisco, CA</li>
         </ul></div>
       </div>
@@ -1435,20 +1444,6 @@ BODY = """
     </div>
   </dialog>
 
-  <dialog class="lp-modal" id="lp-email">
-    <div class="box">
-      <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
-      <span class="lbl" style="color:var(--primary)">Email us</span>
-      <h3>Forward it. We handle it.</h3>
-      <span class="big">apply@goforay.io</span>
-      <p>Send your resume, or forward a job description you found. We fill out the application for
-        you and show it to you before it goes out.</p>
-      <div class="acts">
-        <a class="lp-btn" href="mailto:apply@goforay.io">Open your mail app</a>
-        <button type="button" class="lp-btn ghost" data-close>Got it</button>
-      </div>
-    </div>
-  </dialog>
 
   <dialog class="lp-modal" id="lp-hire">
     <div class="box">

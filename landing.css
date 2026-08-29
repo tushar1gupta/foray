@@ -371,6 +371,7 @@ display:flex; flex-direction:column; gap:10px}
 .lp-times span{flex:1; text-align:center; border:1px solid var(--line2); border-radius:999px;
 padding:7px 0; font-size:12px; color:var(--muted)}
 .lp-times span.sel{border:1.5px solid var(--primary); color:var(--primary); font-weight:700}
+.lp [hidden]{display:none}
 .lp-form-grid{display:grid; gap:12px}
 .lp-field{display:flex; flex-direction:column; gap:6px}
 .lp-field label{font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;

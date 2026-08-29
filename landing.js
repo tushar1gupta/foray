@@ -95,6 +95,10 @@
       wlSubmit.disabled = true;
       wlSubmit.textContent = "Joining\u2026";
 
+      var slow = setTimeout(function () {
+        if (wlSubmit.disabled) wlSubmit.textContent = "Still going…";
+      }, 4000);
+
       fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -106,11 +110,15 @@
       }).then(function (r) {
         return r.json().catch(function () { return { ok: false }; });
       }).then(function (out) {
+        clearTimeout(slow);
         if (!out || !out.ok) throw new Error((out && out.error) || "That did not go through.");
+        wlSubmit.disabled = false;
+        wlSubmit.textContent = "Join the waitlist";
         wlForm.hidden = true;
         wlDone.hidden = false;
         joined = true;
       }).catch(function (err) {
+        clearTimeout(slow);
         wlSubmit.disabled = false;
         wlSubmit.textContent = "Join the waitlist";
         wlErr.textContent = err.message || "That did not go through. Try again in a moment.";
@@ -131,9 +139,10 @@
   var busy = false;
   var demoTimers = [];
   /* The agent is a demo until we open. Let somebody get a real feel for it --
-     a few turns is enough to see how it answers -- then hand them to the
-     waitlist rather than letting the conversation run on into nothing. */
-  var TURNS_BEFORE_WAITLIST = 4;
+     long enough to take the brief and come back with roles, which is the part
+     worth showing -- then hand them to the waitlist rather than letting the
+     conversation run on into nothing. */
+  var TURNS_BEFORE_WAITLIST = 7;
   var turns = 0;
   var joined = false;
   var handedOver = false;
@@ -246,7 +255,16 @@
     if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
     if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
     if (s === 5) return [
-      "that's the gate closed — on the live line this is where matches start landing in your thread."
+      "got it. that's the brief — give me a second.",
+      "three worth your time:",
+      "01 — senior backend engineer at stripe. sf hybrid, $185–210k",
+      "02 — member of technical staff at anthropic. sf hybrid, $240k + equity",
+      "03 — platform engineer at figma. sf hybrid, $195k",
+      "like the one you want and i'll get the application ready"
+    ];
+    if (s === 6) return [
+      "on it. i'd send a resume tailored to that posting and a short note to their hiring manager.",
+      "you'd see both before anything goes out — nothing sends without your yes."
     ];
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }

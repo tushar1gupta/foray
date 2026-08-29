@@ -11,6 +11,7 @@ Stamps the domain into canonical tags, Open Graph tags, robots.txt and the
 sitemap, replaces the contact email everywhere, and writes the supporting files
 Vercel needs. Idempotent: safe to run again with a different domain.
 """
+import hashlib
 import re
 import sys
 import pathlib
@@ -132,8 +133,23 @@ def og_card(domain):
     return (SITE / "og.png").stat().st_size
 
 
+def asset_v(name):
+    """Short content hash, so a changed asset gets a changed URL.
+
+    vercel.json serves svg/png with `immutable` for a year. That is correct for
+    a fingerprinted URL and a trap for a fixed one: the favicon and the share
+    card both changed colour under the same names, and every browser that had
+    seen the old ones would keep them. Callers append this as ?v=.
+    """
+    f = SITE / name
+    if not f.exists():
+        return "0"
+    return hashlib.sha256(f.read_bytes()).hexdigest()[:8]
+
+
 def stamp(domain, email):
     base = f"https://{domain}"
+    fav_v, og_v = asset_v("favicon.svg"), asset_v("og.png")
     for name, (title, desc) in PAGES.items():
         f = SITE / name
         if not f.exists():
@@ -147,19 +163,19 @@ def stamp(domain, email):
         s = re.sub(r'\n<link rel="canonical"[\s\S]*?<!-- /stamp -->', "", s)
         block = f"""
 <link rel="canonical" href="{url}">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v={fav_v}" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Foray">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
-<meta property="og:image" content="{base}/og.png">
+<meta property="og:image" content="{base}/og.png?v={og_v}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
-<meta name="twitter:image" content="{base}/og.png">
+<meta name="twitter:image" content="{base}/og.png?v={og_v}">
 <meta name="theme-color" content="#241C3B">
 <!-- /stamp -->"""
         s = s.replace('<link rel="preconnect" href="https://fonts.googleapis.com">',
