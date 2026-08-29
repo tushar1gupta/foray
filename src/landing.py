@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""The landing page — markup, styles and behaviour for index.html.
+"""The landing page: markup, styles and behaviour for index.html.
 
 Kept out of ``generate.py`` because it shares nothing with the two form pages:
 its own header and footer, its own palette, and a chat widget the other pages
 have no use for. ``generate.py`` imports ``CSS``, ``JS`` and ``BODY`` and wraps
 them in a bare document; the legacy chrome is deliberately not applied.
 
-The palette is "First light" — dawn purple, chosen against the mint the rest of
+The palette is "First light", dawn purple, chosen against the mint the rest of
 the site still uses. When the other two pages are restyled the tokens below
 become the shared set and the ``:root`` here can move up into ``generate.py``.
 
@@ -169,10 +169,15 @@ CSS = r"""
 @keyframes lp-bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-3px);opacity:1}}
 
 /* the job card that reads as a link preview */
-.lp-job{position:relative; margin-top:6px}
-.lp-job-card{background:#fff; border:1.5px solid var(--line); border-radius:12px; overflow:hidden}
+/* Both of these are spans holding block-level children. Left inline they grow a
+   line-height strut above the first child, which opens an empty band at the top
+   of the card and, worse, gives the border and the picked-state shadow an extra
+   fragment to paint around -- the stray blue tick at the card's top left. */
+.lp-job{position:relative; display:block; margin-top:6px}
+.lp-job-card{display:block; background:#fff; border:1.5px solid var(--line);
+  border-radius:12px; overflow:hidden}
 .lp-job-card.picked{border-color:var(--imsg-out); box-shadow:0 0 0 1px var(--imsg-out)}
-.lp-job-shot{background:#1A2B4A; padding:10px 12px 12px; display:flex; flex-direction:column; gap:5px}
+.lp-job-shot{background:var(--shot,#1A2B4A); padding:10px 12px 12px; display:flex; flex-direction:column; gap:5px}
 .lp-job-shot .row{display:flex; align-items:center; gap:6px}
 .lp-job-shot .badge{width:15px; height:15px; border-radius:3px; background:#fff; display:grid; place-items:center}
 .lp-job-shot .co{color:#fff; font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase}
@@ -192,6 +197,10 @@ CSS = r"""
   /* a beat after the card, so it reads as somebody reacting to it */
   animation-delay:1.05s}
 @keyframes lp-pop{0%{opacity:0;transform:scale(.3)}70%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+/* visible to a screen reader, to nothing else. The hidden attribute would
+   take it out of the accessibility tree as well, which defeats the point. */
+.lp-sr{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+  overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap}
 .lp-send{display:flex; gap:8px; align-items:center; border-top:1px solid var(--line); padding-top:12px}
 .lp-send input{flex:1; min-width:0; border:1px solid var(--line2); border-radius:999px;
   padding:10px 14px; font:inherit; font-size:13.5px; background:#fff; color:var(--ink)}
@@ -443,8 +452,34 @@ CSS = r"""
 .lp-fcols li{padding:5px 0}
 .lp-fcols button{background:none; border:0; padding:0; font:inherit; color:inherit; cursor:pointer; text-align:left}
 .lp-fcols button:hover{color:var(--primary)}
+/* the legal pages carry links here where the landing page carries buttons */
+.lp-fcols a:hover{color:var(--primary)}
 .lp-fbot{display:flex; flex-wrap:wrap; gap:14px 30px; justify-content:space-between; color:var(--muted);
   border-top:1px solid var(--line); margin-top:clamp(32px,4vw,48px); padding-top:22px}
+
+/* the legal pages: the only long-form prose on the site, so it gets a measure
+   that is comfortable to read rather than the full width of the page */
+.lp-legal{max-width:var(--wrap); margin:0 auto; padding:clamp(34px,5vw,56px) var(--gut) clamp(20px,3vw,32px)}
+.lp-legal h1{font-size:clamp(30px,4.2vw,46px); margin:0 0 4px}
+.lp-legal .body{max-width:72ch}
+.lp-legal h2{font-size:clamp(18px,1.7vw,22px); margin:40px 0 10px}
+.lp-legal h3{font-size:1.04em; margin:22px 0 6px}
+.lp-legal p,.lp-legal li{color:var(--muted); margin:10px 0; line-height:1.68}
+.lp-legal ul{margin:10px 0 12px 20px; list-style:disc}
+.lp-legal li{padding-left:4px}
+.lp-legal li::marker{color:var(--primary2)}
+.lp-legal a{color:var(--primary); text-decoration:underline; text-underline-offset:2px}
+.lp-legal strong{color:var(--ink); font-weight:600}
+.lp-legal code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.88em;
+  background:var(--tint2); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+.lp-legal .meta{color:var(--muted); margin-bottom:26px}
+.lp-legal table{width:100%; border-collapse:collapse; margin:16px 0; font-size:14px}
+.lp-legal th,.lp-legal td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line);
+  vertical-align:top}
+.lp-legal th{color:var(--ink); font-weight:600}
+.lp-legal td{color:var(--muted)}
+/* a wide table should scroll inside itself rather than push the page sideways */
+.lp-legal .scroll{overflow-x:auto}
 
 /* dialogs */
 .lp-modal{border:0; padding:0; background:transparent; max-width:min(480px,92vw)}
@@ -553,6 +588,26 @@ JS = r"""
   }
 
   document.addEventListener("click", function (e) {
+    /* Puts the visitor back at the top, where the waitlist and the agent both
+       are, and opens the form once the scroll has settled. Opening it mid-flight
+       parks the page somewhere odd behind the dialog. */
+    if (e.target.closest("[data-waitlist]")) {
+      var from = e.target.closest("dialog");
+      if (from) from.close();
+      /* Instant, not smooth. Opening the dialog locks the page, and a smooth
+         scroll still running at that moment stops dead -- from the foot of the
+         page that leaves the visitor exactly where they started. The dialog
+         covers the jump, and what matters is where they land when they close
+         it. */
+      var hero = document.getElementById("lp-hero");
+      if (hero) window.scrollTo({ top: hero.offsetTop, behavior: "instant" });
+      requestAnimationFrame(function () {
+        var wl = document.getElementById("lp-waitlist");
+        if (wl && wl.showModal && !wl.open) wl.showModal();
+      });
+      return;
+    }
+
     var open = e.target.closest("[data-open]");
     if (open) {
       var d = document.getElementById(open.getAttribute("data-open"));
@@ -690,18 +745,35 @@ JS = r"""
     msg.appendChild(t);
   }
 
-  /* Tapbacks land where a person would actually reach for one. Reacting to
-     every message reads as a bot with a stuck key, so this stays sparing and
-     never fires twice in a row. */
+  /* Tapbacks land where a person would actually reach for one, picked off what
+     the message says rather than off its position in the thread -- somebody who
+     opens with their name is at a different point from somebody who opens with
+     hi. Two in a row reads as a bot with a stuck key, so a reaction normally
+     needs a clear turn after the last one. Saying yes and picking a role are
+     exempt: those are the two moments a reaction is most worth having, and
+     they tend to arrive back to back. */
   var lastReact = -9;
   function reactionFor(text, n) {
-    if (n - lastReact < 3) return "";
     var t = text.trim().toLowerCase();
-    if (/^(yes|yep|yeah|yup|sure|perfect|great|nice|please|do it|go for it|sounds good)\b/.test(t))
-      return "\u2764\uFE0F";
-    if (/^(0?[123])\b/.test(t)) return "\u2764\uFE0F";
-    if (n === 3) return "\uD83D\uDC4D";
-    return "";
+    var glyph = "", always = false;
+    if (/^(ha){2,}$|^(lol|lmao|haha)\b/.test(t)) {
+      glyph = "\uD83D\uDE02";
+    } else if (/^(yes|yep|yeah|yup|sure|perfect|great|nice|please|do it|go for it|sounds good|let's go)\b/.test(t)) {
+      glyph = "\u2764\uFE0F"; always = true;
+    } else if (/^(0?[123])\b/.test(t)) {
+      glyph = "\u2764\uFE0F"; always = true;              /* picking one of the roles */
+    } else if (/\b(asap|urgent|right now|this week|today)\b/.test(t)) {
+      glyph = "\u203C\uFE0F";
+    } else if (/(linkedin\.com|github\.com|\.pdf|\bresume\b|\bcv\b|\bportfolio\b)/.test(t)) {
+      glyph = "\uD83D\uDC40";                             /* something to go and read */
+    } else if (/\$|\b\d{3}\s?k\b/.test(t)) {
+      glyph = "\uD83D\uDC40";                             /* a number worth a look */
+    } else if (/\b(staff|principal|senior|lead|founding|engineer|developer|designer|scientist|analyst)\b/.test(t)) {
+      glyph = "\uD83D\uDC4D";
+    }
+    if (!glyph) return "";
+    if (!always && n - lastReact < 2) return "";
+    return glyph;
   }
 
   function typing() {
@@ -721,7 +793,7 @@ JS = r"""
     [1300, "them", "got it. backend, 6 yrs, go + postgres. what comp, and where do you want to be?"],
     [1000, "me", "sf hybrid, 180k+"],
     [1500, "job", ""],
-    [1000, "meta-right", "you liked “01 Senior Backend Engineer · Stripe”"],
+    [1000, "meta-right", "you liked “Senior Backend Engineer · Stripe”"],
     [800, "them", "on it. stripe it is. tailored resume and a short note to the hiring manager. good to go?"],
     [900, "me", "YES"],
     [500, "meta-right", "Read"],
@@ -731,6 +803,7 @@ JS = r"""
   function jobCard() {
     var thumb = document.getElementById("lp-thumb-src");
     var badge = document.getElementById("lp-stripe-src");
+    var badge2 = document.getElementById("lp-anthropic-src");
     var w = el("div", "lp-msg them wide");
     w.innerHTML =
       '<span>found 2 worth your time. like the one you want and i will get your application ready:</span>' +
@@ -745,14 +818,21 @@ JS = r"""
           '</span>' +
           '<span class="lp-job-body"><span class="n">01</span>' +
           '<span class="t">Senior Backend Engineer</span>' +
-          '<span class="s">SF hybrid · $185–210k</span>' +
-          '<span class="u">stripe.com/jobs</span></span>' +
+          '<span class="s">SF hybrid · $185–210k</span></span>' +
         '</span>' +
       '</span>' +
       '<span class="lp-job" style="margin-top:8px">' +
-        '<span class="lp-job-card"><span class="lp-job-body"><span class="n">02</span>' +
-        '<span class="t">Member of Technical Staff · Anthropic</span>' +
-        '<span class="s">SF hybrid · $240k + equity</span></span></span>' +
+        '<span class="lp-job-card">' +
+          '<span class="lp-job-shot" style="--shot:#191919">' +
+            '<span class="row"><span class="badge">' + (badge2 ? badge2.innerHTML : "") + '</span>' +
+            '<span class="co">Careers at Anthropic</span></span>' +
+            '<span class="bar"></span><span class="bar short"></span>' +
+            '<span class="cta">Apply now</span>' +
+          '</span>' +
+          '<span class="lp-job-body"><span class="n">02</span>' +
+          '<span class="t">Member of Technical Staff</span>' +
+          '<span class="s">SF hybrid · $240k + equity</span></span>' +
+        '</span>' +
       '</span>';
     thread.appendChild(w);
   }
@@ -793,7 +873,7 @@ JS = r"""
     var dots = typing();
     setTimeout(function () {
       if (dots.parentNode) dots.parentNode.removeChild(dots);
-      bubble("them", "hey \u2014 i'm foray. tell me what you're after and i'll go find it.");
+      bubble("them", "hey, i'm foray. tell me what you're after and i'll go find it.");
     }, 650);
   }
   input.addEventListener("input", greet);
@@ -810,24 +890,24 @@ JS = r"""
   function offlineReplies() {
     var s = stage++;
     if (s === 0) return [
-      "good to meet you. a few details and i can start matching \u2014 couple of minutes, tops.",
-      "first things first \u2014 what name should i put on this?"
+      "good to meet you. a few details and i can start matching. couple of minutes, tops.",
+      "what name should i put on this?"
     ];
     if (s === 1) return ["and the best email to reach you on?"];
     if (s === 2) return ["what kind of role are you looking for next?"];
     if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
     if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
     if (s === 5) return [
-      "got it. that's the brief — give me a second.",
+      "got it. that's the brief. give me a second.",
       "three worth your time:",
-      "01 — senior backend engineer at stripe. sf hybrid, $185–210k",
-      "02 — member of technical staff at anthropic. sf hybrid, $240k + equity",
-      "03 — platform engineer at figma. sf hybrid, $195k",
+      "01 · senior backend engineer at stripe. sf hybrid, $185–210k",
+      "02 · member of technical staff at anthropic. sf hybrid, $240k + equity",
+      "03 · platform engineer at figma. sf hybrid, $195k",
       "like the one you want and i'll get the application ready"
     ];
     if (s === 6) return [
       "on it. i'd send a resume tailored to that posting and a short note to their hiring manager.",
-      "you'd see both before anything goes out — nothing sends without your yes."
+      "you'd see both before anything goes out. nothing sends without your yes."
     ];
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
@@ -905,7 +985,7 @@ JS = r"""
     function maybeHandOver() {
       if (handedOver || joined || turns < TURNS_BEFORE_WAITLIST) return;
       setTimeout(function () {
-        bubble("them", "this is the demo, so it stops here. we're opening spots in batches \u2014 " +
+        bubble("them", "this is the demo, so it stops here. we're opening spots in batches. " +
           "join the waitlist and i'll pick it up for real the day yours is ready.");
         handOver();
       }, 900);
@@ -1023,6 +1103,57 @@ def _bars():
     return "".join(out)
 
 
+def legal_shell(h1, prose):
+    """A legal page wearing the landing page's chrome.
+
+    Links, not buttons: these pages ship no script, so there is no waitlist
+    dialog here to open. Everything points back at the landing page, which is
+    where it lives.
+    """
+    return (
+        '<div class="lp">\n\n'
+        '  <div class="lp-ticker lbl">Now in private beta &middot; join the waitlist for early '
+        'access &middot; first 10 applications free</div>\n\n'
+        '  <header class="lp-head">\n'
+        '    <a href="index.html" class="lp-logo" aria-label="Foray home">' + LOGOMARK + 'Foray</a>\n'
+        '    <span class="lp-clock lbl"><span>San Francisco</span></span>\n'
+        '    <a class="lp-btn" href="index.html">Join the waitlist</a>\n'
+        '  </header>\n\n'
+        '  <main class="lp-legal">\n'
+        '    <h1>' + h1 + '</h1>\n'
+        '    <div class="body">\n' + prose + '\n    </div>\n'
+        '  </main>\n\n'
+        '  <footer class="lp-foot">\n'
+        '    <div class="wrap">\n'
+        '      <div class="lp-fcols">\n'
+        '        <div>\n'
+        '          <span class="lp-logo" aria-hidden="true">' + LOGOMARK + 'Foray</span>\n'
+        '          <p style="color:var(--muted); margin-top:16px; max-width:30ch">Your autonomous '
+        'recruiting agent.</p>\n'
+        '        </div>\n'
+        '        <div><h4>Engineers</h4><ul>\n'
+        '          <li><a href="index.html">Join the waitlist</a></li>\n'
+        '          <li><a href="index.html#lp-phone">Try the agent</a></li>\n'
+        '        </ul></div>\n'
+        '        <div><h4>Hiring</h4><ul>\n'
+        '          <li><a href="index.html#companies">Book 20 minutes</a></li>\n'
+        '        </ul></div>\n'
+        '        <div><h4>Contact</h4><ul>\n'
+        '          <li><a href="index.html">Join the waitlist</a></li>\n'
+        '          <li style="color:var(--muted)">San Francisco, CA</li>\n'
+        '        </ul></div>\n'
+        '      </div>\n'
+        '      <div class="lp-fbot lbl">\n'
+        '        <span>&copy; 2026 GoForay, Co.</span>\n'
+        '        <span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span>\n'
+        '        <span>Built in San Francisco</span>\n'
+        '      </div>\n'
+        '    </div>\n'
+        '  </footer>\n\n'
+        '</div>\n'
+    )
+
+
 BODY = """
 <div class="lp" data-api="https://app.goforay.io" data-widget-token="">
 
@@ -1035,7 +1166,7 @@ BODY = """
   </header>
 
   <main>
-    <section class="lp-hero">
+    <section class="lp-hero" id="lp-hero">
       <div class="lp-hero-copy">
         <h1>Your <em class="mark-hl">autonomous</em> recruiting agent.</h1>
         <p class="lp-sub">Foray finds roles worth your time, writes the application, and applies for
@@ -1058,9 +1189,9 @@ BODY = """
           <div class="lp-thread" id="lp-thread" role="log" aria-live="polite"
                aria-label="Conversation with Foray"></div>
           <div class="lp-send">
-            <label class="lp-sr" for="lp-input" hidden>Message Foray</label>
+            <label class="lp-sr" for="lp-input">Message Foray</label>
             <input id="lp-input" type="text" maxlength="4000" autocomplete="off"
-                   placeholder="Message Foray — try anything">
+                   placeholder="Message Foray · try anything">
             <button type="button" id="lp-send" aria-label="Send">{icon_up_w}</button>
           </div>
         </div>
@@ -1276,7 +1407,7 @@ BODY = """
             <span class="num">Track one</span>
             <h3>The agent works your search</h3>
             <p>Tell Foray once what you want. It finds roles, writes each application to the
-              posting, and sends it the moment you say yes &mdash; then chases the reply.</p>
+              posting, and sends it the moment you say yes, then chases the reply.</p>
             <ul>
               <li>{tick_p}<span>Unlimited roles, applied one at a time</span></li>
               <li>{tick_p}<span>You approve every send</span></li>
@@ -1288,9 +1419,8 @@ BODY = """
             <span class="tag">By invitation</span>
             <span class="num">Track two</span>
             <h3>A recruiter takes you to our clients</h3>
-            <p>Clear our bar and you stop being an applicant. A Foray engineer reads your work,
-              writes the read that goes with you, and introduces you directly to the founders and
-              hiring managers we search for &mdash; ahead of the queue, not in it.</p>
+            <p>Clear our bar and a Foray engineer takes you straight to the companies we
+              hire for. An introduction, not an application.</p>
             <ul>
               <li>{tick_g}<span>A named human, not a queue</span></li>
               <li>{tick_g}<span>Direct introductions to our client roles</span></li>
@@ -1426,14 +1556,13 @@ BODY = """
   <audio id="lp-voice" preload="none" src="/foray-voice.mp3"></audio>
   <span hidden id="lp-thumb-src">{icon_thumb_w}</span>
   <span hidden id="lp-stripe-src">{stripe_badge}</span>
+  <span hidden id="lp-anthropic-src">{anthropic_badge}</span>
 
   <dialog class="lp-modal" id="lp-waitlist">
     <div class="box">
       <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
       <span class="lbl" style="color:var(--primary)">Private beta</span>
       <h3>Join the waitlist.</h3>
-      <p>Three details and you are in the queue. We open spots in batches and message you the
-        day yours is ready &mdash; your first 10 applications are on us.</p>
 
       <form class="lp-form-grid" id="lp-wl-form" novalidate>
         <div class="lp-field">
@@ -1447,7 +1576,6 @@ BODY = """
         <div class="lp-field">
           <label for="wl-phone">Phone</label>
           <input id="wl-phone" name="Phone" type="tel" autocomplete="tel" maxlength="40" required>
-          <span class="hint">So Foray can text and call you when your spot opens.</span>
         </div>
         <!-- bots fill every field they find; people never see this one -->
         <input type="text" name="confirm_url" tabindex="-1" autocomplete="off"
@@ -1457,8 +1585,6 @@ BODY = """
           <button type="submit" class="lp-btn" id="lp-wl-submit">Join the waitlist</button>
           <button type="button" class="lp-btn ghost" data-close>Not yet</button>
         </div>
-        <p class="lp-formnote">We use these to reach you about your spot. No marketing lists,
-          and you can ask us to delete them at any time.</p>
       </form>
 
       <div class="lp-done" id="lp-wl-done" hidden>
@@ -1491,13 +1617,12 @@ BODY = """
       <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
       <span class="lbl" style="color:var(--primary)">Call us</span>
       <h3>Three minutes on the phone.</h3>
-      <p>When we open, Foray calls you and takes your brief in about three minutes. The voice below is the real one.</p>
-      <p>That&rsquo;s the real voice below. On the call Foray asks what roles you&rsquo;d like to do,
-        your stack, comp, and where you want to work. Three minutes. Then we find roles that fit
-        and send them straight back to you.</p>
+      <p>When we open, Foray calls and asks what you want to do, your stack, comp, and where
+        you want to work. Three minutes. Then roles that fit come straight back to you.</p>
+      <p>The voice below is the real one.</p>
       <div class="acts">
         <button type="button" class="lp-btn ghost" data-hear id="lp-hear">{icon_speaker} Hear Foray</button>
-        <button type="button" class="lp-btn" data-chat>Ask for a call</button>
+        <button type="button" class="lp-btn" data-waitlist>Join the waitlist</button>
       </div>
     </div>
   </dialog>
@@ -1539,6 +1664,7 @@ BODY = """
         chip("stripe", "Stripe", ".8"),
     ]),
     stripe_badge=mark("stripe", 11),
+    anthropic_badge=mark("anthropic", 11),
     wave="".join('<i style="height:%dpx; animation-delay:%.2fs"></i>' % (h, i * 0.12)
                  for i, h in enumerate([22, 30, 16, 26, 14, 24, 18])),
     icon_down=_svg(I["down"], 13),

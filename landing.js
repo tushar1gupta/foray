@@ -30,6 +30,26 @@
   }
 
   document.addEventListener("click", function (e) {
+    /* Puts the visitor back at the top, where the waitlist and the agent both
+       are, and opens the form once the scroll has settled. Opening it mid-flight
+       parks the page somewhere odd behind the dialog. */
+    if (e.target.closest("[data-waitlist]")) {
+      var from = e.target.closest("dialog");
+      if (from) from.close();
+      /* Instant, not smooth. Opening the dialog locks the page, and a smooth
+         scroll still running at that moment stops dead -- from the foot of the
+         page that leaves the visitor exactly where they started. The dialog
+         covers the jump, and what matters is where they land when they close
+         it. */
+      var hero = document.getElementById("lp-hero");
+      if (hero) window.scrollTo({ top: hero.offsetTop, behavior: "instant" });
+      requestAnimationFrame(function () {
+        var wl = document.getElementById("lp-waitlist");
+        if (wl && wl.showModal && !wl.open) wl.showModal();
+      });
+      return;
+    }
+
     var open = e.target.closest("[data-open]");
     if (open) {
       var d = document.getElementById(open.getAttribute("data-open"));
@@ -167,18 +187,35 @@
     msg.appendChild(t);
   }
 
-  /* Tapbacks land where a person would actually reach for one. Reacting to
-     every message reads as a bot with a stuck key, so this stays sparing and
-     never fires twice in a row. */
+  /* Tapbacks land where a person would actually reach for one, picked off what
+     the message says rather than off its position in the thread -- somebody who
+     opens with their name is at a different point from somebody who opens with
+     hi. Two in a row reads as a bot with a stuck key, so a reaction normally
+     needs a clear turn after the last one. Saying yes and picking a role are
+     exempt: those are the two moments a reaction is most worth having, and
+     they tend to arrive back to back. */
   var lastReact = -9;
   function reactionFor(text, n) {
-    if (n - lastReact < 3) return "";
     var t = text.trim().toLowerCase();
-    if (/^(yes|yep|yeah|yup|sure|perfect|great|nice|please|do it|go for it|sounds good)\b/.test(t))
-      return "\u2764\uFE0F";
-    if (/^(0?[123])\b/.test(t)) return "\u2764\uFE0F";
-    if (n === 3) return "\uD83D\uDC4D";
-    return "";
+    var glyph = "", always = false;
+    if (/^(ha){2,}$|^(lol|lmao|haha)\b/.test(t)) {
+      glyph = "\uD83D\uDE02";
+    } else if (/^(yes|yep|yeah|yup|sure|perfect|great|nice|please|do it|go for it|sounds good|let's go)\b/.test(t)) {
+      glyph = "\u2764\uFE0F"; always = true;
+    } else if (/^(0?[123])\b/.test(t)) {
+      glyph = "\u2764\uFE0F"; always = true;              /* picking one of the roles */
+    } else if (/\b(asap|urgent|right now|this week|today)\b/.test(t)) {
+      glyph = "\u203C\uFE0F";
+    } else if (/(linkedin\.com|github\.com|\.pdf|\bresume\b|\bcv\b|\bportfolio\b)/.test(t)) {
+      glyph = "\uD83D\uDC40";                             /* something to go and read */
+    } else if (/\$|\b\d{3}\s?k\b/.test(t)) {
+      glyph = "\uD83D\uDC40";                             /* a number worth a look */
+    } else if (/\b(staff|principal|senior|lead|founding|engineer|developer|designer|scientist|analyst)\b/.test(t)) {
+      glyph = "\uD83D\uDC4D";
+    }
+    if (!glyph) return "";
+    if (!always && n - lastReact < 2) return "";
+    return glyph;
   }
 
   function typing() {
@@ -198,7 +235,7 @@
     [1300, "them", "got it. backend, 6 yrs, go + postgres. what comp, and where do you want to be?"],
     [1000, "me", "sf hybrid, 180k+"],
     [1500, "job", ""],
-    [1000, "meta-right", "you liked “01 Senior Backend Engineer · Stripe”"],
+    [1000, "meta-right", "you liked “Senior Backend Engineer · Stripe”"],
     [800, "them", "on it. stripe it is. tailored resume and a short note to the hiring manager. good to go?"],
     [900, "me", "YES"],
     [500, "meta-right", "Read"],
@@ -208,6 +245,7 @@
   function jobCard() {
     var thumb = document.getElementById("lp-thumb-src");
     var badge = document.getElementById("lp-stripe-src");
+    var badge2 = document.getElementById("lp-anthropic-src");
     var w = el("div", "lp-msg them wide");
     w.innerHTML =
       '<span>found 2 worth your time. like the one you want and i will get your application ready:</span>' +
@@ -222,14 +260,21 @@
           '</span>' +
           '<span class="lp-job-body"><span class="n">01</span>' +
           '<span class="t">Senior Backend Engineer</span>' +
-          '<span class="s">SF hybrid · $185–210k</span>' +
-          '<span class="u">stripe.com/jobs</span></span>' +
+          '<span class="s">SF hybrid · $185–210k</span></span>' +
         '</span>' +
       '</span>' +
       '<span class="lp-job" style="margin-top:8px">' +
-        '<span class="lp-job-card"><span class="lp-job-body"><span class="n">02</span>' +
-        '<span class="t">Member of Technical Staff · Anthropic</span>' +
-        '<span class="s">SF hybrid · $240k + equity</span></span></span>' +
+        '<span class="lp-job-card">' +
+          '<span class="lp-job-shot" style="--shot:#191919">' +
+            '<span class="row"><span class="badge">' + (badge2 ? badge2.innerHTML : "") + '</span>' +
+            '<span class="co">Careers at Anthropic</span></span>' +
+            '<span class="bar"></span><span class="bar short"></span>' +
+            '<span class="cta">Apply now</span>' +
+          '</span>' +
+          '<span class="lp-job-body"><span class="n">02</span>' +
+          '<span class="t">Member of Technical Staff</span>' +
+          '<span class="s">SF hybrid · $240k + equity</span></span>' +
+        '</span>' +
       '</span>';
     thread.appendChild(w);
   }
@@ -270,7 +315,7 @@
     var dots = typing();
     setTimeout(function () {
       if (dots.parentNode) dots.parentNode.removeChild(dots);
-      bubble("them", "hey \u2014 i'm foray. tell me what you're after and i'll go find it.");
+      bubble("them", "hey, i'm foray. tell me what you're after and i'll go find it.");
     }, 650);
   }
   input.addEventListener("input", greet);
@@ -287,24 +332,24 @@
   function offlineReplies() {
     var s = stage++;
     if (s === 0) return [
-      "good to meet you. a few details and i can start matching \u2014 couple of minutes, tops.",
-      "first things first \u2014 what name should i put on this?"
+      "good to meet you. a few details and i can start matching. couple of minutes, tops.",
+      "what name should i put on this?"
     ];
     if (s === 1) return ["and the best email to reach you on?"];
     if (s === 2) return ["what kind of role are you looking for next?"];
     if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
     if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
     if (s === 5) return [
-      "got it. that's the brief — give me a second.",
+      "got it. that's the brief. give me a second.",
       "three worth your time:",
-      "01 — senior backend engineer at stripe. sf hybrid, $185–210k",
-      "02 — member of technical staff at anthropic. sf hybrid, $240k + equity",
-      "03 — platform engineer at figma. sf hybrid, $195k",
+      "01 · senior backend engineer at stripe. sf hybrid, $185–210k",
+      "02 · member of technical staff at anthropic. sf hybrid, $240k + equity",
+      "03 · platform engineer at figma. sf hybrid, $195k",
       "like the one you want and i'll get the application ready"
     ];
     if (s === 6) return [
       "on it. i'd send a resume tailored to that posting and a short note to their hiring manager.",
-      "you'd see both before anything goes out — nothing sends without your yes."
+      "you'd see both before anything goes out. nothing sends without your yes."
     ];
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
@@ -382,7 +427,7 @@
     function maybeHandOver() {
       if (handedOver || joined || turns < TURNS_BEFORE_WAITLIST) return;
       setTimeout(function () {
-        bubble("them", "this is the demo, so it stops here. we're opening spots in batches \u2014 " +
+        bubble("them", "this is the demo, so it stops here. we're opening spots in batches. " +
           "join the waitlist and i'll pick it up for real the day yours is ready.");
         handOver();
       }, 900);

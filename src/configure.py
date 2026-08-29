@@ -182,7 +182,7 @@ def stamp(domain, email):
                       block + '\n<link rel="preconnect" href="https://fonts.googleapis.com">', 1)
 
         # only the contact address, never the illustrative placeholders in form fields
-        s = re.sub(r"contact@goforay\.(ai|io)", email, s)
+        s = re.sub(r"(?:contact|anna|tushar|apply)@goforay\.(?:ai|io)", email, s)
         f.write_text(s, encoding="utf-8")
         print(f"  stamped {name} -> {url}")
 
@@ -241,6 +241,12 @@ STYLE_RE = re.compile(r"<style>([\s\S]*?)</style>")
 SCRIPT_RE = re.compile(r"<script data-page>([\s\S]*?)</script>")
 
 
+NEW_DESIGN = {"index.html", "privacy.html", "terms.html"}
+# Google's search-console token: a .html name wrapped around one line of text.
+# Rewriting any part of it breaks verification.
+OPAQUE = {"google127df8f4f5b6efd9.html"}
+
+
 def externalise():
     """Pull the inline <style>/<script> into cached files.
 
@@ -248,8 +254,8 @@ def externalise():
     page has its own. They have no rules in common, so folding them together
     would make every page pay for both -- and, worse, whichever page was walked
     first used to win, which silently handed the landing page the form pages'
-    styles. The landing page is matched by name because it is the only one built
-    by ``landing.py``.
+    styles. Pages are matched by name against NEW_DESIGN, the set built by
+    ``landing.py``.
     """
     def tidy(css):
         css = re.sub(COMMENT_RE, "", css)
@@ -259,15 +265,21 @@ def externalise():
     shared_css = shared_js = None
     wrote = []
     for f in sorted(SITE.glob("*.html")):
+        if f.name in OPAQUE:
+            continue
         page = f.read_text(encoding="utf-8")
         m_css = re.search(STYLE_RE, page)
         m_js = re.search(SCRIPT_RE, page)
-        is_landing = f.name == "index.html"
+        # the pages built from landing.py share its stylesheet; the older form
+        # pages have their own, and the two have no rules in common
+        is_landing = f.name in NEW_DESIGN
 
         if m_css:
             if is_landing:
-                (SITE / "landing.css").write_text(tidy(m_css.group(1)), encoding="utf-8")
-                wrote.append("landing.css")
+                # three pages carry the same stylesheet inline; write it once
+                if "landing.css" not in wrote:
+                    (SITE / "landing.css").write_text(tidy(m_css.group(1)), encoding="utf-8")
+                    wrote.append("landing.css")
             elif shared_css is None:
                 shared_css = m_css.group(1)
             href = "/landing.css" if is_landing else "/style.css"
@@ -299,9 +311,10 @@ if __name__ == "__main__":
         print(__doc__)
         sys.exit(1)
     dom = sys.argv[1].replace("https://", "").replace("http://", "").strip("/")
-    # anna@ is the inbox that is actually read. contact@ never was, and it is
-    # what the privacy policy and terms point people at for deletion requests.
-    mail = sys.argv[2] if len(sys.argv) > 2 else f"anna@{dom}"
+    # The inbox that is actually read, and the one the privacy policy and terms
+    # send people to for deletion requests. stamp() rewrites whichever address
+    # is currently in the files, so changing it here changes it everywhere.
+    mail = sys.argv[2] if len(sys.argv) > 2 else f"tushar@{dom}"
     print(f"configuring for {dom}, contact {mail}")
     stamp(dom, mail)
     print(f"  og.png {og_card(dom) // 1024} KB")

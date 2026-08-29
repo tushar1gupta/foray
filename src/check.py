@@ -4,7 +4,10 @@ import re, pathlib
 from html.parser import HTMLParser
 
 SITE = pathlib.Path(__file__).resolve().parent.parent
-FILES = sorted(SITE.glob("*.html"))
+# the search-console token is a .html name around a single line of text, so
+# none of the page checks apply to it
+OPAQUE = {"google127df8f4f5b6efd9.html"}
+FILES = [p for p in sorted(SITE.glob("*.html")) if p.name not in OPAQUE]
 VOID = {"area","base","br","col","embed","hr","img","input","link","meta",
         "param","source","track","wbr"}
 issues, notes = [], []
@@ -79,8 +82,13 @@ for p in FILES:
 
     hrefs[p.name] = re.findall(r'href="([^"]+)"', src)
 
+    # Two stylesheets, not one: the pages built from landing.py share theirs and
+    # the older form pages share the other. The legal pages ship no script at
+    # all, so only the form pages are required to pull app.js.
     if not re.search(r"<style>", src):
-        for _need in ('href="/style.css"', 'src="/app.js"'):
+        new_design = p.name in {"index.html", "privacy.html", "terms.html"}
+        need = ['href="/landing.css"'] if new_design else ['href="/style.css"', 'src="/app.js"']
+        for _need in need:
             if _need not in src:
                 log(p.name, f"missing {_need}")
 
@@ -107,7 +115,9 @@ pagenames = {p.name for p in FILES}
 for f, hs in hrefs.items():
     for h in hs:
         if h.startswith("mailto:"):
-            if not re.match(r"mailto:contact@goforay\.(ai|io)$", h):
+            # configure.py stamps one address across every page; the audit only
+            # cares that they all agree, not which one it is
+            if not re.match(r"mailto:[a-z]+@goforay\.(ai|io)$", h):
                 log(f, f"wrong email in {h}")
         elif h.startswith("#"):
             if h[1:] and h[1:] not in all_ids[f]:
@@ -165,17 +175,29 @@ for hexv in re.findall(r"#[0-9A-Fa-f]{6}", css):
         log("css", f"warm/cream tone still present: {hexv}")
 
 # forms must not be real <form> elements: there is no backend to submit to
+_script = "".join(f.read_text(encoding="utf-8") for f in
+                  (SITE / "app.js", SITE / "landing.js") if f.exists())
+
 for _f in FILES:
     _s = _f.read_text(encoding="utf-8")
-    if re.search(r"<form[ >]", _s):
+    # A form is fine with an action, or with an id its script picks up and
+    # submits itself. What is not fine is one that goes nowhere.
+    for _form in re.findall(r"<form\b[^>]*>", _s):
+        _fid = re.search(r'id="([\w-]+)"', _form)
+        if 'action="' in _form:
+            continue
+        if _fid and _fid.group(1) in _script + _s:
+            continue
         log(_f.name, "raw <form> element would submit with no backend")
-    # every field needs a label and a data-label for the composed email
-    _lab = set(re.findall(r'<label for="([\w-]+)"', _s))
+    # every field needs a name it can be announced by
+    _lab = set(re.findall(r'<label\b[^>]*\bfor="([\w-]+)"', _s))
     _unlabelled = []
     for _tag in re.findall(r"<(?:input|textarea|select)\b[^>]*>", _s):
         _id = re.search(r'id="([\w-]+)"', _tag)
         if "aria-label" in _tag:
             continue                      # aria-label is a valid alternative
+        if 'aria-hidden="true"' in _tag:
+            continue                      # not in the tree, so nothing to name
         if not _id or _id.group(1) not in _lab:
             _unlabelled.append(_id.group(1) if _id else _tag[:40])
     if _unlabelled:

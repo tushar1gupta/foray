@@ -104,10 +104,11 @@ padding:11px 14px; display:flex; gap:4px}
 .lp-dots i{width:6px; height:6px; border-radius:50%; background:#8E8E93; animation:lp-bounce 1s ease-in-out infinite}
 .lp-dots i:nth-child(2){animation-delay:.15s} .lp-dots i:nth-child(3){animation-delay:.3s}
 @keyframes lp-bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-3px);opacity:1}}
-.lp-job{position:relative; margin-top:6px}
-.lp-job-card{background:#fff; border:1.5px solid var(--line); border-radius:12px; overflow:hidden}
+.lp-job{position:relative; display:block; margin-top:6px}
+.lp-job-card{display:block; background:#fff; border:1.5px solid var(--line);
+border-radius:12px; overflow:hidden}
 .lp-job-card.picked{border-color:var(--imsg-out); box-shadow:0 0 0 1px var(--imsg-out)}
-.lp-job-shot{background:#1A2B4A; padding:10px 12px 12px; display:flex; flex-direction:column; gap:5px}
+.lp-job-shot{background:var(--shot,#1A2B4A); padding:10px 12px 12px; display:flex; flex-direction:column; gap:5px}
 .lp-job-shot .row{display:flex; align-items:center; gap:6px}
 .lp-job-shot .badge{width:15px; height:15px; border-radius:3px; background:#fff; display:grid; place-items:center}
 .lp-job-shot .co{color:#fff; font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase}
@@ -126,6 +127,8 @@ border:2px solid #fff; border-radius:999px; padding:3px 8px; display:flex;
 box-shadow:0 3px 8px rgba(42,33,64,.22); animation:lp-pop .4s ease both;
 animation-delay:1.05s}
 @keyframes lp-pop{0%{opacity:0;transform:scale(.3)}70%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+.lp-sr{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap}
 .lp-send{display:flex; gap:8px; align-items:center; border-top:1px solid var(--line); padding-top:12px}
 .lp-send input{flex:1; min-width:0; border:1px solid var(--line2); border-radius:999px;
 padding:10px 14px; font:inherit; font-size:13.5px; background:#fff; color:var(--ink)}
@@ -357,8 +360,29 @@ letter-spacing:.16em; text-transform:uppercase}
 .lp-fcols li{padding:5px 0}
 .lp-fcols button{background:none; border:0; padding:0; font:inherit; color:inherit; cursor:pointer; text-align:left}
 .lp-fcols button:hover{color:var(--primary)}
+.lp-fcols a:hover{color:var(--primary)}
 .lp-fbot{display:flex; flex-wrap:wrap; gap:14px 30px; justify-content:space-between; color:var(--muted);
 border-top:1px solid var(--line); margin-top:clamp(32px,4vw,48px); padding-top:22px}
+.lp-legal{max-width:var(--wrap); margin:0 auto; padding:clamp(34px,5vw,56px) var(--gut) clamp(20px,3vw,32px)}
+.lp-legal h1{font-size:clamp(30px,4.2vw,46px); margin:0 0 4px}
+.lp-legal .body{max-width:72ch}
+.lp-legal h2{font-size:clamp(18px,1.7vw,22px); margin:40px 0 10px}
+.lp-legal h3{font-size:1.04em; margin:22px 0 6px}
+.lp-legal p,.lp-legal li{color:var(--muted); margin:10px 0; line-height:1.68}
+.lp-legal ul{margin:10px 0 12px 20px; list-style:disc}
+.lp-legal li{padding-left:4px}
+.lp-legal li::marker{color:var(--primary2)}
+.lp-legal a{color:var(--primary); text-decoration:underline; text-underline-offset:2px}
+.lp-legal strong{color:var(--ink); font-weight:600}
+.lp-legal code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.88em;
+background:var(--tint2); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+.lp-legal .meta{color:var(--muted); margin-bottom:26px}
+.lp-legal table{width:100%; border-collapse:collapse; margin:16px 0; font-size:14px}
+.lp-legal th,.lp-legal td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line);
+vertical-align:top}
+.lp-legal th{color:var(--ink); font-weight:600}
+.lp-legal td{color:var(--muted)}
+.lp-legal .scroll{overflow-x:auto}
 .lp-modal{border:0; padding:0; background:transparent; max-width:min(480px,92vw)}
 .lp-modal::backdrop{background:rgba(20,14,40,.5)}
 .lp-modal .box{background:#fff; border-radius:22px; padding:clamp(24px,4vw,36px); position:relative;

@@ -1,51 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy Policy | Foray</title>
-<meta name="description" content="How GoForay, Co. collects, uses, and protects the information engineers and companies give us.">
+"""The long-form prose for the privacy policy and the terms.
 
-<link rel="canonical" href="https://goforay.io/privacy">
-<link rel="icon" href="/favicon.svg?v=0acd66be" type="image/svg+xml">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Foray">
-<meta property="og:title" content="Privacy policy | Foray">
-<meta property="og:description" content="How Foray collects, uses and stores the details you give us.">
-<meta property="og:url" content="https://goforay.io/privacy">
-<meta property="og:image" content="https://goforay.io/og.png?v=d1d967e5">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Privacy policy | Foray">
-<meta name="twitter:description" content="How Foray collects, uses and stores the details you give us.">
-<meta name="twitter:image" content="https://goforay.io/og.png?v=d1d967e5">
-<meta name="theme-color" content="#241C3B">
-<!-- /stamp -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/landing.css">
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
-</head>
-<body>
-<div class="lp">
+Kept out of landing.py because it is text, not layout, and it changes on a
+different clock from the page around it. generate.py wraps it in the same
+chrome as everything else.
+"""
 
-  <div class="lp-ticker lbl">Now in private beta &middot; join the waitlist for early access &middot; first 10 applications free</div>
-
-  <header class="lp-head">
-    <a href="index.html" class="lp-logo" aria-label="Foray home"><b aria-hidden="true"><i></i><i></i><i></i><i></i></b>Foray</a>
-    <span class="lp-clock lbl"><span>San Francisco</span></span>
-    <a class="lp-btn" href="index.html">Join the waitlist</a>
-  </header>
-
-  <main class="lp-legal">
-    <h1>Privacy Policy</h1>
-    <div class="body">
-<p class="meta lbl">Effective 27 August 2026 &middot; Last updated 27 August 2026</p>
+PRIVACY_H1 = 'Privacy Policy'
+PRIVACY_DESC = 'How GoForay, Co. collects, uses, and protects the information engineers and companies give us.'
+PRIVACY_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last updated 27 August 2026</p>
 
 <p>Foray is an engineering search firm. Engineers tell us what they want next and we
   bring them roles; companies tell us what they are hiring for and we bring them
@@ -58,7 +20,7 @@
 <h2>Who we are</h2>
 <p>Foray is operated by <strong>GoForay, Co.</strong>, a Delaware corporation, with a
   registered office at 131 Continental Drive, Suite 305, Newark, Delaware 19713.
-  Reach us at <a href="mailto:tushar@goforay.io">tushar@goforay.io</a>.</p>
+  Reach us at <a href="mailto:anna@goforay.io">anna@goforay.io</a>.</p>
 
 <h2>What we collect</h2>
 
@@ -196,7 +158,7 @@
   <li><strong>Disconnect an app</strong>: from the connect page, any time.</li>
   <li><strong>Stop us sharing with companies</strong>: tell us, and we stop.</li>
   <li><strong>See what we hold, correct it, or delete it</strong>: email
-    <a href="mailto:tushar@goforay.io">tushar@goforay.io</a>.</li>
+    <a href="mailto:anna@goforay.io">anna@goforay.io</a>.</li>
 </ul>
 <p>If you are a California resident, the CCPA and CPRA give you the right to know what
   we collect and why, to delete it, to correct it, to opt out of sale or sharing (we do
@@ -230,39 +192,137 @@
 
 <h2>Contact</h2>
 <p>Questions, requests, or complaints:
-  <a href="mailto:tushar@goforay.io">tushar@goforay.io</a>, or write to GoForay, Co.,
-  131 Continental Drive, Suite 305, Newark, Delaware 19713.</p>
-    </div>
-  </main>
+  <a href="mailto:anna@goforay.io">anna@goforay.io</a>, or write to GoForay, Co.,
+  131 Continental Drive, Suite 305, Newark, Delaware 19713.</p>"""
 
-  <footer class="lp-foot">
-    <div class="wrap">
-      <div class="lp-fcols">
-        <div>
-          <span class="lp-logo" aria-hidden="true"><b aria-hidden="true"><i></i><i></i><i></i><i></i></b>Foray</span>
-          <p style="color:var(--muted); margin-top:16px; max-width:30ch">Your autonomous recruiting agent.</p>
-        </div>
-        <div><h4>Engineers</h4><ul>
-          <li><a href="index.html">Join the waitlist</a></li>
-          <li><a href="index.html#lp-phone">Try the agent</a></li>
-        </ul></div>
-        <div><h4>Hiring</h4><ul>
-          <li><a href="index.html#companies">Book 20 minutes</a></li>
-        </ul></div>
-        <div><h4>Contact</h4><ul>
-          <li><a href="index.html">Join the waitlist</a></li>
-          <li style="color:var(--muted)">San Francisco, CA</li>
-        </ul></div>
-      </div>
-      <div class="lp-fbot lbl">
-        <span>&copy; 2026 GoForay, Co.</span>
-        <span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span>
-        <span>Built in San Francisco</span>
-      </div>
-    </div>
-  </footer>
+TERMS_H1 = 'Terms of Service'
+TERMS_DESC = 'The terms you agree to when you use Foray, operated by GoForay, Co.'
+TERMS_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last updated 27 August 2026</p>
 
+<p>These terms are the agreement between you and <strong>GoForay, Co.</strong>, a
+  Delaware corporation doing business as Foray (&ldquo;Foray,&rdquo; &ldquo;we,&rdquo;
+  &ldquo;us&rdquo;), covering your use of this website, our forms, our phone line, our
+  text conversations, and the candidate portal. Using Foray means you accept them. If
+  you do not, please do not use the service.</p>
+<p>How we handle your information is covered separately in our
+  <a href="privacy.html">Privacy Policy</a>, which forms part of these terms.</p>
+
+<h2>1. What Foray does</h2>
+<p>Foray is an engineering search firm. For engineers: we take your details, match you
+  to open roles, prepare applications, submit them where you ask us to, and keep you
+  updated. For companies: we run a search against the role you give us and put
+  candidates in front of you. Some of that work is done by AI assistants, on the phone
+  and over text.</p>
+<div class="note">
+  <p><strong>You are talking to an AI.</strong> Our intake and messaging assistants say
+    so up front and will tell you plainly if you ask. They can be wrong. Nothing an
+    assistant says is a promise of a role, an interview, or an introduction, and nothing
+    it says is legal, immigration, tax, or financial advice.</p>
 </div>
 
-</body>
-</html>
+<h2>2. Who can use it</h2>
+<p>You must be at least 18 and legally able to enter a contract. Foray is currently
+  offered in the United States. You are responsible for confirming you have the right
+  to work where you apply.</p>
+
+<h2>3. What you authorize us to do</h2>
+<p>If you join the pool as an engineer, you are asking us to, and authorizing us to:</p>
+<ul>
+  <li>Use what you tell us to look for roles matching your stated preferences.</li>
+  <li>Prepare application materials for you (a r&eacute;sum&eacute;, a cover letter, and answers to a company's questions) drafted from what you told us.</li>
+  <li>Submit applications on your behalf to roles you have approved, and create accounts
+    on company application sites where that is the only way to apply.</li>
+  <li>Correspond with companies about your application, using an email address on our
+    domain that forwards to your file.</li>
+  <li>Put your profile in front of companies we are searching for, but only once you have told us that is okay.</li>
+</ul>
+<p>You can tell us to stop any of this at any time, and we will.</p>
+
+<h2>4. What we need from you</h2>
+<ul>
+  <li>Tell us the truth. Everything we put in front of a company comes from what you
+    told us, and you are responsible for it being accurate.</li>
+  <li>Only send us material you have the right to send: your own r&eacute;sum&eacute; and
+    work history, not a former employer's confidential information.</li>
+  <li>Keep your contact details current, so we can reach you.</li>
+  <li>Do not use Foray to harass anyone, to misrepresent who you are, to break the law,
+    or to attack or probe our systems.</li>
+</ul>
+
+<h2>5. If you are hiring</h2>
+<p>Candidate information we share with you is confidential and given for one purpose:
+  evaluating that person for the role you told us about. Do not forward it, add it to a
+  database, or use it for another search. Our fees, guarantee, and payment terms are set
+  out in the separate search agreement we sign with you; these terms do not replace it.
+  Hiring decisions are yours, and you are responsible for making them lawfully.</p>
+
+<h2>6. Text messages</h2>
+<p>We text you only if you asked us to, either by telling us yes on a recorded
+  call, or by texting us first. The forms on this site do not collect a phone number and
+  are not a way to opt in. Our messages are about your own search: application status,
+  roles matching what you told us, requests for a missing detail, and replies to what
+  you send us. They are not marketing.</p>
+<p>Reply <strong>STOP</strong> at any time and we stop. Reply <strong>HELP</strong> for
+  help. Message frequency varies with your own search. Message and data rates may apply.
+  Carriers are not liable for delayed or undelivered messages.</p>
+<p>Our voice and text line is <strong>coming soon</strong>. We will publish the number
+  here once it is live.</p>
+
+<h2>7. Fees</h2>
+<p>Foray is free for engineers. If that ever changes we will tell you before any charge
+  applies and you will have to agree to it first. We are paid by the companies we search
+  for, not by candidates.</p>
+
+<h2>8. No guarantee of a job</h2>
+<p>We do not control hiring decisions and we do not promise results. Using Foray does
+  not guarantee that you will be matched to a role, that an application will be
+  submitted, that a company will respond, that you will get an interview, or that you
+  will be hired. Companies make their own decisions on their own criteria.</p>
+
+<h2>9. Your content</h2>
+<p>Your r&eacute;sum&eacute; and everything else you give us stays yours. You grant us the
+  permission we need to use it for the purpose you gave it to us for (matching, preparing applications, and submitting them on your behalf) and nothing beyond that. Ask us to delete it and we will, subject to records we have to keep, which the
+  <a href="privacy.html">Privacy Policy</a> describes.</p>
+<p>The service itself (our software, brand, and content) belongs to us.
+  You may use it, but you may not copy it, resell it, reverse-engineer it, or scrape it.</p>
+
+<h2>10. Third-party services</h2>
+<p>Foray connects to services we do not control: company application sites, job boards,
+  and apps you choose to connect. We are not responsible for what they do, for their
+  terms, or for their availability. Connecting an app is optional and you can disconnect
+  it at any time.</p>
+
+<h2>11. Availability</h2>
+<p>We may change, suspend, or discontinue any part of the service, and will give notice
+  where it is reasonable to do so.</p>
+
+<h2>12. Disclaimers and limits</h2>
+<p>To the fullest extent the law allows, the service is provided &ldquo;as is&rdquo; and
+  &ldquo;as available,&rdquo; without warranties of any kind, express or implied,
+  including merchantability, fitness for a particular purpose, and non-infringement.</p>
+<p>To the fullest extent the law allows, we are not liable for indirect, incidental,
+  special, consequential, or punitive damages, or for lost opportunities, lost earnings,
+  or lost data. Our total liability for any claim relating to the service will not
+  exceed one hundred US dollars (USD 100) or the amount you paid us in the twelve months
+  before the claim, whichever is greater. Some jurisdictions do not allow these limits,
+  in which case they apply to the extent permitted.</p>
+
+<h2>13. Ending it</h2>
+<p>You can stop using Foray at any time and ask us to close your file. We may suspend or
+  end your access if you breach these terms or if we stop offering the service. The
+  sections that by their nature should survive (content ownership, disclaimers, limits, and governing law) survive.</p>
+
+<h2>14. Governing law</h2>
+<p>These terms are governed by the laws of the State of Delaware, without regard to its
+  conflict-of-laws rules. Any dispute will be brought in the state or federal courts
+  located in Delaware, and we each consent to that jurisdiction. Nothing here waives any
+  right you cannot waive under the law where you live.</p>
+
+<h2>15. Changes</h2>
+<p>We may update these terms. The effective date at the top tells you which version you
+  are reading. If a change is material we will give notice before it takes effect, and
+  continuing to use Foray afterwards means you accept it.</p>
+
+<h2>16. Contact</h2>
+<p><a href="mailto:anna@goforay.io">anna@goforay.io</a>, or write to GoForay, Co.,
+  131 Continental Drive, Suite 305, Newark, Delaware 19713.</p>"""
