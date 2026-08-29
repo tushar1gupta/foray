@@ -43,6 +43,28 @@ const RATE_MAX = 5;
 const RATE_WINDOW = '15 minutes';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+
+/* The table predates the waitlist, and CREATE TABLE IF NOT EXISTS leaves an
+ * existing table's constraints alone, so the new kind has to be added to the
+ * CHECK explicitly.
+ *
+ * Deliberately non-fatal. This runs on every cold start, and if it ever fails
+ * -- a role without ALTER, a lock held by something else -- the cost of letting
+ * that reject the whole schema step is every company and engineer submission,
+ * for a statement they do not need. A waitlist insert would still fail loudly
+ * on the constraint itself, which is the right place to find out. */
+async function widenKindCheck() {
+  try {
+    await pool.query(`
+      ALTER TABLE submissions DROP CONSTRAINT IF EXISTS submissions_kind_check;
+      ALTER TABLE submissions ADD CONSTRAINT submissions_kind_check
+        CHECK (kind IN ('company','engineer','waitlist'));
+    `);
+  } catch (err) {
+    console.error('could not widen submissions_kind_check:', err.message);
+  }
+}
+
 let schemaReady;
 function ensureSchema() {
   if (!schemaReady) {
@@ -61,14 +83,7 @@ function ensureSchema() {
       CREATE INDEX IF NOT EXISTS submissions_created_idx ON submissions (created_at DESC);
       CREATE INDEX IF NOT EXISTS submissions_kind_idx    ON submissions (kind, created_at DESC);
       CREATE INDEX IF NOT EXISTS submissions_rate_idx    ON submissions (ip_hash, created_at DESC);
-
-      -- The table predates the waitlist, and CREATE TABLE IF NOT EXISTS does not
-      -- widen an existing CHECK, so state the constraint every time instead of
-      -- relying on the table having been created with it.
-      ALTER TABLE submissions DROP CONSTRAINT IF EXISTS submissions_kind_check;
-      ALTER TABLE submissions ADD CONSTRAINT submissions_kind_check
-        CHECK (kind IN ('company','engineer','waitlist'));
-    `).catch(err => { schemaReady = null; throw err; });
+    `).then(widenKindCheck).catch(err => { schemaReady = null; throw err; });
   }
   return schemaReady;
 }
