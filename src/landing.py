@@ -1349,8 +1349,8 @@ BODY = """
         </ul></div>
       </div>
       <div class="lp-fbot lbl">
-        <span>&copy; 2026 Foray</span>
-        <span>Msg &amp; data rates may apply &middot; Reply STOP to opt out</span>
+        <span>&copy; 2026 GoForay, Co.</span>
+        <span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span>
         <span>Built in San Francisco</span>
       </div>
     </div>

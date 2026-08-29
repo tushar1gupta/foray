@@ -26,6 +26,12 @@ PAGES = {
     "engineers.html": ("For engineers | Foray",
                        "Join the Foray pool with your LinkedIn and GitHub. We contact you only when "
                        "a role fits."),
+    # Hand-written rather than generated, but they still want a canonical tag,
+    # the share card and a place in the sitemap.
+    "privacy.html": ("Privacy policy | Foray",
+                     "How Foray collects, uses and stores the details you give us."),
+    "terms.html": ("Terms of service | Foray",
+                   "The terms you agree to when you use Foray."),
 }
 
 FAVICON = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
@@ -213,7 +219,10 @@ COMMENT_RE = re.compile(r"/\*[\s\S]*?\*/")
 INDENT_RE = re.compile(r"\n\s+")
 BLANKS_RE = re.compile(r"\n{2,}")
 STYLE_RE = re.compile(r"<style>([\s\S]*?)</style>")
-SCRIPT_RE = re.compile(r"<script>([\s\S]*?)</script>")
+# The page script carries data-page. The analytics tag is also an inline
+# <script>, and it now comes first in the document, so an unqualified match
+# extracts the vendor shim and leaves the real script inline.
+SCRIPT_RE = re.compile(r"<script data-page>([\s\S]*?)</script>")
 
 
 def externalise():

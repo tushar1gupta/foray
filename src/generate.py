@@ -289,6 +289,23 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0 40px}
   border-top:1px solid var(--rule);margin-top:clamp(36px,4.5vw,56px);padding-top:22px}
 @media(max-width:820px){.fcols{grid-template-columns:1fr 1fr}}
 
+/* legal pages (privacy, terms) -- the only long-form prose on the site.
+   Measure is capped at 78ch: the rest of the site is short marketing copy in
+   44ch cells, and that column is unreadable for something somebody actually
+   has to read end to end. Deliberately no .rv on these pages -- they get
+   fetched by carrier reviewers and crawlers, and a scroll-reveal that never
+   fires leaves the page blank to anything that does not run the script. */
+.legal{max-width:78ch}
+.legal h2{font-size:clamp(19px,1.7vw,23px);letter-spacing:-.02em;margin:44px 0 12px;
+padding-top:26px;border-top:1px solid var(--rule)}
+.legal h2:first-of-type{margin-top:34px}
+.legal h3{font-size:1.02em;margin:22px 0 8px}
+.legal p,.legal li{color:var(--mut);margin:10px 0}
+.legal ul{margin:10px 0 10px 20px}
+.legal li{padding-left:4px}
+.legal a{color:var(--mint);text-decoration:underline;text-underline-offset:2px}
+.legal strong{color:var(--text);font-weight:500}
+.legal .meta{font-size:.92em;color:var(--mut)}
 .rv{opacity:0;transform:translateY(12px);
   transition:opacity .7s cubic-bezier(.19,1,.22,1),transform .7s cubic-bezier(.19,1,.22,1)}
 .rv.in{opacity:1;transform:none}
@@ -588,10 +605,14 @@ def landing(title, desc):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{LANDING_FONTS}" rel="stylesheet">
 <style>{LP_CSS}</style>
+<script>
+  window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arguments); }};
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 {body}
-<script>{LP_JS}</script>
+<script data-page>{LP_JS}</script>
 </body>
 </html>
 """
@@ -610,6 +631,10 @@ def shell(page, title, desc, body):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{CSS}</style>
+<script>
+  window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arguments); }};
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <div class="ticker"><div class="wrap lbl"><s>&mdash;</s>Now booking engineering searches for Q4<s>&mdash;</s></div></div>
@@ -652,10 +677,10 @@ def shell(page, title, desc, body):
         </ul>
       </div>
     </div>
-    <div class="fbot lbl"><span>&copy; 2026 Foray</span><span>Built in San Francisco</span></div>
+    <div class="fbot lbl"><span>&copy; 2026 GoForay, Co.</span><span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span><span>Built in San Francisco</span></div>
   </div>
 </footer>
-<script>{JS}</script>
+<script data-page>{JS}</script>
 </body>
 </html>
 """
