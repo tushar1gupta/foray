@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Foray | Engineering search for startups</title>
-<meta name="description" content="Foray runs early and mid-level engineering searches for startups from seed through growth stage.">
+<title>Foray | Your autonomous recruiting agent</title>
+<meta name="description" content="Message Foray and we find roles worth your time, write the application, and apply for you. A human reviews everything, and nothing sends without your yes.">
 
 <link rel="canonical" href="https://goforay.io/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -20,204 +20,545 @@
 <meta name="twitter:title" content="Foray | Engineering search for startups">
 <meta name="twitter:description" content="Foray runs early and mid-level engineering searches for startups from seed through growth stage.">
 <meta name="twitter:image" content="https://goforay.io/og.png">
-<meta name="theme-color" content="#080D0B">
+<meta name="theme-color" content="#241C3B">
 <!-- /stamp -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css">
-</head>
-<body>
-<div class="ticker"><div class="wrap lbl"><s>&mdash;</s>Now booking engineering searches for Q4<s>&mdash;</s></div></div>
-<header>
-  <div class="wrap nav">
-    <a href="index.html" class="mark" aria-label="Foray home"><b><i></i><i></i><i></i><i></i></b>Foray</a>
-    <nav class="links lbl" aria-label="Main"><a href="companies.html">Companies</a><a href="engineers.html">Engineers</a></nav>
-    <div class="clock lbl"><span>San Francisco</span><span id="clk">--:--</span></div>
-  </div>
-</header>
-<main>
-  <section class="hero">
-    <div class="hero-l">
-      <div class="hcopy">
-      <h1>
-        <span class="ln"><span>We build early</span></span>
-        <span class="ln"><span><em class="hl">engineering</em> teams.</span></span>
-      </h1>
-      <p class="sub">A recruiting firm for startups making early and mid-level engineering hires, from
-        seed through growth stage.</p>
-      <div class="acts hero-acts">
-        <a href="companies.html" class="btn">Post a role</a>
-        <a href="engineers.html" class="btn ghost">Join the pool</a>
-      </div>
-      </div>
-    </div>
-    <div class="hero-r"><div class="holo" aria-hidden="true"><div class="stage"><pre class="field" id="field"></pre><pre class="walker"></pre><pre class="walker"></pre><span class="scan"></span></div></div></div>
-  </section>
-
-  <section class="sec">
-    <div class="wrap">
-      <div class="head rv">
-        <p class="lbl dim">How it works</p>
-        <div>
-          <h2>Three steps, either side of the table.</h2>
-          <div class="tabs" role="tablist" aria-label="Choose your side">
-            <button type="button" role="tab" data-panel="company" aria-selected="true">Company</button>
-            <button type="button" role="tab" data-panel="candidate" aria-selected="false">Candidate</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel" data-panel="company">
-        <div class="steps rv">
-          <div class="stp">
-            <p class="no"><b>01</b> Introductory call</p>
-            <p>An hour on the role, the stack, and the bar.</p>
-          </div>
-          <div class="stp">
-            <p class="no"><b>02</b> Targeted outreach</p>
-            <p>We approach a named list, not a job board.</p>
-          </div>
-          <div class="stp">
-            <p class="no"><b>03</b> Introductions</p>
-            <p>Five engineers, with our read on each.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel" data-panel="candidate" hidden>
-        <div class="steps rv">
-          <div class="stp">
-            <p class="no"><b>01</b> Opportunity surfaced</p>
-            <p>One role, with the stage, team, and comp band stated.</p>
-          </div>
-          <div class="stp">
-            <p class="no"><b>02</b> Fit assessed</p>
-            <p>A senior engineer reads your work and tells you what they saw.</p>
-          </div>
-          <div class="stp">
-            <p class="no"><b>03</b> Introduction</p>
-            <p>You meet the founder or the engineer you would work with.</p>
-          </div>
-        </div>
-        <p class="note rv">Timeline, location, visa status, and comp are yours to set. Nothing reaches a
-          company without your say.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="wrap">
-      <div class="head rv">
-        <p class="lbl dim">The screen</p>
-        <div><h2>Fifteen hundred profiles, five introductions.</h2></div>
-      </div>
-      <div class="screen rv">
-        <div class="screen-top lbl">
-          <span>Everyone who could do the job</span>
-          <span>Five reach your calendar</span>
-        </div>
-        <div class="ticks" id="ticks" aria-hidden="true"></div>
-        <p class="readout idle" id="readout">Hover a lit mark to see a profile from a recent search.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="wrap">
-      <div class="head rv">
-        <p class="lbl dim">What we do</p>
-        <div><h2>We specialize in early and mid-level engineering hires.</h2></div>
-      </div>
-      <div class="grid rv">
-        <div class="cell">
-          <span class="n">Early hires</span>
-          <h3>Seed to Series A</h3>
-          <p>Founding and first-team engineers who have shipped something end to end with nobody
-            checking on them.</p>
-        </div>
-        <div class="cell">
-          <span class="n">Mid-level hires</span>
-          <h3>Series B through growth</h3>
-          <p>Engineers with three to eight years who have owned a system other teams depended on, and
-            want more scope than their title allows.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="wrap">
-      <div class="head rv">
-        <p class="lbl dim">Clients</p>
-        <div><h2>What founders say.</h2></div>
-      </div>
-      <div class="quotes rv">
-        <div class="q">
-          <p>&ldquo;First introductions landed four days after our call. We had spent two months on the
-            same role with another firm and seen nobody worth a second conversation.&rdquo;</p>
-          <cite>Founder, seed-stage developer tools</cite>
-        </div>
-        <div class="q">
-          <p>&ldquo;Five profiles, four of them we wanted to meet. That hit rate is the whole value. I
-            spent no time filtering.&rdquo;</p>
-          <cite>Head of Engineering, Series B fintech</cite>
-        </div>
-        <div class="q">
-          <p>&ldquo;Signed offer in two weeks without my team running a single throwaway screen. The read
-            attached to each profile did that work for us.&rdquo;</p>
-          <cite>Co-founder, applied ML</cite>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="closer">
-    <div class="wrap">
-      <h2 class="rv">Foray into your next hire.</h2>
-      <div class="acts rv">
-        <a href="companies.html" class="btn">Post a role</a>
-        <a href="engineers.html" class="btn ghost">Join the pool</a>
-      </div>
-    </div>
-  </section>
-
-</main>
-<footer>
-  <div class="wrap">
-    <div class="fcols">
-      <div class="fbrand">
-        <span class="mark" aria-hidden="true"><b><i></i><i></i><i></i><i></i></b>Foray</span>
-        <p>Early and mid-level engineering search for startups.</p>
-      </div>
-      <div>
-        <h4>Hiring</h4>
-        <ul>
-          <li><a href="companies.html">Post a role</a></li>
-          <li><a href="companies.html#roles">What we search for</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Engineers</h4>
-        <ul>
-          <li><a href="engineers.html">Join the pool</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Contact</h4>
-        <ul>
-          <li><a href="mailto:contact@goforay.io">contact@goforay.io</a></li>
-          <li class="dim">San Francisco, CA</li>
-        </ul>
-      </div>
-    </div>
-    <div class="fbot lbl"><span>&copy; 2026 GoForay, Co.</span><span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span><span>Built in San Francisco</span></div>
-  </div>
-</footer>
-<script src="/app.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/landing.css">
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<div class="lp" data-api="https://app.goforay.io" data-widget-token="">
+
+  <div class="lp-ticker lbl">Now in private beta · join the waitlist for early access · first 10 applications free</div>
+
+  <header class="lp-head">
+    <a href="index.html" class="lp-logo" aria-label="Foray home"><b aria-hidden="true"><i></i><i></i><i></i><i></i></b>Foray</a>
+    <div class="lp-clock lbl"><span>San Francisco</span><span id="lp-clk">--:--</span></div>
+    <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
+  </header>
+
+  <main>
+    <section class="lp-hero">
+      <div class="lp-hero-copy">
+        <h1>Your <em class="mark-hl">autonomous</em> recruiting agent.</h1>
+        <p class="lp-sub">Foray finds roles worth your time, writes the application, and applies for
+          you. Clear our bar and a recruiter takes it further, straight to the companies we hire for.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center">
+          <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
+          <button type="button" class="lp-btn ghost" data-chat>Try the agent below</button>
+        </div>
+      </div>
+
+      <div class="lp-stage">
+        <div class="lp-drift" aria-hidden="true"><div class="lp-drift-row"><span>Research Engineer · Google DeepMind · $230k</span><span>Software Engineer, Platform · Tesla · $195k</span><span class="hit">Senior Backend Engineer · Stripe · $185–210k</span><span>Infra Engineer · OpenAI · $250k</span><span>Member of Technical Staff · Anthropic · $240k + equity</span><span>Research Engineer · Google DeepMind · $230k</span><span>Software Engineer, Platform · Tesla · $195k</span><span class="hit">Senior Backend Engineer · Stripe · $185–210k</span><span>Infra Engineer · OpenAI · $250k</span><span>Member of Technical Staff · Anthropic · $240k + equity</span></div><div class="lp-drift-row"><span>Platform Engineer · Microsoft · $190k</span><span>Product Engineer · Notion · $185k</span><span>Data Platform · Databricks · $205k</span><span>Senior Fullstack · Figma · $180k</span><span>Platform Engineer · Microsoft · $190k</span><span>Product Engineer · Notion · $185k</span><span>Data Platform · Databricks · $205k</span><span>Senior Fullstack · Figma · $180k</span></div></div>
+
+        <div class="lp-phone" id="lp-phone">
+          <span class="lp-try">Try it now, type below <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></span>
+          <div class="lp-phone-head">
+            <span class="lp-logo" aria-hidden="true"><b aria-hidden="true"><i></i><i></i><i></i><i></i></b>Foray</span>
+            <span class="lp-live">Active now</span>
+          </div>
+          <div class="lp-thread" id="lp-thread" role="log" aria-live="polite"
+               aria-label="Conversation with Foray"></div>
+          <div class="lp-send">
+            <label class="lp-sr" for="lp-input" hidden>Message Foray</label>
+            <input id="lp-input" type="text" maxlength="4000" autocomplete="off"
+                   placeholder="Message Foray — try anything">
+            <button type="button" id="lp-send" aria-label="Send"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lp-doors">
+      <div class="wrap">
+        <button type="button" class="lp-door cand" data-open="lp-waitlist">
+          <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5Z"/></svg></span>
+          <span><span class="tt">I&rsquo;m a candidate</span>
+            <span class="ss">Join the waitlist &middot; first 10 applications free</span></span>
+          <span class="arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+        </button>
+        <button type="button" class="lp-door hire" data-open="lp-hire">
+          <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-deep)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <span><span class="tt">I&rsquo;m hiring</span>
+            <span class="ss">Book 20 minutes &middot; success fee only</span></span>
+          <span class="arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-deep)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+        </button>
+        <span class="lp-free">10 applications, free</span>
+      </div>
+    </section>
+
+    <section class="lp-sec white">
+      <div class="wrap">
+        <div class="lp-head-row">
+          <span class="lp-num" aria-hidden="true">01</span>
+          <div>
+            <span class="lp-kick lbl">For candidates &middot; Ways in</span>
+            <h2>Start wherever you already are.</h2>
+          </div>
+        </div>
+        <div class="lp-grid lp-g3">
+
+          <button type="button" class="lp-card tap" data-open="lp-waitlist">
+            <span class="lp-chan-top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5Z"/></svg><span class="lbl">Text</span>
+              <span class="lp-chan-val">Waitlist</span></span>
+            <span class="lp-demo">
+              <span class="lp-mini me">hey, looking for a role</span>
+              <span class="lp-mini them">2 matches already. sending now</span>
+              <span class="lp-dots" style="align-self:flex-start"><i></i><i></i><i></i></span>
+            </span>
+            <span class="note">Fastest, once you are in. Matches land in the same thread.</span>
+          </button>
+
+          <button type="button" class="lp-card tap" data-open="lp-call">
+            <span class="lp-chan-top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg><span class="lbl">Call</span>
+              <span class="lp-chan-val">Waitlist</span></span>
+            <span class="lp-demo" style="justify-content:center; gap:12px">
+              <span style="display:flex; align-items:center; gap:10px">
+                <span class="lp-rec"></span><span style="font-size:12.5px; font-weight:600">foray &middot; voice</span>
+                <span style="margin-left:auto; font-size:12px; color:var(--muted)">00:42</span>
+              </span>
+              <span class="lp-wave"><i style="height:22px; animation-delay:0.00s"></i><i style="height:30px; animation-delay:0.12s"></i><i style="height:16px; animation-delay:0.24s"></i><i style="height:26px; animation-delay:0.36s"></i><i style="height:14px; animation-delay:0.48s"></i><i style="height:24px; animation-delay:0.60s"></i><i style="height:18px; animation-delay:0.72s"></i></span>
+              <span style="font-size:11.5px; color:var(--muted); text-align:center">
+                &ldquo;&hellip;180k plus, hybrid in SF&rdquo; &middot; noted</span>
+            </span>
+            <span class="note">Foray calls you and takes the brief. Three minutes.</span>
+          </button>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="lp-sec alt">
+      <div class="wrap">
+        <div class="lp-head-row">
+          <span class="lp-num" aria-hidden="true">02</span>
+          <div>
+            <span class="lp-kick lbl">For candidates &middot; Hello to interview</span>
+            <h2>Speedrun the process.</h2>
+          </div>
+        </div>
+
+        <div class="lp-track" aria-hidden="true">
+          <span class="rail"></span>
+          <span class="stop" style="left:12.5%"></span>
+          <span class="stop" style="left:37.5%"></span>
+          <span class="stop" style="left:62.5%"></span>
+          <span class="stop last" style="left:87.5%"></span>
+          <span class="lp-walker"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <span class="lp-walker-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="lp-conf">
+            <i style="--tx:-26px;--ty:-34px;background:var(--accent)"></i>
+            <i style="--tx:24px;--ty:-40px;background:var(--primary2)"></i>
+            <i style="--tx:-38px;--ty:-12px;background:var(--primary)"></i>
+            <i style="--tx:38px;--ty:-16px;background:var(--accent-soft)"></i>
+            <i style="--tx:-14px;--ty:-48px;background:var(--primary2)"></i>
+            <i style="--tx:12px;--ty:-52px;background:var(--accent)"></i>
+          </span>
+        </div>
+
+        <div class="lp-grid lp-g4">
+          <div class="lp-card lp-jcard">
+            <span class="lbl" style="color:var(--primary)">Say hi</span>
+            <span class="lp-demo" style="min-height:0">
+              <span class="lp-mini me">linkedin.com/in/priya-builds</span>
+              <span class="lp-mini them">got it, priya</span>
+              <span class="lp-pill" style="align-self:flex-end"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg> resume.pdf</span>
+            </span>
+            <span class="note">A profile or a resume is the whole application.</span>
+          </div>
+
+          <div class="lp-card lp-jcard">
+            <span class="lbl" style="color:var(--primary)">Tell us your ask</span>
+            <span class="lp-demo" style="min-height:0; gap:12px">
+              <span class="lp-tags"><span>$180k+</span><span>SF hybrid</span><span>Go + Postgres</span></span>
+              <span style="display:flex; flex-direction:column; gap:6px">
+                <span style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted)">
+                  <span>Comp target</span><span style="color:var(--primary); font-weight:700">$180k–220k</span></span>
+                <span class="lp-range"><i></i><b style="left:35%; margin-left:-7px"></b><b style="right:20%; margin-right:-7px"></b></span>
+              </span>
+            </span>
+            <span class="note">Three minutes, once. We remember.</span>
+          </div>
+
+          <div class="lp-card lp-jcard">
+            <span class="lbl" style="color:var(--primary)">We match, fast</span>
+            <ul style="display:flex; flex-direction:column; gap:6px"><li class="lp-chip" style="--d:0s"><span class="lp-chip-disc"><svg width="13" height="13" viewBox="0 0 24 24" fill="#191919" aria-hidden="true"><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/></svg></span><span>Anthropic</span></li><li class="lp-chip" style="--d:.2s"><span class="lp-chip-disc"><svg width="13" height="13" viewBox="0 0 24 24" fill="#0F9D77" aria-hidden="true"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></svg></span><span>OpenAI</span></li><li class="lp-chip" style="--d:.4s"><span class="lp-chip-disc"><svg width="13" height="13" viewBox="0 0 24 24" fill="#8E75B2" aria-hidden="true"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg></span><span>Google DeepMind</span></li><li class="lp-chip" style="--d:.6s"><span class="lp-chip-disc"><svg width="13" height="13" viewBox="0 0 24 24" fill="#0467DF" aria-hidden="true"><path d="M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z"/></svg></span><span>Meta</span></li><li class="lp-chip" style="--d:.8s"><span class="lp-chip-disc"><svg width="13" height="13" viewBox="0 0 24 24" fill="#635BFF" aria-hidden="true"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/></svg></span><span>Stripe</span></li></ul>
+            <span class="note">Matches in your thread within minutes.</span>
+          </div>
+
+          <div class="lp-card lp-jcard" style="border-color:var(--accent)">
+            <span class="lbl" style="color:var(--accent-deep)">You interview</span>
+            <span class="lp-cal">
+              <span class="day"><em>Thu</em><strong>11:00</strong></span>
+              <span style="display:flex; flex-direction:column; gap:2px">
+                <span style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Interview scheduled</span>
+                <span style="font-size:12px; color:var(--muted)">Senior Backend Engineer &middot; Stripe</span>
+              </span>
+            </span>
+            <span class="note">You said yes and we did the rest. Now it&rsquo;s on your calendar.</span>
+          </div>
+        </div>
+        <p class="note" style="text-align:center; margin-top:24px; color:var(--muted)">
+          Nothing reaches a company without your say. Timeline, location, visa status, and comp are yours to set.</p>
+      </div>
+    </section>
+
+    <section class="lp-sec white">
+      <div class="wrap">
+        <div class="lp-head-row">
+          <span class="lp-num" aria-hidden="true">03</span>
+          <div>
+            <span class="lp-kick lbl">For candidates &middot; The agent at work</span>
+            <h2>Meet your AI-native recruiter.</h2>
+            <span style="display:flex; align-items:center; gap:10px; margin-top:12px">
+              <span style="width:36px;height:36px;border-radius:9px;background:var(--primary);display:grid;place-items:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+              <span style="display:flex; flex-direction:column; line-height:1.3">
+                <span style="font-size:14px; font-weight:700">foray</span>
+                <span style="font-size:12px; color:var(--muted)">your recruiter, at work below</span></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="lp-flow">
+          <div class="lp-card">
+            <span class="lbl" style="color:var(--muted)">In your thread</span>
+            <span class="lp-mini me" style="align-self:flex-end; font-weight:700">YES</span>
+            <span class="note">One word from you is the green light.</span>
+          </div>
+          <span class="arw" aria-hidden="true"><svg width="40" height="24" viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h30"/><path d="m29 6 8 6-8 6" stroke-dasharray="0"/></svg></span>
+
+          <div class="lp-browser">
+            <div class="lp-browser-bar">
+              <i></i><i></i><i></i>
+              <span class="lp-url">stripe.com/jobs/apply</span>
+              <span class="lp-agent-tag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent-deep)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg> foray agent typing</span>
+            </div>
+            <div class="lp-form">
+              <div class="lp-row"><span class="k">Name</span>
+                <span class="v"><span class="lp-type t1">Priya S.</span><span class="lp-nib n1" aria-hidden="true"><b>foray</b><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></i></span></span></div>
+              <div class="lp-row"><span class="k">Role</span>
+                <span class="v"><span class="lp-type t2">Senior Backend Engineer</span><span class="lp-nib n2" aria-hidden="true"><b>foray</b><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></i></span></span></div>
+              <div class="lp-row"><span class="k">Resume</span>
+                <span class="v" style="background:none; border:0; padding:0">
+                  <span class="lp-pill lp-pillin"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg> priya_stripe_tailored.pdf</span><span class="lp-nib n4" aria-hidden="true"><b>foray</b><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></i></span></span></div>
+              <div class="lp-row"><span class="k">Note</span>
+                <span class="v" style="color:var(--muted); font-size:12.5px">
+                  <span class="lp-type t3">Six years of Go and Postgres, owned a payments system&hellip;</span><span class="lp-nib n3" aria-hidden="true"><b>foray</b><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></i></span></span></div>
+              <div class="lp-row" style="align-items:center; padding-top:4px">
+                <span class="k" aria-hidden="true"></span>
+                <span class="lp-progress"><i></i></span>
+                <span style="font-family:ui-monospace,monospace; font-size:11px; color:var(--primary)">submitting&hellip;</span>
+              </div>
+            </div>
+          </div>
+
+          <span class="arw" aria-hidden="true"><svg width="40" height="24" viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h30"/><path d="m29 6 8 6-8 6" stroke-dasharray="0"/></svg></span>
+          <div class="lp-card">
+            <span class="lbl" style="color:var(--muted)">Back in your thread</span>
+            <span class="lp-mini them" style="align-self:flex-start">applied. i&rsquo;ll message you the moment they reply</span>
+            <span class="note">Follow-ups chased for you, too.</span>
+          </div>
+        </div>
+
+        <ul class="lp-assure">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span>You see exactly what sends, before it sends</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Tailored one at a time, never mass-applied</span></li>
+          <li><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg><span>Found a role yourself? Send us the posting and we&rsquo;ll apply</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="lp-sec alt" id="tracks">
+      <div class="wrap">
+        <div class="lp-head-row">
+          <span class="lp-num" aria-hidden="true">04</span>
+          <div>
+            <span class="lp-kick lbl">For candidates &middot; How far it goes</span>
+            <h2>Two tracks. Everyone starts on the first.</h2>
+          </div>
+        </div>
+
+        <div class="lp-tracks">
+          <div class="lp-track-card self">
+            <span class="tag">Everyone</span>
+            <span class="num">Track one</span>
+            <h3>The agent works your search</h3>
+            <p>Tell Foray once what you want. It finds roles, writes each application to the
+              posting, and sends it the moment you say yes &mdash; then chases the reply.</p>
+            <ul>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Unlimited roles, applied one at a time</span></li>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>You approve every send</span></li>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Free to you. Always</span></li>
+            </ul>
+          </div>
+
+          <div class="lp-track-card white-glove">
+            <span class="tag">By invitation</span>
+            <span class="num">Track two</span>
+            <h3>A recruiter takes you to our clients</h3>
+            <p>Clear our bar and you stop being an applicant. A Foray engineer reads your work,
+              writes the read that goes with you, and introduces you directly to the founders and
+              hiring managers we search for &mdash; ahead of the queue, not in it.</p>
+            <ul>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--band-acc)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>A named human, not a queue</span></li>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--band-acc)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Direct introductions to our client roles</span></li>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--band-acc)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Prep, comp guidance, and a straight read on fit</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="lp-econ">Both tracks cost you nothing. <b>Companies pay us when they hire</b>,
+          which is why the agent is free and why the bar for track two is real.</p>
+      </div>
+    </section>
+
+    <section class="lp-band" id="companies">
+      <div class="wrap">
+        <div class="lp-band-intro">
+          <span class="lbl">For companies</span>
+          <h2>Hiring? We&rsquo;ve already interviewed the pool.</h2>
+          <p>Tell us the role and the bar, then consider it handled. White glove the whole way:
+            we reach the engineers you want, vet every one ourselves, and hand you introductions
+            on your calendar.</p>
+        </div>
+
+        <div class="lp-stats">
+          <div><b>1,500+</b><span class="lbl">Engineers, pre-interviewed</span></div>
+          <div><b>$0</b><span class="lbl">Until you hire &middot; success fee only</span></div>
+        </div>
+
+        <div class="lp-steps">
+          <button type="button" class="lp-step" data-open="lp-hire" style="animation-delay:.05s">
+            <span class="lbl">Step 1 &middot; Reach</span>
+            <h3>We reach the exact engineers you want</h3>
+            <span class="lp-mini-panel">
+              <span style="align-self:flex-start; background:#fff; color:var(--ink); border-radius:10px 10px 10px 3px; padding:6px 10px; font-size:11.5px">
+                hey noah, staff platform role at a series B. $210k. interested?</span>
+              <span class="lp-out"><span class="av" style="background:var(--primary2); color:#fff">N</span>
+                <span class="ln"></span><span class="st">REPLIED</span></span>
+              <span class="lp-out"><span class="av" style="background:var(--accent); color:var(--band)">PS</span>
+                <span class="ln"></span><span class="st">REPLIED</span></span>
+              <span class="lp-out"><span class="av" style="background:var(--band-acc2); color:var(--band)">MT</span>
+                <span class="ln"></span><span class="st" style="background:rgba(255,255,255,.12); color:rgba(255,255,255,.75)">REACHED</span></span>
+            </span>
+            <p>Named lists, message-first. Engineers who ignore InMail answer us.</p>
+          </button>
+
+          <button type="button" class="lp-step" data-open="lp-hire" style="animation-delay:.15s">
+            <span class="lbl">Step 2 &middot; Introductions</span>
+            <h3>Interviews land on your calendar</h3>
+            <span class="lp-mini-panel">
+              <span class="lp-week">
+                <span class="d">MON</span><span class="d">TUE</span><span class="d">WED</span><span class="d">THU</span><span class="d">FRI</span>
+                <span class="c"></span>
+                <span class="c" style="background:var(--primary2); color:#fff">N 2:30</span>
+                <span class="c"></span>
+                <span class="c" style="background:var(--accent); color:var(--band)">PS 11:00</span>
+                <span class="c" style="background:var(--band-acc2); color:var(--band)">MT 4:00</span>
+              </span>
+            </span>
+            <p>Five per role, pre-interviewed, with our read attached.</p>
+          </button>
+
+          <button type="button" class="lp-step" data-open="lp-hire" style="animation-delay:.25s">
+            <span class="lbl">Step 3 &middot; Success fee</span>
+            <h3>We earn when you hire</h3>
+            <span class="lp-mini-panel lp-ledger">
+              <div class="win"><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--band)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span style="font-weight:600">Offer signed</span>
+                <span class="amt" style="color:var(--band-acc)">success fee</span></div>
+              <div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><span style="color:rgba(255,255,255,.75)">No hire</span><span class="amt" style="color:rgba(255,255,255,.75)">$0</span></div>
+              <div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><span style="color:rgba(255,255,255,.75)">Retainers</span><span class="amt" style="color:rgba(255,255,255,.75)">never</span></div>
+            </span>
+            <p>We make money when you make money.</p>
+          </button>
+        </div>
+
+        <div class="lp-funnel">
+          <div class="lp-funnel-top lbl"><span>Everyone who could do the job</span>
+            <span class="hit">Five reach your calendar</span></div>
+          <div class="lp-bars" aria-hidden="true"><i style="height:22px"></i><i style="height:45px"></i><i style="height:64px"></i><i style="height:74px"></i><i style="height:75px"></i><i style="height:65px"></i><i class="hit" style="height:92px"></i><i style="height:25px"></i><i style="height:43px"></i><i style="height:62px"></i><i style="height:74px"></i><i style="height:75px"></i><i style="height:67px"></i><i style="height:50px"></i><i style="height:27px"></i><i style="height:40px"></i><i style="height:60px"></i><i style="height:73px"></i><i class="hit" style="height:92px"></i><i style="height:68px"></i><i style="height:52px"></i><i style="height:30px"></i><i style="height:37px"></i><i style="height:58px"></i><i style="height:72px"></i><i style="height:76px"></i><i style="height:70px"></i><i style="height:54px"></i><i style="height:33px"></i><i style="height:35px"></i><i class="hit" style="height:92px"></i><i style="height:71px"></i><i style="height:76px"></i><i style="height:71px"></i><i style="height:57px"></i><i style="height:35px"></i><i style="height:32px"></i><i style="height:54px"></i><i style="height:69px"></i><i style="height:76px"></i><i style="height:72px"></i><i style="height:59px"></i><i style="height:38px"></i><i class="hit" style="height:92px"></i><i style="height:52px"></i><i style="height:68px"></i><i style="height:76px"></i><i style="height:73px"></i><i style="height:61px"></i><i style="height:41px"></i><i style="height:27px"></i><i style="height:49px"></i><i style="height:67px"></i><i style="height:75px"></i><i style="height:74px"></i><i style="height:62px"></i><i class="hit" style="height:92px"></i><i style="height:24px"></i><i style="height:47px"></i><i style="height:65px"></i><i style="height:75px"></i><i style="height:75px"></i><i style="height:64px"></i><i style="height:46px"></i></div>
+          <div class="lp-funnel-foot"><span>1,500 profiles reviewed per search</span>
+            <span aria-hidden="true">&rarr;</span>
+            <span style="color:var(--band-acc)">5 introductions, with our read on each</span></div>
+        </div>
+
+        <div class="lp-booking">
+          <div class="t"><b>Grab 20 minutes with us.</b>
+            <span>Bring the role. We&rsquo;ll walk you through the pool and show you what our read
+              looks like.</span></div>
+          <div class="a">
+            <button type="button" class="lp-btn" data-open="lp-hire">Book on Calendly</button>
+            <small>calendly.com/goforay/intro &middot; 20 min</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lp-closer">
+      <div class="wrap">
+        <h2>Foray into your <em class="mark-hl">next role</em>.</h2>
+        <div class="acts">
+          <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
+          <button type="button" class="lp-btn ghost" data-open="lp-hire">Hiring? Book a call</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="lp-foot">
+    <div class="wrap">
+      <div class="lp-fcols">
+        <div>
+          <span class="lp-logo" aria-hidden="true"><b aria-hidden="true"><i></i><i></i><i></i><i></i></b>Foray</span>
+          <p style="color:var(--muted); margin-top:16px; max-width:30ch">Your autonomous recruiting agent.</p>
+        </div>
+        <div><h4>Engineers</h4><ul>
+          <li><button type="button" data-open="lp-waitlist">Join the waitlist</button></li>
+          <li><button type="button" data-chat>Try the agent</button></li>
+          <li><button type="button" data-open="lp-email">apply@goforay.io</button></li>
+        </ul></div>
+        <div><h4>Hiring</h4><ul>
+          <li><button type="button" data-open="lp-hire">Book 20 minutes</button></li>
+        </ul></div>
+        <div><h4>Contact</h4><ul>
+          <li><a href="mailto:contact@goforay.io">contact@goforay.io</a></li>
+          <li style="color:var(--muted)">San Francisco, CA</li>
+        </ul></div>
+      </div>
+      <div class="lp-fbot lbl">
+        <span>&copy; 2026 GoForay, Co.</span>
+        <span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span>
+        <span>Built in San Francisco</span>
+      </div>
+    </div>
+  </footer>
+
+  <audio id="lp-voice" preload="none" src="/foray-voice.mp3"></audio>
+  <span hidden id="lp-thumb-src"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></span>
+  <span hidden id="lp-stripe-src"><svg width="11" height="11" viewBox="0 0 24 24" fill="#635BFF" aria-hidden="true"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/></svg></span>
+
+  <dialog class="lp-modal" id="lp-waitlist">
+    <div class="box">
+      <button type="button" class="x" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <span class="lbl" style="color:var(--primary)">Private beta</span>
+      <h3>Join the waitlist.</h3>
+      <p>Three details and you are in the queue. We open spots in batches and message you the
+        day yours is ready &mdash; your first 10 applications are on us.</p>
+
+      <form class="lp-form-grid" id="lp-wl-form" novalidate>
+        <div class="lp-field">
+          <label for="wl-name">Name</label>
+          <input id="wl-name" name="Name" type="text" autocomplete="name" maxlength="200" required>
+        </div>
+        <div class="lp-field">
+          <label for="wl-email">Email</label>
+          <input id="wl-email" name="Email" type="email" autocomplete="email" maxlength="320" required>
+        </div>
+        <div class="lp-field">
+          <label for="wl-phone">Phone</label>
+          <input id="wl-phone" name="Phone" type="tel" autocomplete="tel" maxlength="40" required>
+          <span class="hint">So Foray can text and call you when your spot opens.</span>
+        </div>
+        <!-- bots fill every field they find; people never see this one -->
+        <input type="text" name="confirm_url" tabindex="-1" autocomplete="off"
+               aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px">
+        <p class="lp-formerr" id="lp-wl-err" role="alert"></p>
+        <div class="acts">
+          <button type="submit" class="lp-btn" id="lp-wl-submit">Join the waitlist</button>
+          <button type="button" class="lp-btn ghost" data-close>Not yet</button>
+        </div>
+        <p class="lp-formnote">We use these to reach you about your spot. No marketing lists,
+          and you can ask us to delete them at any time.</p>
+      </form>
+
+      <div class="lp-done" id="lp-wl-done" hidden>
+        <span class="tickbig"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span style="font-size:19px; font-weight:600">You&rsquo;re on the list.</span>
+        <p>We message in batches, and yours will come from Foray. Nothing else to do.</p>
+        <button type="button" class="lp-btn" data-close>Done</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="lp-modal" id="lp-text">
+    <div class="box">
+      <button type="button" class="x" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <span class="lbl" style="color:var(--primary)">Message us</span>
+      <h3>One message starts it.</h3>
+      <p>When we open, this is a text thread: send your LinkedIn or a resume and roles come back to you. Join the waitlist and we&rsquo;ll send you the number the day your spot opens.</p>
+      <p>Send anything: your LinkedIn, a resume, or a posting you found and want us to apply to.
+        A real person reviews every match, and we reply in minutes.</p>
+      <span class="lp-free" style="align-self:flex-start">10 applications, free</span>
+      <div class="acts">
+        <button type="button" class="lp-btn" data-chat>Open the chat</button>
+        <button type="button" class="lp-btn ghost" data-close>Got it</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="lp-modal" id="lp-call">
+    <div class="box">
+      <button type="button" class="x" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <span class="lbl" style="color:var(--primary)">Call us</span>
+      <h3>Three minutes on the phone.</h3>
+      <p>When we open, Foray calls you and takes your brief in about three minutes. The voice below is the real one.</p>
+      <p>That&rsquo;s the real voice below. On the call Foray asks what roles you&rsquo;d like to do,
+        your stack, comp, and where you want to work. Three minutes. Then we find roles that fit
+        and send them straight back to you.</p>
+      <div class="acts">
+        <button type="button" class="lp-btn ghost" data-hear id="lp-hear"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg> Hear Foray</button>
+        <button type="button" class="lp-btn" data-chat>Ask for a call</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="lp-modal" id="lp-email">
+    <div class="box">
+      <button type="button" class="x" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <span class="lbl" style="color:var(--primary)">Email us</span>
+      <h3>Forward it. We handle it.</h3>
+      <span class="big">apply@goforay.io</span>
+      <p>Send your resume, or forward a job description you found. We fill out the application for
+        you and show it to you before it goes out.</p>
+      <div class="acts">
+        <a class="lp-btn" href="mailto:apply@goforay.io">Open your mail app</a>
+        <button type="button" class="lp-btn ghost" data-close>Got it</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="lp-modal" id="lp-hire">
+    <div class="box">
+      <button type="button" class="x" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <span class="lbl" style="color:var(--accent-deep)">For companies</span>
+      <h3>Grab 20 minutes with us.</h3>
+      <div class="lp-month">
+        <div class="hdr"><b>September</b><span>Pick a day</span></div>
+        <div class="lp-days">
+          <span>8</span><span>9</span><span>10</span><span class="sel">11</span>
+          <span>12</span><span>15</span><span>16</span>
+        </div>
+        <div class="lp-times"><span>10:00</span><span class="sel">2:30</span><span>4:00</span></div>
+      </div>
+      <p>Five tailored candidates, our read on each. You pay only when you hire.</p>
+      <div class="acts">
+        <a class="lp-btn" href="https://calendly.com/goforay/intro" target="_blank" rel="noopener">Book on Calendly</a>
+        <button type="button" class="lp-btn ghost" data-close>Close</button>
+      </div>
+    </div>
+  </dialog>
+
+</div>
+
+<script src="/landing.js" defer></script>
 </body>
 </html>

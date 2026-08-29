@@ -6,6 +6,7 @@ Run src/configure.py afterwards to stamp the domain and emit the static assets.
 """
 import json, pathlib
 from scene import field, frames
+from landing import CSS as LP_CSS, JS as LP_JS, BODY as LP_BODY
 
 OUT = pathlib.Path(__file__).resolve().parent.parent
 OUT.mkdir(parents=True, exist_ok=True)
@@ -288,6 +289,23 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0 40px}
   border-top:1px solid var(--rule);margin-top:clamp(36px,4.5vw,56px);padding-top:22px}
 @media(max-width:820px){.fcols{grid-template-columns:1fr 1fr}}
 
+/* legal pages (privacy, terms) -- the only long-form prose on the site.
+   Measure is capped at 78ch: the rest of the site is short marketing copy in
+   44ch cells, and that column is unreadable for something somebody actually
+   has to read end to end. Deliberately no .rv on these pages -- they get
+   fetched by carrier reviewers and crawlers, and a scroll-reveal that never
+   fires leaves the page blank to anything that does not run the script. */
+.legal{max-width:78ch}
+.legal h2{font-size:clamp(19px,1.7vw,23px);letter-spacing:-.02em;margin:44px 0 12px;
+padding-top:26px;border-top:1px solid var(--rule)}
+.legal h2:first-of-type{margin-top:34px}
+.legal h3{font-size:1.02em;margin:22px 0 8px}
+.legal p,.legal li{color:var(--mut);margin:10px 0}
+.legal ul{margin:10px 0 10px 20px}
+.legal li{padding-left:4px}
+.legal a{color:var(--mint);text-decoration:underline;text-underline-offset:2px}
+.legal strong{color:var(--text);font-weight:500}
+.legal .meta{font-size:.92em;color:var(--mut)}
 .rv{opacity:0;transform:translateY(12px);
   transition:opacity .7s cubic-bezier(.19,1,.22,1),transform .7s cubic-bezier(.19,1,.22,1)}
 .rv.in{opacity:1;transform:none}
@@ -567,6 +585,38 @@ ICONS = {
 }
 
 
+
+LANDING_FONTS = ("https://fonts.googleapis.com/css2?"
+                 "family=Bricolage+Grotesque:wght@500;600;700"
+                 "&family=Schibsted+Grotesk:wght@400;500;600&display=swap")
+
+
+def landing(title, desc):
+    """index.html — its own chrome, its own palette, its own script."""
+    body = LP_BODY.replace("{email}", EMAIL)
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{LANDING_FONTS}" rel="stylesheet">
+<style>{LP_CSS}</style>
+<script>
+  window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arguments); }};
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+{body}
+<script data-page>{LP_JS}</script>
+</body>
+</html>
+"""
+
 def shell(page, title, desc, body):
     nav = "".join('<a href="%s"%s>%s</a>' % (h, ' class="on"' if h == page else "", t)
                   for h, t in NAVLINKS)
@@ -581,6 +631,10 @@ def shell(page, title, desc, body):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{CSS}</style>
+<script>
+  window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arguments); }};
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <div class="ticker"><div class="wrap lbl"><s>&mdash;</s>Now booking engineering searches for Q4<s>&mdash;</s></div></div>
@@ -623,10 +677,10 @@ def shell(page, title, desc, body):
         </ul>
       </div>
     </div>
-    <div class="fbot lbl"><span>&copy; 2026 Foray</span><span>Built in San Francisco</span></div>
+    <div class="fbot lbl"><span>&copy; 2026 GoForay, Co.</span><span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span><span>Built in San Francisco</span></div>
   </div>
 </footer>
-<script>{JS}</script>
+<script data-page>{JS}</script>
 </body>
 </html>
 """
@@ -1030,8 +1084,8 @@ companies_body = f"""  <section class="sec first">
 """
 
 pages = {
-    "index.html": ("Foray | Engineering search for startups",
-                   "Foray runs early and mid-level engineering searches for startups from seed through growth stage.",
+    "index.html": ("Foray | Your autonomous recruiting agent",
+                   "Message Foray and we find roles worth your time, write the application, and apply for you. A human reviews everything, and nothing sends without your yes.",
                    index_body),
     "engineers.html": ("For engineers | Foray",
                        "Join the Foray pool with your LinkedIn and GitHub. We contact you only when a role fits.",
@@ -1042,5 +1096,6 @@ pages = {
 }
 
 for name, (title, desc, body) in pages.items():
-    (OUT / name).write_text(shell(name, title, desc, body), encoding="utf-8")
+    html = landing(title, desc) if name == "index.html" else shell(name, title, desc, body)
+    (OUT / name).write_text(html, encoding="utf-8")
     print("wrote", name, f"{len((OUT / name).read_text(encoding='utf-8')) // 1024} KB")

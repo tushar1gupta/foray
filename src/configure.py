@@ -26,14 +26,20 @@ PAGES = {
     "engineers.html": ("For engineers | Foray",
                        "Join the Foray pool with your LinkedIn and GitHub. We contact you only when "
                        "a role fits."),
+    # Hand-written rather than generated, but they still want a canonical tag,
+    # the share card and a place in the sitemap.
+    "privacy.html": ("Privacy policy | Foray",
+                     "How Foray collects, uses and stores the details you give us."),
+    "terms.html": ("Terms of service | Foray",
+                   "The terms you agree to when you use Foray."),
 }
 
 FAVICON = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-<rect width="32" height="32" rx="6" fill="#080D0B"/>
-<rect x="9" y="9" width="6" height="6" rx="1.4" fill="#5FE4CE"/>
-<rect x="17" y="9" width="6" height="6" rx="1.4" fill="#5FE4CE" opacity=".45"/>
-<rect x="9" y="17" width="6" height="6" rx="1.4" fill="#5FE4CE" opacity=".35"/>
-<rect x="17" y="17" width="6" height="6" rx="1.4" fill="#5FE4CE" opacity=".8"/>
+<rect width="32" height="32" rx="6" fill="#241C3B"/>
+<rect x="9" y="9" width="6" height="6" rx="1.4" fill="#9B7FE0"/>
+<rect x="17" y="9" width="6" height="6" rx="1.4" fill="#9B7FE0" opacity=".45"/>
+<rect x="9" y="17" width="6" height="6" rx="1.4" fill="#9B7FE0" opacity=".35"/>
+<rect x="17" y="17" width="6" height="6" rx="1.4" fill="#9B7FE0" opacity=".8"/>
 </svg>
 """
 
@@ -67,12 +73,26 @@ def og_card(domain):
     from PIL import Image, ImageDraw, ImageFont
 
     W, H = 1200, 630
-    BG, MUT, MINT, TEXT, DIM = "#080D0B", "#8DA29B", "#5FE4CE", "#E6EDE9", "#141C19"
+    BG, MUT, MINT, TEXT, DIM = "#241C3B", "#9B8FB8", "#B9A2F0", "#F4F1FA", "#2E2547"
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img)
-    sans = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", 64)
-    small = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", 20)
-    tiny = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", 22)
+    def font(bold, size):
+        names = (["/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+                  "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+                  "C:/Windows/Fonts/arialbd.ttf", "C:/Windows/Fonts/segoeuib.ttf",
+                  "/System/Library/Fonts/Supplemental/Arial Bold.ttf"] if bold else
+                 ["/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+                  "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+                  "C:/Windows/Fonts/arial.ttf", "C:/Windows/Fonts/segoeui.ttf",
+                  "/System/Library/Fonts/Supplemental/Arial.ttf"])
+        for n in names:
+            try:
+                return ImageFont.truetype(n, size)
+            except OSError:
+                continue
+        return ImageFont.load_default()
+
+    sans, small, tiny = font(True, 64), font(True, 20), font(False, 22)
 
     # right side: a tower and a figure walking into the lit doorway
     bx0, bx1, by0, by1 = 800, 1080, 150, 520
@@ -87,7 +107,7 @@ def og_card(domain):
         for col in range(5):
             x, y = bx0 + 26 + col * 52, by0 + 30 + row * 42
             d.rectangle([x, y, x + 30, y + 20],
-                        fill=MINT if (row, col) in lit else "#243330")
+                        fill=MINT if (row, col) in lit else "#332A4D")
     d.rectangle([916, 440, 966, 520], fill=MINT)         # doorway
     d.rectangle([680, 518, 1120, 521], fill=MUT)          # ground
     # figure: head, torso, legs mid-stride
@@ -100,11 +120,11 @@ def og_card(domain):
     # left side: type
     d.rectangle([64, 92, 92, 106], fill=MINT)
     d.text((104, 84), "FORAY", font=small, fill=TEXT)
-    d.text((64, 236), "Foray into", font=sans, fill=TEXT)
-    d.text((64, 312), "your next hire.", font=sans, fill=TEXT)
+    d.text((64, 236), "Your autonomous", font=sans, fill=TEXT)
+    d.text((64, 312), "recruiting agent.", font=sans, fill=TEXT)
     d.rectangle([64, 410, 150, 412], fill=MINT)
-    d.text((64, 440), "Early and mid-level engineering", font=tiny, fill=MUT)
-    d.text((64, 472), "search for startups.", font=tiny, fill=MUT)
+    d.text((64, 440), "We find the roles, write the application,", font=tiny, fill=MUT)
+    d.text((64, 472), "and apply for you.", font=tiny, fill=MUT)
     d.text((64, 540), domain, font=tiny, fill=MINT)
 
     img = img.convert("P", palette=Image.ADAPTIVE, colors=8)
@@ -140,7 +160,7 @@ def stamp(domain, email):
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
 <meta name="twitter:image" content="{base}/og.png">
-<meta name="theme-color" content="#080D0B">
+<meta name="theme-color" content="#241C3B">
 <!-- /stamp -->"""
         s = s.replace('<link rel="preconnect" href="https://fonts.googleapis.com">',
                       block + '\n<link rel="preconnect" href="https://fonts.googleapis.com">', 1)
@@ -166,11 +186,13 @@ def stamp(domain, email):
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         f"{urls}</urlset>\n", encoding="utf-8")
 
-    # 404 built from the real shell so it is not a bare Vercel page
-    idx = (SITE / "index.html").read_text(encoding="utf-8")
+    # 404 built from a real shell so it is not a bare Vercel page. Spliced from
+    # companies.html rather than index: the landing page carries its own chrome
+    # and stylesheet, and the 404 body below is written against the shared one.
+    idx = (SITE / "companies.html").read_text(encoding="utf-8")
     head = idx[:idx.index("<main>")]
     tail = idx[idx.index("<footer>"):]
-    head = head.replace("<title>Foray | Engineering search for startups</title>",
+    head = head.replace("<title>For companies | Foray</title>",
                         "<title>Page not found | Foray</title>")
     (SITE / "404.html").write_text(head + """<main>
   <section class="sec first">
@@ -193,31 +215,67 @@ def stamp(domain, email):
     print("  wrote favicon.svg, vercel.json, robots.txt, sitemap.xml, 404.html")
 
 
+COMMENT_RE = re.compile(r"/\*[\s\S]*?\*/")
+INDENT_RE = re.compile(r"\n\s+")
+BLANKS_RE = re.compile(r"\n{2,}")
+STYLE_RE = re.compile(r"<style>([\s\S]*?)</style>")
+# The page script carries data-page. The analytics tag is also an inline
+# <script>, and it now comes first in the document, so an unqualified match
+# extracts the vendor shim and leaves the real script inline.
+SCRIPT_RE = re.compile(r"<script data-page>([\s\S]*?)</script>")
+
+
 def externalise():
-    """Pull the duplicated <style> and <script> into shared cached files."""
-    css = js = None
+    """Pull the inline <style>/<script> into cached files.
+
+    Two pairs, not one: the three form pages share a stylesheet, and the landing
+    page has its own. They have no rules in common, so folding them together
+    would make every page pay for both -- and, worse, whichever page was walked
+    first used to win, which silently handed the landing page the form pages'
+    styles. The landing page is matched by name because it is the only one built
+    by ``landing.py``.
+    """
+    def tidy(css):
+        css = re.sub(COMMENT_RE, "", css)
+        css = re.sub(INDENT_RE, chr(10), css)
+        return re.sub(BLANKS_RE, chr(10), css).strip()
+
+    shared_css = shared_js = None
+    wrote = []
     for f in sorted(SITE.glob("*.html")):
-        s = f.read_text(encoding="utf-8")
-        m_css = re.search(r"<style>([\s\S]*?)</style>", s)
-        m_js = re.search(r"<script>([\s\S]*?)</script>", s)
-        if m_css and css is None:
-            css = m_css.group(1)
-        if m_js and js is None:
-            js = m_js.group(1)
+        page = f.read_text(encoding="utf-8")
+        m_css = re.search(STYLE_RE, page)
+        m_js = re.search(SCRIPT_RE, page)
+        is_landing = f.name == "index.html"
+
         if m_css:
-            s = s.replace(m_css.group(0), '<link rel="stylesheet" href="/style.css">')
+            if is_landing:
+                (SITE / "landing.css").write_text(tidy(m_css.group(1)), encoding="utf-8")
+                wrote.append("landing.css")
+            elif shared_css is None:
+                shared_css = m_css.group(1)
+            href = "/landing.css" if is_landing else "/style.css"
+            page = page.replace(m_css.group(0),
+                                '<link rel="stylesheet" href="%s">' % href)
         if m_js:
-            s = s.replace(m_js.group(0), '<script src="/app.js" defer></script>')
-        f.write_text(s, encoding="utf-8")
-    if css:
-        # strip comments and collapse the indentation the source uses for readability
-        css = re.sub(r"/\*[\s\S]*?\*/", "", css)
-        css = re.sub(r"\n\s+", "\n", css)
-        css = re.sub(r"\n{2,}", "\n", css).strip()
-        (SITE / "style.css").write_text(css, encoding="utf-8")
-    if js:
-        (SITE / "app.js").write_text(js.strip(), encoding="utf-8")
-    print(f"  extracted style.css ({len(css)//1024} KB) and app.js ({len(js)//1024} KB)")
+            if is_landing:
+                (SITE / "landing.js").write_text(m_js.group(1).strip(), encoding="utf-8")
+                wrote.append("landing.js")
+            elif shared_js is None:
+                shared_js = m_js.group(1)
+            src = "/landing.js" if is_landing else "/app.js"
+            page = page.replace(m_js.group(0),
+                                '<script src="%s" defer></script>' % src)
+        f.write_text(page, encoding="utf-8")
+
+    if shared_css:
+        (SITE / "style.css").write_text(tidy(shared_css), encoding="utf-8")
+        wrote.append("style.css")
+    if shared_js:
+        (SITE / "app.js").write_text(shared_js.strip(), encoding="utf-8")
+        wrote.append("app.js")
+    sizes = ", ".join("%s (%d KB)" % (n, (SITE / n).stat().st_size // 1024) for n in wrote)
+    print("  extracted " + sizes)
 
 
 if __name__ == "__main__":

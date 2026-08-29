@@ -20,12 +20,16 @@
 <meta name="twitter:title" content="For engineers | Foray">
 <meta name="twitter:description" content="Join the Foray pool with your LinkedIn and GitHub. We contact you only when a role fits.">
 <meta name="twitter:image" content="https://goforay.io/og.png">
-<meta name="theme-color" content="#080D0B">
+<meta name="theme-color" content="#241C3B">
 <!-- /stamp -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <div class="ticker"><div class="wrap lbl"><s>&mdash;</s>Now booking engineering searches for Q4<s>&mdash;</s></div></div>
@@ -34,90 +38,81 @@
     <a href="index.html" class="mark" aria-label="Foray home"><b><i></i><i></i><i></i><i></i></b>Foray</a>
     <nav class="links lbl" aria-label="Main"><a href="companies.html">Companies</a><a href="engineers.html" class="on">Engineers</a></nav>
     <div class="clock lbl"><span>San Francisco</span><span id="clk">--:--</span></div>
+    <a href="companies.html" class="navcta lbl">Start a search</a>
   </div>
 </header>
 <main>
   <section class="sec first">
     <div class="wrap">
       <div class="head">
-        <p class="lbl dim">For engineers</p>
+        <p class="lbl dim">For Engineers</p>
         <div>
-          <h1 class="t2">Two links and you are in the pool.</h1>
+          <h1 class="t2">Two Links And You Are In The Pool.</h1>
           <p class="lede">No forms to fill twice, no cover letter. We read your work, then contact you
             only when a role fits.</p>
         </div>
       </div>
 
-      <div class="fgroup rv">
-        <p class="glbl"><b>Required</b><s></s></p>
-        <div class="form" data-compose="Engineer intake" data-kind="engineer">
-          <div class="fld">
-            <label for="e-name">Name <i>&bull;</i></label>
-            <input id="e-name" data-label="Name" data-req type="text" placeholder="First and last">
-          </div>
-          <div class="fld">
-            <label for="e-email">Email <i>&bull;</i></label>
-            <input id="e-email" data-label="Email" data-req type="email" placeholder="you@domain.com">
-          </div>
-          <div class="fld">
-            <label for="e-li">LinkedIn <i>&bull;</i></label>
-            <input id="e-li" data-label="LinkedIn" data-req type="url" placeholder="linkedin.com/in/">
-          </div>
-          <div class="fld">
-            <label for="e-gh">GitHub <i>&bull;</i></label>
-            <input id="e-gh" data-label="GitHub" data-req type="url" placeholder="github.com/">
-          </div>
-          <div class="fld wide">
-            <label for="e-want">What you want next <i>&bull;</i></label>
-            <textarea id="e-want" data-label="What they want next" data-req
-              placeholder="One or two lines. Stage, scope, the kind of problem."></textarea>
-          </div>
+      <div class="form rv" data-compose="Engineer intake">
+        <div class="fld">
+          <label for="e-name">Name</label>
+          <input id="e-name" data-label="Name" type="text" placeholder="Your name">
+        </div>
+        <div class="fld">
+          <label for="e-email">Email</label>
+          <input id="e-email" data-label="Email" type="email" placeholder="you@domain.com">
+        </div>
+        <div class="fld">
+          <label for="e-li">LinkedIn</label>
+          <input id="e-li" data-label="LinkedIn" type="url" placeholder="linkedin.com/in/">
+        </div>
+        <div class="fld">
+          <label for="e-gh">GitHub</label>
+          <input id="e-gh" data-label="GitHub" type="url" placeholder="github.com/">
+        </div>
+        <div class="fld">
+          <label for="e-work">Best piece of work</label>
+          <input id="e-work" data-label="Best work" type="url" placeholder="A repo, a PR, or something you shipped">
+        </div>
+        <div class="fld">
+          <label for="e-years">Years writing code professionally</label>
+          <select id="e-years" data-label="Experience">
+            <option value="">Select</option>
+            <option>0 to 2 years</option>
+            <option>2 to 4 years</option>
+            <option>4 to 6 years</option>
+            <option>6 to 8 years</option>
+            <option>8 years or more</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label for="e-when">Timeline</label>
+          <select id="e-when" data-label="Timeline">
+            <option value="">Select</option>
+            <option>Looking now</option>
+            <option>Open in the next three months</option>
+            <option>Open in six months</option>
+            <option>Only for the right role</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label for="e-where">Location and remote preference</label>
+          <input id="e-where" data-label="Location" type="text" placeholder="City, and onsite / hybrid / remote">
+        </div>
+        <div class="fld">
+          <label for="e-auth">Work authorization</label>
+          <input id="e-auth" data-label="Work authorization" type="text" placeholder="Citizen, green card, visa type">
+        </div>
+        <div class="fld">
+          <label for="e-comp">Comp band you would move for</label>
+          <input id="e-comp" data-label="Comp expectation" type="text" placeholder="Base, and how you weigh equity">
+        </div>
+        <div class="fld wide">
+          <label for="e-want">What you want next</label>
+          <textarea id="e-want" data-label="What they want next"
+            placeholder="One or two lines. Stage, scope, the kind of problem."></textarea>
         </div>
       </div>
-
-      <div class="fgroup rv">
-        <p class="glbl">Optional<s></s></p>
-        <div class="form">
-          <div class="fld">
-            <label for="e-work">Best piece of work</label>
-            <input id="e-work" data-label="Best work" type="url" placeholder="A repo, a PR, something you shipped">
-          </div>
-          <div class="fld">
-            <label for="e-years">Years writing code professionally</label>
-            <select id="e-years" data-label="Experience">
-              <option value="">Select</option>
-              <option>0 to 2 years</option>
-              <option>2 to 4 years</option>
-              <option>4 to 6 years</option>
-              <option>6 to 8 years</option>
-              <option>8 years or more</option>
-            </select>
-          </div>
-          <div class="fld">
-            <label for="e-when">Timeline</label>
-            <select id="e-when" data-label="Timeline">
-              <option value="">Select</option>
-              <option>Looking now</option>
-              <option>Open in the next three months</option>
-              <option>Open in six months</option>
-              <option>Only for the right role</option>
-            </select>
-          </div>
-          <div class="fld">
-            <label for="e-where">Location and remote preference</label>
-            <input id="e-where" data-label="Location" type="text" placeholder="City, and onsite / hybrid / remote">
-          </div>
-          <div class="fld">
-            <label for="e-auth">Work authorization</label>
-            <input id="e-auth" data-label="Work authorization" type="text" placeholder="Citizen, green card, visa type">
-          </div>
-          <div class="fld">
-            <label for="e-comp">Comp band you would move for</label>
-            <input id="e-comp" data-label="Comp expectation" type="text" placeholder="Base, and how you weigh equity">
-          </div>
-        </div>
-      </div>
-
       <div class="formfoot rv">
         <button class="btn" type="button" data-send>Join the pool</button>
         <p>This opens an email with your answers filled in, so you can see what we get before you send
@@ -153,7 +148,7 @@
 
   <section class="band">
     <div class="wrap">
-      <h2 class="rv">Your work is easier to read than your r&eacute;sum&eacute;.</h2>
+      <h2 class="rv">Your Work Is Easier To Read Than Your R&eacute;sum&eacute;.</h2>
     </div>
   </section>
 
@@ -190,9 +185,5 @@
   </div>
 </footer>
 <script src="/app.js" defer></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

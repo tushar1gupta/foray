@@ -20,6 +20,26 @@
     tick();setInterval(tick,20000);
   }
 
+  /* ask box -> the company onboarding page, carrying what they typed */
+  var send=function(text){
+    var t=(text||'').trim();
+    if(!t){return;}
+    window.location.href='companies.html?role='+encodeURIComponent(t);
+  };
+  var q=document.getElementById('q');
+  var go=document.getElementById('go');
+  if(q&&go){
+    go.addEventListener('click',function(){send(q.value);});
+    q.addEventListener('keydown',function(e){if(e.key==='Enter'){send(q.value);}});
+    var sg=document.querySelectorAll('.sugg button');
+    for(var k=0;k<sg.length;k++){
+      sg[k].addEventListener('click',function(){
+        q.value=this.getAttribute('data-q');q.focus();
+      });
+    }
+  }
+
+
   /* the static field is deterministic, so it is generated here instead of shipped as markup */
   var fieldEl=document.getElementById('field');
   if(fieldEl){
@@ -147,99 +167,42 @@
     });
   }
 
-  /* onboarding forms: validate the required fields, then compose an email */
-  var sendBtn=document.querySelector('[data-send]');
-  if(sendBtn){
-    var subjEl=document.querySelector('[data-compose]');
-    var subject=subjEl?subjEl.getAttribute('data-compose'):'Foray';
-    var fields=document.querySelectorAll('.fld input,.fld textarea,.fld select');
-    var note=document.querySelector('.formfoot p');
-    var noteText=note?note.textContent:'';
-    var clearMiss=function(){
-      var card=this.parentNode;
-      if(card&&card.classList){card.classList.remove('miss');}
-      if(note){note.classList.remove('err');note.textContent=noteText;}
-    };
-    for(var i4=0;i4<fields.length;i4++){
-      fields[i4].addEventListener('input',clearMiss);
-      fields[i4].addEventListener('change',clearMiss);
+  /* carry the hero input into the form */
+  try{
+    var qs=new URLSearchParams(window.location.search).get('role');
+    if(qs){
+      var target=qs.length>90?document.getElementById('c-jd'):document.getElementById('c-role');
+      if(target){
+        target.value=qs;
+        target.classList.add('prefilled');
+        var card=target.closest('.fld');
+        if(card){card.classList.add('prefilled-card');}
+        setTimeout(function(){
+          target.scrollIntoView({block:'center',behavior:'smooth'});
+        },220);
+      }
     }
-    sendBtn.addEventListener('click',function(){
-      var parts=[],data={},missing=[],f,v,card;
-      for(var i5=0;i5<fields.length;i5++){
-        f=fields[i5];v=(f.value||'').trim();card=f.parentNode;
-        if(f.hasAttribute('data-req')&&!v){
-          card.classList.add('miss');card.classList.remove('ok');missing.push(card);
-        }else{
-          card.classList.remove('miss');
-          if(v){card.classList.add('ok');}else{card.classList.remove('ok');}
+  }catch(e){}
+
+  /* onboarding forms compose an email, since there is no backend yet */
+  var forms=document.querySelectorAll('[data-compose]');
+  for(var g2=0;g2<forms.length;g2++){
+    (function(root){
+      var btn=root.querySelector('[data-send]');
+      if(!btn){return;}
+      btn.addEventListener('click',function(){
+        var parts=[],ok=false;
+        var fields=root.querySelectorAll('input,textarea,select');
+        for(var i3=0;i3<fields.length;i3++){
+          var f=fields[i3],v=(f.value||'').trim();
+          if(v){ok=true;parts.push((f.getAttribute('data-label')||f.name||'Field')+': '+v);}
         }
-        if(v){
-          var lbl=f.getAttribute('data-label')||'Field';
-          parts.push(lbl+': '+v);data[lbl]=v;
-        }
-      }
-      if(missing.length){
-        if(note){
-          note.classList.add('err');
-          note.textContent=missing.length===1?'One required field still to fill.':
-            missing.length+' required fields still to fill.';
-        }
-        missing[0].scrollIntoView({block:'center',behavior:'smooth'});
-        var first=missing[0].querySelector('input,textarea,select');
-        if(first){first.focus();}
-        return;
-      }
-      var mailto=function(){
-        window.location.href='mailto:contact@goforay.io?subject='+encodeURIComponent(subject)+
+        if(!ok){var first=root.querySelector('input,textarea');if(first){first.focus();}return;}
+        window.location.href='mailto:contact@goforay.io?subject='+
+          encodeURIComponent(root.getAttribute('data-compose'))+
           '&body='+encodeURIComponent(parts.join('\n')+'\n\n');
-      };
-      var kind=subjEl?subjEl.getAttribute('data-kind'):null;
-      if(!kind||!window.fetch){mailto();return;}
-
-      var label=sendBtn.textContent;
-      sendBtn.disabled=true;sendBtn.textContent='Sending';
-      if(note){note.classList.remove('err','done');note.textContent='';}
-
-      var done=function(){sendBtn.disabled=false;sendBtn.textContent=label;};
-      var fail=function(msg,missingLabels){
-        done();
-        if(note){note.classList.add('err');note.textContent=msg;}
-        if(missingLabels&&missingLabels.length){
-          for(var i6=0;i6<fields.length;i6++){
-            if(missingLabels.indexOf(fields[i6].getAttribute('data-label'))>-1){
-              fields[i6].parentNode.classList.add('miss');
-            }
-          }
-        }
-      };
-
-      fetch('/api/submit',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({kind:kind,fields:data})
-      }).then(function(r){
-        return r.json().then(function(j){return {status:r.status,body:j};},
-                             function(){return {status:r.status,body:{}};});
-      }).then(function(r){
-        if(r.status>=200&&r.status<300&&r.body.ok){
-          done();
-          for(var i7=0;i7<fields.length;i7++){fields[i7].value='';
-            fields[i7].parentNode.classList.remove('ok','miss');}
-          if(note){
-            note.classList.add('done');
-            note.textContent='Received. We reply within a day, to '+(data.Email||'your inbox')+'.';
-          }
-          sendBtn.disabled=true;sendBtn.textContent='Sent';
-          return;
-        }
-        if(r.status>=500||!r.body.error){
-          // our end is down; do not lose the submission
-          done();mailto();return;
-        }
-        fail(r.body.error,r.body.missing);
-      }).catch(function(){done();mailto();});
-    });
+      });
+    })(forms[g2]);
   }
 
   /* screen bar */
