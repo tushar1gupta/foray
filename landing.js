@@ -16,6 +16,20 @@
 
   /* ---- dialogs -------------------------------------------------------- */
   var clip = document.getElementById("lp-voice");
+  /* Calendly's widget is a third party, and most visitors never open the hire
+     dialog. Fetch it the first time somebody does rather than on every page
+     load. widget.js scans for .calendly-inline-widget when it runs, and by then
+     the container is already in the document. */
+  var calendarAsked = false;
+  function loadCalendar() {
+    if (calendarAsked) return;
+    calendarAsked = true;
+    var s = document.createElement("script");
+    s.src = "https://assets.calendly.com/assets/external/widget.js";
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
   function playVoice() {
     if (!clip) return;
     try {
@@ -56,6 +70,7 @@
       if (d && d.showModal) {
         d.showModal();
         if (d.id === "lp-call") playVoice();
+        if (d.id === "lp-hire") loadCalendar();
       }
       return;
     }

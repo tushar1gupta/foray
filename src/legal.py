@@ -128,7 +128,8 @@ PRIVACY_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last up
     <tr><td>Vercel</td><td>Website hosting and form submissions</td></tr>
     <tr><td>Twilio</td><td>Our phone number, calls, and text messages</td></tr>
     <tr><td>Retell AI</td><td>The voice assistant: call audio and transcripts</td></tr>
-    <tr><td>Linq</td><td>Message delivery on our text channel</td></tr>
+    <tr><td>Calendly</td><td>Booking a call: the times you pick and the details you enter</td></tr>
+<tr><td>Linq</td><td>Message delivery on our text channel</td></tr>
     <tr><td>Anthropic</td><td>The AI models behind the assistant</td></tr>
   </table>
 </div>

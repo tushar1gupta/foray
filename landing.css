@@ -403,17 +403,11 @@ font-family:'Bricolage Grotesque',system-ui,sans-serif}
 .lp-modal h3{font-size:clamp(20px,3vw,26px); font-weight:600; letter-spacing:-.024em}
 .lp-modal p{color:var(--muted); font-size:14px}
 .lp-modal .acts{display:flex; flex-wrap:wrap; align-items:center; gap:12px}
-.lp-month{background:var(--tint2); border:1px solid var(--line); border-radius:14px; padding:16px;
-display:flex; flex-direction:column; gap:10px}
-.lp-month .hdr{display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:700}
-.lp-month .hdr span{font-weight:400; font-size:11px; color:var(--muted)}
-.lp-days{display:grid; grid-template-columns:repeat(7,1fr); gap:5px}
-.lp-days span{text-align:center; padding:6px 0; font-size:12px; color:var(--muted); border-radius:8px}
-.lp-days span.sel{background:var(--primary); color:#fff; font-weight:700}
-.lp-times{display:flex; gap:8px}
-.lp-times span{flex:1; text-align:center; border:1px solid var(--line2); border-radius:999px;
-padding:7px 0; font-size:12px; color:var(--muted)}
-.lp-times span.sel{border:1.5px solid var(--primary); color:var(--primary); font-weight:700}
+.lp-modal.wide{max-width:min(720px,94vw)}
+.lp-modal.wide .box{max-height:92vh; overflow-y:auto}
+.lp-cal{min-width:320px; height:min(660px,62vh); border-radius:12px; overflow:hidden;
+background:var(--tint3)}
+.lp-calnote{font-size:12.5px; color:var(--muted)}
 .lp [hidden]{display:none}
 .lp-form-grid{display:grid; gap:12px}
 .lp-field{display:flex; flex-direction:column; gap:6px}

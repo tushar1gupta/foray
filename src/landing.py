@@ -506,17 +506,14 @@ CSS = r"""
 .lp-modal h3{font-size:clamp(20px,3vw,26px); font-weight:600; letter-spacing:-.024em}
 .lp-modal p{color:var(--muted); font-size:14px}
 .lp-modal .acts{display:flex; flex-wrap:wrap; align-items:center; gap:12px}
-.lp-month{background:var(--tint2); border:1px solid var(--line); border-radius:14px; padding:16px;
-  display:flex; flex-direction:column; gap:10px}
-.lp-month .hdr{display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:700}
-.lp-month .hdr span{font-weight:400; font-size:11px; color:var(--muted)}
-.lp-days{display:grid; grid-template-columns:repeat(7,1fr); gap:5px}
-.lp-days span{text-align:center; padding:6px 0; font-size:12px; color:var(--muted); border-radius:8px}
-.lp-days span.sel{background:var(--primary); color:#fff; font-weight:700}
-.lp-times{display:flex; gap:8px}
-.lp-times span{flex:1; text-align:center; border:1px solid var(--line2); border-radius:999px;
-  padding:7px 0; font-size:12px; color:var(--muted)}
-.lp-times span.sel{border:1.5px solid var(--primary); color:var(--primary); font-weight:700}
+/* The hire dialog carries the real scheduler, which wants more width than a
+   dialog sized for three form fields, and more height than a short laptop has.
+   Cap it against the viewport and let the box scroll rather than overflow. */
+.lp-modal.wide{max-width:min(720px,94vw)}
+.lp-modal.wide .box{max-height:92vh; overflow-y:auto}
+.lp-cal{min-width:320px; height:min(660px,62vh); border-radius:12px; overflow:hidden;
+  background:var(--tint3)}
+.lp-calnote{font-size:12.5px; color:var(--muted)}
 
 /* ---- waitlist form ---------------------------------------------------- */
 .lp [hidden]{display:none}
@@ -587,6 +584,20 @@ JS = r"""
 
   /* ---- dialogs -------------------------------------------------------- */
   var clip = document.getElementById("lp-voice");
+  /* Calendly's widget is a third party, and most visitors never open the hire
+     dialog. Fetch it the first time somebody does rather than on every page
+     load. widget.js scans for .calendly-inline-widget when it runs, and by then
+     the container is already in the document. */
+  var calendarAsked = false;
+  function loadCalendar() {
+    if (calendarAsked) return;
+    calendarAsked = true;
+    var s = document.createElement("script");
+    s.src = "https://assets.calendly.com/assets/external/widget.js";
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
   function playVoice() {
     if (!clip) return;
     try {
@@ -627,6 +638,7 @@ JS = r"""
       if (d && d.showModal) {
         d.showModal();
         if (d.id === "lp-call") playVoice();
+        if (d.id === "lp-hire") loadCalendar();
       }
       return;
     }
@@ -1210,7 +1222,7 @@ def legal_shell(h1, prose):
         '          <li><a href="index.html#lp-phone">Try the agent</a></li>\n'
         '        </ul></div>\n'
         '        <div><h4>Hiring</h4><ul>\n'
-        '          <li><a href="index.html#companies">Book 20 minutes</a></li>\n'
+        '          <li><a href="index.html#companies">Book 15 minutes</a></li>\n'
         '        </ul></div>\n'
         '        <div><h4>Contact</h4><ul>\n'
         '          <li><a href="index.html">Join the waitlist</a></li>\n'
@@ -1283,7 +1295,7 @@ BODY = """
         <button type="button" class="lp-door hire" data-open="lp-hire">
           <span class="ico">{icon_team_a}</span>
           <span><span class="tt">I&rsquo;m hiring</span>
-            <span class="ss">Book 20 minutes &middot; success fee only</span></span>
+            <span class="ss">Book 15 minutes &middot; success fee only</span></span>
           <span class="arw" aria-hidden="true">{icon_arrow_a}</span>
         </button>
         <span class="lp-free">10 applications, free</span>
@@ -1578,12 +1590,12 @@ BODY = """
         </div>
 
         <div class="lp-booking">
-          <div class="t"><b>Grab 20 minutes with us.</b>
+          <div class="t"><b>Grab 15 minutes with us.</b>
             <span>Bring the role. We&rsquo;ll walk you through the pool and show you what our read
               looks like.</span></div>
           <div class="a">
             <button type="button" class="lp-btn" data-open="lp-hire">Book on Calendly</button>
-            <small>calendly.com/goforay/intro &middot; 20 min</small>
+            <small>calendly.com/sathya-goforay &middot; 15 min</small>
           </div>
         </div>
       </div>
@@ -1612,7 +1624,7 @@ BODY = """
           <li><button type="button" data-chat>Try the agent</button></li>
         </ul></div>
         <div><h4>Hiring</h4><ul>
-          <li><button type="button" data-open="lp-hire">Book 20 minutes</button></li>
+          <li><button type="button" data-open="lp-hire">Book 15 minutes</button></li>
         </ul></div>
         <div><h4>Contact</h4><ul>
           <li><button type="button" data-open="lp-waitlist">Join the waitlist</button></li>
@@ -1702,24 +1714,15 @@ BODY = """
   </dialog>
 
 
-  <dialog class="lp-modal" id="lp-hire">
+  <dialog class="lp-modal wide" id="lp-hire">
     <div class="box">
       <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
       <span class="lbl" style="color:var(--accent-deep)">For companies</span>
-      <h3>Grab 20 minutes with us.</h3>
-      <div class="lp-month">
-        <div class="hdr"><b>September</b><span>Pick a day</span></div>
-        <div class="lp-days">
-          <span>8</span><span>9</span><span>10</span><span class="sel">11</span>
-          <span>12</span><span>15</span><span>16</span>
-        </div>
-        <div class="lp-times"><span>10:00</span><span class="sel">2:30</span><span>4:00</span></div>
-      </div>
+      <h3>Grab 15 minutes with us.</h3>
       <p>Five tailored candidates, our read on each. You pay only when you hire.</p>
-      <div class="acts">
-        <a class="lp-btn" href="https://calendly.com/goforay/intro" target="_blank" rel="noopener">Book on Calendly</a>
-        <button type="button" class="lp-btn ghost" data-close>Close</button>
-      </div>
+      <div class="lp-cal calendly-inline-widget" data-url="https://calendly.com/sathya-goforay/30min"></div>
+      <p class="lp-calnote">Not loading? <a href="https://calendly.com/sathya-goforay/30min" target="_blank" rel="noopener">Open the
+        calendar in a new tab</a>.</p>
     </div>
   </dialog>
 
