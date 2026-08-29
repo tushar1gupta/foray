@@ -141,8 +141,21 @@ CSS = r"""
 .lp-phone-head .lp-logo i{width:4px; height:4px}
 .lp-live{margin-left:auto; font-size:11.5px; color:var(--muted)}
 .lp-thread{display:flex; flex-direction:column; gap:9px; min-height:430px}
-.lp-msg{max-width:88%; padding:9px 13px; font-size:13.5px; line-height:1.45; border-radius:18px;
-  animation:lp-rise .35s ease both}
+.lp-msg{position:relative; max-width:88%; padding:9px 13px; font-size:13.5px; line-height:1.45;
+  border-radius:18px; animation:lp-rise .35s ease both}
+/* A tapback sits on the far corner of the bubble it belongs to, trailing two
+   small bubbles back toward it -- the way the other party's reaction lands in
+   iMessage. The extra top margin keeps it from clipping the message above. */
+.lp-msg.reacted{margin-top:18px}
+.lp-react{position:absolute; top:-16px; left:-16px; min-width:27px; height:27px; padding:0 5px;
+  border-radius:14px; background:#fff; border:1px solid #E6E3F0;
+  display:flex; align-items:center; justify-content:center; font-size:13px; line-height:1;
+  box-shadow:0 2px 8px rgba(20,16,40,.14); transform-origin:85% 85%;
+  animation:lp-react-in .4s cubic-bezier(.34,1.56,.64,1) both}
+.lp-react i{position:absolute; border-radius:50%; background:#fff; border:1px solid #E6E3F0}
+.lp-react i:first-child{width:8px; height:8px; bottom:-4px; right:2px}
+.lp-react i:last-child{width:4px; height:4px; bottom:-8px; right:-1px}
+@keyframes lp-react-in{from{transform:scale(0); opacity:0}to{transform:scale(1); opacity:1}}
 .lp-msg.me{align-self:flex-end; background:var(--imsg-out); color:#fff; border-bottom-right-radius:6px}
 .lp-msg.them{align-self:flex-start; background:var(--imsg-in); color:#1A1A1A; border-bottom-left-radius:6px}
 .lp-msg.wide{max-width:92%; display:flex; flex-direction:column; gap:8px}
@@ -669,6 +682,28 @@ JS = r"""
     thread.scrollTop = thread.scrollHeight;
     return b;
   }
+  function react(msg, glyph) {
+    msg.classList.add("reacted");
+    var t = el("span", "lp-react", glyph);
+    t.appendChild(el("i"));
+    t.appendChild(el("i"));
+    msg.appendChild(t);
+  }
+
+  /* Tapbacks land where a person would actually reach for one. Reacting to
+     every message reads as a bot with a stuck key, so this stays sparing and
+     never fires twice in a row. */
+  var lastReact = -9;
+  function reactionFor(text, n) {
+    if (n - lastReact < 3) return "";
+    var t = text.trim().toLowerCase();
+    if (/^(yes|yep|yeah|yup|sure|perfect|great|nice|please|do it|go for it|sounds good)\b/.test(t))
+      return "\u2764\uFE0F";
+    if (/^(0?[123])\b/.test(t)) return "\u2764\uFE0F";
+    if (n === 3) return "\uD83D\uDC4D";
+    return "";
+  }
+
   function typing() {
     var d = el("div", "lp-dots");
     d.innerHTML = "<i></i><i></i><i></i>";
@@ -746,19 +781,37 @@ JS = r"""
     thread.appendChild(el("span", "lp-meta", "Live"));
   }
 
+  /* The moment somebody starts typing, the demo gets out of the way -- and an
+     empty box is a bad thing to type into, so Foray says hello while they are
+     still composing. On the live path render() redraws from the server
+     transcript, so this greeting is only ever the local one. */
+  var greeted = false;
+  function greet() {
+    if (greeted) return;
+    greeted = true;
+    goLive();
+    var dots = typing();
+    setTimeout(function () {
+      if (dots.parentNode) dots.parentNode.removeChild(dots);
+      bubble("them", "hey \u2014 i'm foray. tell me what you're after and i'll go find it.");
+    }, 650);
+  }
+  input.addEventListener("input", greet);
+
   /* The fallback, used only when no widget token is configured or the API is
-     unreachable. The copy is the real intake's, not an approximation: the
-     greeting is messaging/prompts.py greeting_for(), the first two asks are
-     messaging/identity.py ASKS in missing_identity() order (name, then email),
-     and the rest are prompts.QUESTIONS in gate order. Keep them in step -- a
-     visitor who types here should get the same conversation the live thread
-     would give them, minus the part where we remember it. */
+     unreachable. The asks track the real intake: messaging/identity.py ASKS in
+     missing_identity() order (name, then email), then prompts.QUESTIONS in gate
+     order. Keep them in step -- a visitor who types here should get the same
+     conversation the live thread would give them, minus the part where we
+     remember it. The greeting is deliberately not greeting_for()'s: that one
+     discloses the agent as an AI because SMS wants it to, and this is a demo
+     widget on our own page, where it only reads as throat-clearing. */
   var stage = 0;
   function offlineReplies() {
     var s = stage++;
     if (s === 0) return [
-      "hey, i'm foray from Foray. i'm an ai, and i'm here to take a few details so we can match you to the right roles. it takes a couple of minutes.",
-      "first things first — what name should i put on this?"
+      "good to meet you. a few details and i can start matching \u2014 couple of minutes, tops.",
+      "first things first \u2014 what name should i put on this?"
     ];
     if (s === 1) return ["and the best email to reach you on?"];
     if (s === 2) return ["what kind of role are you looking for next?"];
@@ -827,7 +880,12 @@ JS = r"""
     input.value = "";
     busy = true;
     turns++;
-    bubble("me", text);
+    var mine = bubble("me", text);
+    var glyph = reactionFor(text, turns);
+    if (glyph) {
+      lastReact = turns;
+      setTimeout(function () { react(mine, glyph); }, 1300);
+    }
     var dots = typing();
 
     function offline() {

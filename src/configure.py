@@ -299,7 +299,9 @@ if __name__ == "__main__":
         print(__doc__)
         sys.exit(1)
     dom = sys.argv[1].replace("https://", "").replace("http://", "").strip("/")
-    mail = sys.argv[2] if len(sys.argv) > 2 else f"contact@{dom}"
+    # anna@ is the inbox that is actually read. contact@ never was, and it is
+    # what the privacy policy and terms point people at for deletion requests.
+    mail = sys.argv[2] if len(sys.argv) > 2 else f"anna@{dom}"
     print(f"configuring for {dom}, contact {mail}")
     stamp(dom, mail)
     print(f"  og.png {og_card(dom) // 1024} KB")

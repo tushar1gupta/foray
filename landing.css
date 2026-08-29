@@ -81,8 +81,18 @@ box-shadow:0 10px 24px rgba(42,33,64,.3)}
 .lp-phone-head .lp-logo i{width:4px; height:4px}
 .lp-live{margin-left:auto; font-size:11.5px; color:var(--muted)}
 .lp-thread{display:flex; flex-direction:column; gap:9px; min-height:430px}
-.lp-msg{max-width:88%; padding:9px 13px; font-size:13.5px; line-height:1.45; border-radius:18px;
-animation:lp-rise .35s ease both}
+.lp-msg{position:relative; max-width:88%; padding:9px 13px; font-size:13.5px; line-height:1.45;
+border-radius:18px; animation:lp-rise .35s ease both}
+.lp-msg.reacted{margin-top:18px}
+.lp-react{position:absolute; top:-16px; left:-16px; min-width:27px; height:27px; padding:0 5px;
+border-radius:14px; background:#fff; border:1px solid #E6E3F0;
+display:flex; align-items:center; justify-content:center; font-size:13px; line-height:1;
+box-shadow:0 2px 8px rgba(20,16,40,.14); transform-origin:85% 85%;
+animation:lp-react-in .4s cubic-bezier(.34,1.56,.64,1) both}
+.lp-react i{position:absolute; border-radius:50%; background:#fff; border:1px solid #E6E3F0}
+.lp-react i:first-child{width:8px; height:8px; bottom:-4px; right:2px}
+.lp-react i:last-child{width:4px; height:4px; bottom:-8px; right:-1px}
+@keyframes lp-react-in{from{transform:scale(0); opacity:0}to{transform:scale(1); opacity:1}}
 .lp-msg.me{align-self:flex-end; background:var(--imsg-out); color:#fff; border-bottom-right-radius:6px}
 .lp-msg.them{align-self:flex-start; background:var(--imsg-in); color:#1A1A1A; border-bottom-left-radius:6px}
 .lp-msg.wide{max-width:92%; display:flex; flex-direction:column; gap:8px}
