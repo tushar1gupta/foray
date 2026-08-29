@@ -162,10 +162,11 @@
      long enough to take the brief and come back with roles, which is the part
      worth showing -- then hand them to the waitlist rather than letting the
      conversation run on into nothing. */
-  var TURNS_BEFORE_WAITLIST = 7;
+  var TURNS_BEFORE_WAITLIST = 6;
   var turns = 0;
   var joined = false;
   var handedOver = false;
+  var told = false;
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -179,9 +180,9 @@
     thread.scrollTop = thread.scrollHeight;
     return b;
   }
-  function react(msg, glyph) {
+  function react(msg, glyph, mine) {
     msg.classList.add("reacted");
-    var t = el("span", "lp-react", glyph);
+    var t = el("span", "lp-react" + (mine ? " mine" : ""), glyph);
     t.appendChild(el("i"));
     t.appendChild(el("i"));
     msg.appendChild(t);
@@ -337,9 +338,8 @@
     ];
     if (s === 1) return ["and the best email to reach you on?"];
     if (s === 2) return ["what kind of role are you looking for next?"];
-    if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
-    if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
-    if (s === 5) return [
+    if (s === 3) return ["where are you based, and where would you want to work?"];
+    if (s === 4) return [
       "got it. that's the brief. give me a second.",
       "three worth your time:",
       "01 · senior backend engineer at stripe. sf hybrid, $185–210k",
@@ -347,10 +347,15 @@
       "03 · platform engineer at figma. sf hybrid, $195k",
       "like the one you want and i'll get the application ready"
     ];
-    if (s === 6) return [
-      "on it. i'd send a resume tailored to that posting and a short note to their hiring manager.",
-      "you'd see both before anything goes out. nothing sends without your yes."
-    ];
+    if (s === 5) {
+      told = true;
+      return [
+        "on it. normally i'd tailor a resume to that posting and write to their hiring manager, "
+          + "and you'd see both before anything went out.",
+        "this is the demo though, so it stops here. join the waitlist and i'll do it for real the "
+          + "day your spot opens."
+      ];
+    }
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
 
@@ -381,6 +386,29 @@
     });
   }
 
+  /* Only the numbered suggestion lines are pickable. The label is the role
+     itself, which is what the thread should say they liked. */
+  function offerPick(b, line) {
+    var m = /^(0[123]) \u00b7 ([^.]+)\./.exec(line);
+    if (!m) return b;
+    b.classList.add("pickable");
+    b.setAttribute("role", "button");
+    b.setAttribute("tabindex", "0");
+    b.setAttribute("aria-label", "Like " + m[2]);
+    function choose() {
+      if (b.classList.contains("liked") || busy || handedOver) return;
+      b.classList.add("liked");
+      b.removeAttribute("tabindex");
+      react(b, "\u2764\uFE0F", true);
+      sendTurn(m[1], m[2]);
+    }
+    b.addEventListener("click", choose);
+    b.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); }
+    });
+    return b;
+  }
+
   function handOver() {
     handedOver = true;
     input.disabled = true;
@@ -395,18 +423,33 @@
     thread.scrollTop = thread.scrollHeight;
   }
 
+  /* Liking one of the suggestions has to move the conversation on the same way
+     typing does, so the thread-advancing half of submit lives here and takes
+     the pick as an argument. */
   function submit() {
     var text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    sendTurn(text, null);
+  }
+
+  function sendTurn(text, liked) {
     if (!text || busy || handedOver) return;
     goLive();
-    input.value = "";
     busy = true;
     turns++;
-    var mine = bubble("me", text);
-    var glyph = reactionFor(text, turns);
-    if (glyph) {
-      lastReact = turns;
-      setTimeout(function () { react(mine, glyph); }, 1300);
+    if (liked) {
+      /* A tapback is not a message. Note what they liked the way a real thread
+         does rather than putting a bare "01" in a blue bubble. */
+      thread.appendChild(el("span", "lp-meta right", "you liked \u201C" + liked + "\u201D"));
+      thread.scrollTop = thread.scrollHeight;
+    } else {
+      var mine = bubble("me", text);
+      var glyph = reactionFor(text, turns);
+      if (glyph) {
+        lastReact = turns;
+        setTimeout(function () { react(mine, glyph); }, 1300);
+      }
     }
     var dots = typing();
 
@@ -415,7 +458,7 @@
       lines.forEach(function (line, i) {
         setTimeout(function () {
           if (i === 0 && dots.parentNode) dots.parentNode.removeChild(dots);
-          bubble("them", line);
+          offerPick(bubble("them", line), line);
           if (i === lines.length - 1) {
             busy = false;
             maybeHandOver();
@@ -427,8 +470,11 @@
     function maybeHandOver() {
       if (handedOver || joined || turns < TURNS_BEFORE_WAITLIST) return;
       setTimeout(function () {
-        bubble("them", "this is the demo, so it stops here. we're opening spots in batches. " +
-          "join the waitlist and i'll pick it up for real the day yours is ready.");
+        /* If they got here by liking a role they have just been told all this. */
+        if (!told) {
+          bubble("them", "this is the demo, so it stops here. we're opening spots in batches. " +
+            "join the waitlist and i'll pick it up for real the day yours is ready.");
+        }
         handOver();
       }, 900);
     }
