@@ -457,6 +457,47 @@ CSS = r"""
   padding:7px 0; font-size:12px; color:var(--muted)}
 .lp-times span.sel{border:1.5px solid var(--primary); color:var(--primary); font-weight:700}
 
+/* ---- waitlist form ---------------------------------------------------- */
+.lp-form-grid{display:grid; gap:12px}
+.lp-field{display:flex; flex-direction:column; gap:6px}
+.lp-field label{font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted)}
+.lp-field input{border:1px solid var(--line2); border-radius:10px; padding:11px 14px;
+  font:inherit; font-size:15px; background:#fff; color:var(--ink)}
+.lp-field input:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--tint)}
+.lp-field input[aria-invalid="true"]{border-color:#C2415A; box-shadow:0 0 0 3px rgba(194,65,90,.12)}
+.lp-field .hint{font-size:11.5px; color:var(--muted)}
+.lp-formnote{font-size:12.5px; color:var(--muted)}
+.lp-formerr{font-size:13px; color:#C2415A; min-height:1.2em}
+.lp-done{display:flex; flex-direction:column; gap:10px; align-items:flex-start}
+.lp-done .tickbig{width:44px; height:44px; border-radius:50%; background:var(--tint);
+  display:grid; place-items:center}
+
+/* ---- the two tracks ---------------------------------------------------- */
+.lp-tracks{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  margin-top:clamp(32px,4vw,48px)}
+.lp-track-card{border-radius:18px; padding:clamp(24px,3vw,32px); display:flex;
+  flex-direction:column; gap:14px; position:relative}
+.lp-track-card .num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px;
+  font-weight:700; letter-spacing:.16em; text-transform:uppercase}
+.lp-track-card h3{font-size:clamp(19px,2.4vw,23px)}
+.lp-track-card p{font-size:14.5px}
+.lp-track-card ul{display:flex; flex-direction:column; gap:8px; margin-top:2px}
+.lp-track-card li{display:flex; gap:9px; align-items:flex-start; font-size:14px}
+.lp-track-card li svg{flex:0 0 auto; margin-top:3px}
+.lp-track-card.self{background:var(--tint2); border:1px solid var(--line)}
+.lp-track-card.self .num{color:var(--primary)}
+.lp-track-card.white-glove{background:var(--band); color:#fff; border:1px solid var(--band)}
+.lp-track-card.white-glove .num{color:var(--band-acc)}
+.lp-track-card.white-glove h3{color:#fff}
+.lp-track-card.white-glove p,.lp-track-card.white-glove li{color:rgba(255,255,255,.78)}
+.lp-track-card .tag{position:absolute; top:-11px; right:20px; border-radius:999px;
+  padding:5px 12px; font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase}
+.lp-track-card.self .tag{background:var(--tint); color:var(--primary)}
+.lp-track-card.white-glove .tag{background:var(--band-acc); color:var(--band)}
+.lp-econ{margin-top:clamp(24px,3vw,32px); text-align:center; color:var(--muted); font-size:14.5px}
+.lp-econ b{color:var(--ink); font-weight:600}
+
 @media (prefers-reduced-motion:reduce){
   .lp *,.lp *::before,.lp *::after{animation-duration:.01ms!important; animation-iteration-count:1!important;
     transition-duration:.01ms!important}
@@ -529,6 +570,63 @@ JS = r"""
     d.addEventListener("close", stopVoice);
   });
 
+
+  /* ---- waitlist ------------------------------------------------------- */
+  var wlForm = document.getElementById("lp-wl-form");
+  if (wlForm) {
+    var wlErr = document.getElementById("lp-wl-err");
+    var wlDone = document.getElementById("lp-wl-done");
+    var wlSubmit = document.getElementById("lp-wl-submit");
+
+    wlForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (wlSubmit.disabled) return;
+
+      var fields = {};
+      var firstBad = null;
+      ["Name", "Email", "Phone"].forEach(function (key) {
+        var box = wlForm.elements[key];
+        var val = (box.value || "").trim();
+        fields[key] = val;
+        // The browser's own required/type checks are the first pass; this is
+        // only so the first empty box gets focus rather than a blanket error.
+        var bad = !val || (key === "Email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val));
+        box.setAttribute("aria-invalid", bad ? "true" : "false");
+        if (bad && !firstBad) firstBad = box;
+      });
+      if (firstBad) {
+        wlErr.textContent = "Please check the highlighted field.";
+        firstBad.focus();
+        return;
+      }
+
+      wlErr.textContent = "";
+      wlSubmit.disabled = true;
+      wlSubmit.textContent = "Joining\u2026";
+
+      fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "waitlist",
+          fields: fields,
+          confirm_url: (wlForm.elements.confirm_url || {}).value || ""
+        })
+      }).then(function (r) {
+        return r.json().catch(function () { return { ok: false }; });
+      }).then(function (out) {
+        if (!out || !out.ok) throw new Error((out && out.error) || "That did not go through.");
+        wlForm.hidden = true;
+        wlDone.hidden = false;
+        joined = true;
+      }).catch(function (err) {
+        wlSubmit.disabled = false;
+        wlSubmit.textContent = "Join the waitlist";
+        wlErr.textContent = err.message || "That did not go through. Try again in a moment.";
+      });
+    });
+  }
+
   /* ---- the thread ----------------------------------------------------- */
   var thread = document.getElementById("lp-thread");
   var input = document.getElementById("lp-input");
@@ -541,6 +639,13 @@ JS = r"""
   var live = false;
   var busy = false;
   var demoTimers = [];
+  /* The agent is a demo until we open. Let somebody get a real feel for it --
+     a few turns is enough to see how it answers -- then hand them to the
+     waitlist rather than letting the conversation run on into nothing. */
+  var TURNS_BEFORE_WAITLIST = 4;
+  var turns = 0;
+  var joined = false;
+  var handedOver = false;
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -650,10 +755,9 @@ JS = r"""
     if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
     if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
     if (s === 5) return [
-      "that's the gate closed — on the live line this is where matches start landing in your thread.",
-      "this page is running the demo script, so nothing here is saved. message foray for the real thing."
+      "that's the gate closed — on the live line this is where matches start landing in your thread."
     ];
-    return ["message foray any time and we pick it up from there"];
+    return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
 
   function post(path, body) {
@@ -683,12 +787,27 @@ JS = r"""
     });
   }
 
+  function handOver() {
+    handedOver = true;
+    input.disabled = true;
+    input.placeholder = "Join the waitlist to keep going";
+    var cta = document.createElement("button");
+    cta.type = "button";
+    cta.className = "lp-btn";
+    cta.style.cssText = "align-self:center; margin-top:6px";
+    cta.textContent = "Join the waitlist";
+    cta.setAttribute("data-open", "lp-waitlist");
+    thread.appendChild(cta);
+    thread.scrollTop = thread.scrollHeight;
+  }
+
   function submit() {
     var text = input.value.trim();
-    if (!text || busy) return;
+    if (!text || busy || handedOver) return;
     goLive();
     input.value = "";
     busy = true;
+    turns++;
     bubble("me", text);
     var dots = typing();
 
@@ -698,9 +817,21 @@ JS = r"""
         setTimeout(function () {
           if (i === 0 && dots.parentNode) dots.parentNode.removeChild(dots);
           bubble("them", line);
-          if (i === lines.length - 1) busy = false;
+          if (i === lines.length - 1) {
+            busy = false;
+            maybeHandOver();
+          }
         }, 500 + i * 800);
       });
+    }
+
+    function maybeHandOver() {
+      if (handedOver || joined || turns < TURNS_BEFORE_WAITLIST) return;
+      setTimeout(function () {
+        bubble("them", "this is the demo, so it stops here. we're opening spots in batches \u2014 " +
+          "join the waitlist and i'll pick it up for real the day yours is ready.");
+        handOver();
+      }, 900);
     }
 
     if (!token || !api) { offline(); return; }
@@ -717,6 +848,7 @@ JS = r"""
       busy = false;
       if (dots.parentNode) dots.parentNode.removeChild(dots);
       render(s);
+      maybeHandOver();
     }).catch(function () {
       /* Never strand the visitor mid-sentence: fall back to the script. */
       session = null;
@@ -817,12 +949,12 @@ def _bars():
 BODY = """
 <div class="lp" data-api="https://app.goforay.io" data-widget-token="">
 
-  <div class="lp-ticker lbl">New: apply to your next role by text, call, or email · first 10 applications on us</div>
+  <div class="lp-ticker lbl">Now in private beta · join the waitlist for early access · first 10 applications free</div>
 
   <header class="lp-head">
     <a href="index.html" class="lp-logo" aria-label="Foray home">{logomark}Foray</a>
     <div class="lp-clock lbl"><span>San Francisco</span><span id="lp-clk">--:--</span></div>
-    <button type="button" class="lp-btn" data-open="lp-text">Message Foray</button>
+    <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
   </header>
 
   <main>
@@ -830,7 +962,11 @@ BODY = """
       <div class="lp-hero-copy">
         <h1>Your <em class="mark-hl">autonomous</em> recruiting agent.</h1>
         <p class="lp-sub">Foray finds roles worth your time, writes the application, and applies for
-          you. A human reviews everything, and nothing sends without your yes.</p>
+          you. Clear our bar and a recruiter takes it further, straight to the companies we hire for.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center">
+          <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
+          <button type="button" class="lp-btn ghost" data-chat>Try the agent below</button>
+        </div>
       </div>
 
       <div class="lp-stage">
@@ -856,10 +992,10 @@ BODY = """
 
     <section class="lp-doors">
       <div class="wrap">
-        <button type="button" class="lp-door cand" data-open="lp-text">
+        <button type="button" class="lp-door cand" data-open="lp-waitlist">
           <span class="ico">{icon_chat_w}</span>
           <span><span class="tt">I&rsquo;m a candidate</span>
-            <span class="ss">Message Foray &middot; replies in minutes</span></span>
+            <span class="ss">Join the waitlist &middot; first 10 applications free</span></span>
           <span class="arw" aria-hidden="true">{icon_arrow_w}</span>
         </button>
         <button type="button" class="lp-door hire" data-open="lp-hire">
@@ -883,20 +1019,20 @@ BODY = """
         </div>
         <div class="lp-grid lp-g3">
 
-          <button type="button" class="lp-card tap" data-open="lp-text">
+          <button type="button" class="lp-card tap" data-open="lp-waitlist">
             <span class="lp-chan-top">{icon_chat_p}<span class="lbl">Text</span>
-              <span class="lp-chan-val">(628) 386-5454</span></span>
+              <span class="lp-chan-val">Waitlist</span></span>
             <span class="lp-demo">
               <span class="lp-mini me">hey, looking for a role</span>
               <span class="lp-mini them">2 matches already. sending now</span>
               <span class="lp-dots" style="align-self:flex-start"><i></i><i></i><i></i></span>
             </span>
-            <span class="note">Fastest. Matches land in the same thread.</span>
+            <span class="note">Fastest, once you are in. Matches land in the same thread.</span>
           </button>
 
           <button type="button" class="lp-card tap" data-open="lp-call">
             <span class="lp-chan-top">{icon_phone_p}<span class="lbl">Call</span>
-              <span class="lp-chan-val">(628) 386-5454</span></span>
+              <span class="lp-chan-val">Waitlist</span></span>
             <span class="lp-demo" style="justify-content:center; gap:12px">
               <span style="display:flex; align-items:center; gap:10px">
                 <span class="lp-rec"></span><span style="font-size:12.5px; font-weight:600">foray &middot; voice</span>
@@ -906,7 +1042,7 @@ BODY = """
               <span style="font-size:11.5px; color:var(--muted); text-align:center">
                 &ldquo;&hellip;180k plus, hybrid in SF&rdquo; &middot; noted</span>
             </span>
-            <span class="note">Call it, or ask in the thread and Foray rings you. Three minutes.</span>
+            <span class="note">Foray calls you and takes the brief. Three minutes.</span>
           </button>
 
         </div>
@@ -1054,6 +1190,50 @@ BODY = """
       </div>
     </section>
 
+    <section class="lp-sec alt" id="tracks">
+      <div class="wrap">
+        <div class="lp-head-row">
+          <span class="lp-num" aria-hidden="true">04</span>
+          <div>
+            <span class="lp-kick lbl">For candidates &middot; How far it goes</span>
+            <h2>Two tracks. Everyone starts on the first.</h2>
+          </div>
+        </div>
+
+        <div class="lp-tracks">
+          <div class="lp-track-card self">
+            <span class="tag">Everyone</span>
+            <span class="num">Track one</span>
+            <h3>The agent works your search</h3>
+            <p>Tell Foray once what you want. It finds roles, writes each application to the
+              posting, and sends it the moment you say yes &mdash; then chases the reply.</p>
+            <ul>
+              <li>{tick_p}<span>Unlimited roles, applied one at a time</span></li>
+              <li>{tick_p}<span>You approve every send</span></li>
+              <li>{tick_p}<span>Free to you. Always</span></li>
+            </ul>
+          </div>
+
+          <div class="lp-track-card white-glove">
+            <span class="tag">By invitation</span>
+            <span class="num">Track two</span>
+            <h3>A recruiter takes you to our clients</h3>
+            <p>Clear our bar and you stop being an applicant. A Foray engineer reads your work,
+              writes the read that goes with you, and introduces you directly to the founders and
+              hiring managers we search for &mdash; ahead of the queue, not in it.</p>
+            <ul>
+              <li>{tick_g}<span>A named human, not a queue</span></li>
+              <li>{tick_g}<span>Direct introductions to our client roles</span></li>
+              <li>{tick_g}<span>Prep, comp guidance, and a straight read on fit</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="lp-econ">Both tracks cost you nothing. <b>Companies pay us when they hire</b>,
+          which is why the agent is free and why the bar for track two is real.</p>
+      </div>
+    </section>
+
     <section class="lp-band" id="companies">
       <div class="wrap">
         <div class="lp-band-intro">
@@ -1141,7 +1321,7 @@ BODY = """
       <div class="wrap">
         <h2>Foray into your <em class="mark-hl">next role</em>.</h2>
         <div class="acts">
-          <button type="button" class="lp-btn" data-open="lp-text">Message Foray</button>
+          <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
           <button type="button" class="lp-btn ghost" data-open="lp-hire">Hiring? Book a call</button>
         </div>
       </div>
@@ -1156,8 +1336,8 @@ BODY = """
           <p style="color:var(--muted); margin-top:16px; max-width:30ch">Your autonomous recruiting agent.</p>
         </div>
         <div><h4>Engineers</h4><ul>
-          <li><button type="button" data-open="lp-text">Message Foray</button></li>
-          <li><button type="button" data-open="lp-call">Request a call</button></li>
+          <li><button type="button" data-open="lp-waitlist">Join the waitlist</button></li>
+          <li><button type="button" data-chat>Try the agent</button></li>
           <li><button type="button" data-open="lp-email">apply@goforay.io</button></li>
         </ul></div>
         <div><h4>Hiring</h4><ul>
@@ -1180,12 +1360,55 @@ BODY = """
   <span hidden id="lp-thumb-src">{icon_thumb_w}</span>
   <span hidden id="lp-stripe-src">{stripe_badge}</span>
 
+  <dialog class="lp-modal" id="lp-waitlist">
+    <div class="box">
+      <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
+      <span class="lbl" style="color:var(--primary)">Private beta</span>
+      <h3>Join the waitlist.</h3>
+      <p>Three details and you are in the queue. We open spots in batches and message you the
+        day yours is ready &mdash; your first 10 applications are on us.</p>
+
+      <form class="lp-form-grid" id="lp-wl-form" novalidate>
+        <div class="lp-field">
+          <label for="wl-name">Name</label>
+          <input id="wl-name" name="Name" type="text" autocomplete="name" maxlength="200" required>
+        </div>
+        <div class="lp-field">
+          <label for="wl-email">Email</label>
+          <input id="wl-email" name="Email" type="email" autocomplete="email" maxlength="320" required>
+        </div>
+        <div class="lp-field">
+          <label for="wl-phone">Phone</label>
+          <input id="wl-phone" name="Phone" type="tel" autocomplete="tel" maxlength="40" required>
+          <span class="hint">So Foray can text and call you when your spot opens.</span>
+        </div>
+        <!-- bots fill every field they find; people never see this one -->
+        <input type="text" name="confirm_url" tabindex="-1" autocomplete="off"
+               aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px">
+        <p class="lp-formerr" id="lp-wl-err" role="alert"></p>
+        <div class="acts">
+          <button type="submit" class="lp-btn" id="lp-wl-submit">Join the waitlist</button>
+          <button type="button" class="lp-btn ghost" data-close>Not yet</button>
+        </div>
+        <p class="lp-formnote">We use these to reach you about your spot. No marketing lists,
+          and you can ask us to delete them at any time.</p>
+      </form>
+
+      <div class="lp-done" id="lp-wl-done" hidden>
+        <span class="tickbig">{icon_check_p}</span>
+        <span style="font-size:19px; font-weight:600">You&rsquo;re on the list.</span>
+        <p>We message in batches, and yours will come from Foray. Nothing else to do.</p>
+        <button type="button" class="lp-btn" data-close>Done</button>
+      </div>
+    </div>
+  </dialog>
+
   <dialog class="lp-modal" id="lp-text">
     <div class="box">
       <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
       <span class="lbl" style="color:var(--primary)">Message us</span>
       <h3>One message starts it.</h3>
-      <span class="big">(628) 386-5454</span><p style="margin-top:-8px">Text that number, or start a thread right here. Both reach the same place.</p>
+      <p>When we open, this is a text thread: send your LinkedIn or a resume and roles come back to you. Join the waitlist and we&rsquo;ll send you the number the day your spot opens.</p>
       <p>Send anything: your LinkedIn, a resume, or a posting you found and want us to apply to.
         A real person reviews every match, and we reply in minutes.</p>
       <span class="lp-free" style="align-self:flex-start">10 applications, free</span>
@@ -1201,9 +1424,7 @@ BODY = """
       <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
       <span class="lbl" style="color:var(--primary)">Call us</span>
       <h3>Three minutes on the phone.</h3>
-      <span class="big">(628) 386-5454</span>
-      <p style="margin-top:-8px">Call that number, or ask in the thread and Foray rings you back
-        &mdash; usually within minutes.</p>
+      <p>When we open, Foray calls you and takes your brief in about three minutes. The voice below is the real one.</p>
       <p>That&rsquo;s the real voice below. On the call Foray asks what roles you&rsquo;d like to do,
         your stack, comp, and where you want to work. Three minutes. Then we find roles that fit
         and send them straight back to you.</p>
@@ -1280,6 +1501,8 @@ BODY = """
     icon_user_w=_svg(I["user"], 18, "#fff"),
     icon_check_p=_svg(I["check"], 15, "var(--primary)"),
     icon_check_g=_svg(I["check"], 14, "var(--band-acc)"),
+    tick_p=_svg(I["check"], 15, "var(--primary)"),
+    tick_g=_svg(I["check"], 15, "var(--band-acc)"),
     icon_check_dark=_svg(I["check"], 12, "var(--band)", extra=' stroke-width="3"'),
     icon_x_m=_svg(I["x"], 14, "rgba(255,255,255,.5)"),
     icon_x_i=_svg(I["x"], 14, "var(--ink)"),

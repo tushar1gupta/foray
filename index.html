@@ -31,12 +31,12 @@
 
 <div class="lp" data-api="https://app.goforay.io" data-widget-token="">
 
-  <div class="lp-ticker lbl">New: apply to your next role by text, call, or email · first 10 applications on us</div>
+  <div class="lp-ticker lbl">Now in private beta · join the waitlist for early access · first 10 applications free</div>
 
   <header class="lp-head">
     <a href="index.html" class="lp-logo" aria-label="Foray home"><b aria-hidden="true"><i></i><i></i><i></i><i></i></b>Foray</a>
     <div class="lp-clock lbl"><span>San Francisco</span><span id="lp-clk">--:--</span></div>
-    <button type="button" class="lp-btn" data-open="lp-text">Message Foray</button>
+    <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
   </header>
 
   <main>
@@ -44,7 +44,11 @@
       <div class="lp-hero-copy">
         <h1>Your <em class="mark-hl">autonomous</em> recruiting agent.</h1>
         <p class="lp-sub">Foray finds roles worth your time, writes the application, and applies for
-          you. A human reviews everything, and nothing sends without your yes.</p>
+          you. Clear our bar and a recruiter takes it further, straight to the companies we hire for.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center">
+          <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
+          <button type="button" class="lp-btn ghost" data-chat>Try the agent below</button>
+        </div>
       </div>
 
       <div class="lp-stage">
@@ -70,10 +74,10 @@
 
     <section class="lp-doors">
       <div class="wrap">
-        <button type="button" class="lp-door cand" data-open="lp-text">
+        <button type="button" class="lp-door cand" data-open="lp-waitlist">
           <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5Z"/></svg></span>
           <span><span class="tt">I&rsquo;m a candidate</span>
-            <span class="ss">Message Foray &middot; replies in minutes</span></span>
+            <span class="ss">Join the waitlist &middot; first 10 applications free</span></span>
           <span class="arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
         </button>
         <button type="button" class="lp-door hire" data-open="lp-hire">
@@ -97,20 +101,20 @@
         </div>
         <div class="lp-grid lp-g3">
 
-          <button type="button" class="lp-card tap" data-open="lp-text">
+          <button type="button" class="lp-card tap" data-open="lp-waitlist">
             <span class="lp-chan-top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5Z"/></svg><span class="lbl">Text</span>
-              <span class="lp-chan-val">(628) 386-5454</span></span>
+              <span class="lp-chan-val">Waitlist</span></span>
             <span class="lp-demo">
               <span class="lp-mini me">hey, looking for a role</span>
               <span class="lp-mini them">2 matches already. sending now</span>
               <span class="lp-dots" style="align-self:flex-start"><i></i><i></i><i></i></span>
             </span>
-            <span class="note">Fastest. Matches land in the same thread.</span>
+            <span class="note">Fastest, once you are in. Matches land in the same thread.</span>
           </button>
 
           <button type="button" class="lp-card tap" data-open="lp-call">
             <span class="lp-chan-top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg><span class="lbl">Call</span>
-              <span class="lp-chan-val">(628) 386-5454</span></span>
+              <span class="lp-chan-val">Waitlist</span></span>
             <span class="lp-demo" style="justify-content:center; gap:12px">
               <span style="display:flex; align-items:center; gap:10px">
                 <span class="lp-rec"></span><span style="font-size:12.5px; font-weight:600">foray &middot; voice</span>
@@ -120,7 +124,7 @@
               <span style="font-size:11.5px; color:var(--muted); text-align:center">
                 &ldquo;&hellip;180k plus, hybrid in SF&rdquo; &middot; noted</span>
             </span>
-            <span class="note">Call it, or ask in the thread and Foray rings you. Three minutes.</span>
+            <span class="note">Foray calls you and takes the brief. Three minutes.</span>
           </button>
 
         </div>
@@ -268,6 +272,50 @@
       </div>
     </section>
 
+    <section class="lp-sec alt" id="tracks">
+      <div class="wrap">
+        <div class="lp-head-row">
+          <span class="lp-num" aria-hidden="true">04</span>
+          <div>
+            <span class="lp-kick lbl">For candidates &middot; How far it goes</span>
+            <h2>Two tracks. Everyone starts on the first.</h2>
+          </div>
+        </div>
+
+        <div class="lp-tracks">
+          <div class="lp-track-card self">
+            <span class="tag">Everyone</span>
+            <span class="num">Track one</span>
+            <h3>The agent works your search</h3>
+            <p>Tell Foray once what you want. It finds roles, writes each application to the
+              posting, and sends it the moment you say yes &mdash; then chases the reply.</p>
+            <ul>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Unlimited roles, applied one at a time</span></li>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>You approve every send</span></li>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Free to you. Always</span></li>
+            </ul>
+          </div>
+
+          <div class="lp-track-card white-glove">
+            <span class="tag">By invitation</span>
+            <span class="num">Track two</span>
+            <h3>A recruiter takes you to our clients</h3>
+            <p>Clear our bar and you stop being an applicant. A Foray engineer reads your work,
+              writes the read that goes with you, and introduces you directly to the founders and
+              hiring managers we search for &mdash; ahead of the queue, not in it.</p>
+            <ul>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--band-acc)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>A named human, not a queue</span></li>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--band-acc)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Direct introductions to our client roles</span></li>
+              <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--band-acc)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Prep, comp guidance, and a straight read on fit</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="lp-econ">Both tracks cost you nothing. <b>Companies pay us when they hire</b>,
+          which is why the agent is free and why the bar for track two is real.</p>
+      </div>
+    </section>
+
     <section class="lp-band" id="companies">
       <div class="wrap">
         <div class="lp-band-intro">
@@ -355,7 +403,7 @@
       <div class="wrap">
         <h2>Foray into your <em class="mark-hl">next role</em>.</h2>
         <div class="acts">
-          <button type="button" class="lp-btn" data-open="lp-text">Message Foray</button>
+          <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
           <button type="button" class="lp-btn ghost" data-open="lp-hire">Hiring? Book a call</button>
         </div>
       </div>
@@ -370,8 +418,8 @@
           <p style="color:var(--muted); margin-top:16px; max-width:30ch">Your autonomous recruiting agent.</p>
         </div>
         <div><h4>Engineers</h4><ul>
-          <li><button type="button" data-open="lp-text">Message Foray</button></li>
-          <li><button type="button" data-open="lp-call">Request a call</button></li>
+          <li><button type="button" data-open="lp-waitlist">Join the waitlist</button></li>
+          <li><button type="button" data-chat>Try the agent</button></li>
           <li><button type="button" data-open="lp-email">apply@goforay.io</button></li>
         </ul></div>
         <div><h4>Hiring</h4><ul>
@@ -394,12 +442,55 @@
   <span hidden id="lp-thumb-src"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></span>
   <span hidden id="lp-stripe-src"><svg width="11" height="11" viewBox="0 0 24 24" fill="#635BFF" aria-hidden="true"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/></svg></span>
 
+  <dialog class="lp-modal" id="lp-waitlist">
+    <div class="box">
+      <button type="button" class="x" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <span class="lbl" style="color:var(--primary)">Private beta</span>
+      <h3>Join the waitlist.</h3>
+      <p>Three details and you are in the queue. We open spots in batches and message you the
+        day yours is ready &mdash; your first 10 applications are on us.</p>
+
+      <form class="lp-form-grid" id="lp-wl-form" novalidate>
+        <div class="lp-field">
+          <label for="wl-name">Name</label>
+          <input id="wl-name" name="Name" type="text" autocomplete="name" maxlength="200" required>
+        </div>
+        <div class="lp-field">
+          <label for="wl-email">Email</label>
+          <input id="wl-email" name="Email" type="email" autocomplete="email" maxlength="320" required>
+        </div>
+        <div class="lp-field">
+          <label for="wl-phone">Phone</label>
+          <input id="wl-phone" name="Phone" type="tel" autocomplete="tel" maxlength="40" required>
+          <span class="hint">So Foray can text and call you when your spot opens.</span>
+        </div>
+        <!-- bots fill every field they find; people never see this one -->
+        <input type="text" name="confirm_url" tabindex="-1" autocomplete="off"
+               aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px">
+        <p class="lp-formerr" id="lp-wl-err" role="alert"></p>
+        <div class="acts">
+          <button type="submit" class="lp-btn" id="lp-wl-submit">Join the waitlist</button>
+          <button type="button" class="lp-btn ghost" data-close>Not yet</button>
+        </div>
+        <p class="lp-formnote">We use these to reach you about your spot. No marketing lists,
+          and you can ask us to delete them at any time.</p>
+      </form>
+
+      <div class="lp-done" id="lp-wl-done" hidden>
+        <span class="tickbig"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span style="font-size:19px; font-weight:600">You&rsquo;re on the list.</span>
+        <p>We message in batches, and yours will come from Foray. Nothing else to do.</p>
+        <button type="button" class="lp-btn" data-close>Done</button>
+      </div>
+    </div>
+  </dialog>
+
   <dialog class="lp-modal" id="lp-text">
     <div class="box">
       <button type="button" class="x" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
       <span class="lbl" style="color:var(--primary)">Message us</span>
       <h3>One message starts it.</h3>
-      <span class="big">(628) 386-5454</span><p style="margin-top:-8px">Text that number, or start a thread right here. Both reach the same place.</p>
+      <p>When we open, this is a text thread: send your LinkedIn or a resume and roles come back to you. Join the waitlist and we&rsquo;ll send you the number the day your spot opens.</p>
       <p>Send anything: your LinkedIn, a resume, or a posting you found and want us to apply to.
         A real person reviews every match, and we reply in minutes.</p>
       <span class="lp-free" style="align-self:flex-start">10 applications, free</span>
@@ -415,9 +506,7 @@
       <button type="button" class="x" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
       <span class="lbl" style="color:var(--primary)">Call us</span>
       <h3>Three minutes on the phone.</h3>
-      <span class="big">(628) 386-5454</span>
-      <p style="margin-top:-8px">Call that number, or ask in the thread and Foray rings you back
-        &mdash; usually within minutes.</p>
+      <p>When we open, Foray calls you and takes your brief in about three minutes. The voice below is the real one.</p>
       <p>That&rsquo;s the real voice below. On the call Foray asks what roles you&rsquo;d like to do,
         your stack, comp, and where you want to work. Three minutes. Then we find roles that fit
         and send them straight back to you.</p>

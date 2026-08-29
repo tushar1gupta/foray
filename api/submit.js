@@ -24,9 +24,18 @@ const FORMS = {
     required: ['Name', 'Email', 'LinkedIn', 'GitHub', 'What they want next'],
     subject: f => 'Engineer intake: ' + (f.Name || 'unknown'),
   },
+  waitlist: {
+    required: ['Name', 'Email', 'Phone'],
+    subject: f => 'Waitlist: ' + (f.Name || 'unknown'),
+  },
 };
 
-const CAPS = { 'Job description': 20000, 'What they want next': 8000, Email: 320, Name: 200 };
+/* Deliberately loose. Numbers arrive with spaces, dashes, brackets and country
+ * codes, and rejecting a real number is worse than storing an odd one -- this
+ * only catches an empty box or an obvious typo. */
+const PHONE_DIGITS_MIN = 7;
+
+const CAPS = { 'Job description': 20000, 'What they want next': 8000, Email: 320, Name: 200, Phone: 40 };
 const CAP_DEFAULT = 2000;
 const MAX_BODY = 96 * 1024;
 const MAX_FIELDS = 40;
@@ -52,6 +61,13 @@ function ensureSchema() {
       CREATE INDEX IF NOT EXISTS submissions_created_idx ON submissions (created_at DESC);
       CREATE INDEX IF NOT EXISTS submissions_kind_idx    ON submissions (kind, created_at DESC);
       CREATE INDEX IF NOT EXISTS submissions_rate_idx    ON submissions (ip_hash, created_at DESC);
+
+      -- The table predates the waitlist, and CREATE TABLE IF NOT EXISTS does not
+      -- widen an existing CHECK, so state the constraint every time instead of
+      -- relying on the table having been created with it.
+      ALTER TABLE submissions DROP CONSTRAINT IF EXISTS submissions_kind_check;
+      ALTER TABLE submissions ADD CONSTRAINT submissions_kind_check
+        CHECK (kind IN ('company','engineer','waitlist'));
     `).catch(err => { schemaReady = null; throw err; });
   }
   return schemaReady;
@@ -95,6 +111,9 @@ function validate(kind, fields) {
   const missing = spec.required.filter(r => !clean[r]);
   if (missing.length) return { error: 'Missing required fields.', missing };
   if (!EMAIL_RE.test(clean.Email)) return { error: 'That email address looks wrong.' };
+  if (clean.Phone && (clean.Phone.match(/\d/g) || []).length < PHONE_DIGITS_MIN) {
+    return { error: 'That phone number looks too short.', missing: ['Phone'] };
+  }
 
   return { clean, subject: spec.subject(clean) };
 }

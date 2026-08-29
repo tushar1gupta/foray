@@ -61,6 +61,63 @@
     d.addEventListener("close", stopVoice);
   });
 
+
+  /* ---- waitlist ------------------------------------------------------- */
+  var wlForm = document.getElementById("lp-wl-form");
+  if (wlForm) {
+    var wlErr = document.getElementById("lp-wl-err");
+    var wlDone = document.getElementById("lp-wl-done");
+    var wlSubmit = document.getElementById("lp-wl-submit");
+
+    wlForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (wlSubmit.disabled) return;
+
+      var fields = {};
+      var firstBad = null;
+      ["Name", "Email", "Phone"].forEach(function (key) {
+        var box = wlForm.elements[key];
+        var val = (box.value || "").trim();
+        fields[key] = val;
+        // The browser's own required/type checks are the first pass; this is
+        // only so the first empty box gets focus rather than a blanket error.
+        var bad = !val || (key === "Email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val));
+        box.setAttribute("aria-invalid", bad ? "true" : "false");
+        if (bad && !firstBad) firstBad = box;
+      });
+      if (firstBad) {
+        wlErr.textContent = "Please check the highlighted field.";
+        firstBad.focus();
+        return;
+      }
+
+      wlErr.textContent = "";
+      wlSubmit.disabled = true;
+      wlSubmit.textContent = "Joining\u2026";
+
+      fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "waitlist",
+          fields: fields,
+          confirm_url: (wlForm.elements.confirm_url || {}).value || ""
+        })
+      }).then(function (r) {
+        return r.json().catch(function () { return { ok: false }; });
+      }).then(function (out) {
+        if (!out || !out.ok) throw new Error((out && out.error) || "That did not go through.");
+        wlForm.hidden = true;
+        wlDone.hidden = false;
+        joined = true;
+      }).catch(function (err) {
+        wlSubmit.disabled = false;
+        wlSubmit.textContent = "Join the waitlist";
+        wlErr.textContent = err.message || "That did not go through. Try again in a moment.";
+      });
+    });
+  }
+
   /* ---- the thread ----------------------------------------------------- */
   var thread = document.getElementById("lp-thread");
   var input = document.getElementById("lp-input");
@@ -73,6 +130,13 @@
   var live = false;
   var busy = false;
   var demoTimers = [];
+  /* The agent is a demo until we open. Let somebody get a real feel for it --
+     a few turns is enough to see how it answers -- then hand them to the
+     waitlist rather than letting the conversation run on into nothing. */
+  var TURNS_BEFORE_WAITLIST = 4;
+  var turns = 0;
+  var joined = false;
+  var handedOver = false;
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -182,10 +246,9 @@
     if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
     if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
     if (s === 5) return [
-      "that's the gate closed — on the live line this is where matches start landing in your thread.",
-      "this page is running the demo script, so nothing here is saved. message foray for the real thing."
+      "that's the gate closed — on the live line this is where matches start landing in your thread."
     ];
-    return ["message foray any time and we pick it up from there"];
+    return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
 
   function post(path, body) {
@@ -215,12 +278,27 @@
     });
   }
 
+  function handOver() {
+    handedOver = true;
+    input.disabled = true;
+    input.placeholder = "Join the waitlist to keep going";
+    var cta = document.createElement("button");
+    cta.type = "button";
+    cta.className = "lp-btn";
+    cta.style.cssText = "align-self:center; margin-top:6px";
+    cta.textContent = "Join the waitlist";
+    cta.setAttribute("data-open", "lp-waitlist");
+    thread.appendChild(cta);
+    thread.scrollTop = thread.scrollHeight;
+  }
+
   function submit() {
     var text = input.value.trim();
-    if (!text || busy) return;
+    if (!text || busy || handedOver) return;
     goLive();
     input.value = "";
     busy = true;
+    turns++;
     bubble("me", text);
     var dots = typing();
 
@@ -230,9 +308,21 @@
         setTimeout(function () {
           if (i === 0 && dots.parentNode) dots.parentNode.removeChild(dots);
           bubble("them", line);
-          if (i === lines.length - 1) busy = false;
+          if (i === lines.length - 1) {
+            busy = false;
+            maybeHandOver();
+          }
         }, 500 + i * 800);
       });
+    }
+
+    function maybeHandOver() {
+      if (handedOver || joined || turns < TURNS_BEFORE_WAITLIST) return;
+      setTimeout(function () {
+        bubble("them", "this is the demo, so it stops here. we're opening spots in batches \u2014 " +
+          "join the waitlist and i'll pick it up for real the day yours is ready.");
+        handOver();
+      }, 900);
     }
 
     if (!token || !api) { offline(); return; }
@@ -249,6 +339,7 @@
       busy = false;
       if (dots.parentNode) dots.parentNode.removeChild(dots);
       render(s);
+      maybeHandOver();
     }).catch(function () {
       /* Never strand the visitor mid-sentence: fall back to the script. */
       session = null;
