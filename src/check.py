@@ -110,6 +110,52 @@ for p in FILES:
     if par.a_no_text:
         log(p.name, f"{par.a_no_text} link(s) with no text or aria-label")
 
+# ---- duplicate selectors
+# Two rules with the identical selector at the top level of one stylesheet is
+# almost always a name collision rather than an intentional override -- a new
+# component borrowing a class an old one already owned. It is silent: the
+# second rule just starts applying to the first one's markup.
+#
+# Rules inside @media are excluded. Redefining a selector for a breakpoint is
+# the whole point of a media query, and externalise() strips indentation, so
+# without this they all look top-level.
+def _strip_at_blocks(css):
+    out, i, n = [], 0, len(css)
+    while i < n:
+        at = css.find("@media", i)
+        if at < 0:
+            out.append(css[i:])
+            break
+        out.append(css[i:at])
+        brace = css.find("{", at)
+        if brace < 0:
+            break
+        depth, k = 1, brace + 1
+        while k < n and depth:
+            if css[k] == "{":
+                depth += 1
+            elif css[k] == "}":
+                depth -= 1
+            k += 1
+        i = k
+    return "".join(out)
+
+
+for _name in ("landing.css", "style.css"):
+    _f = SITE / _name
+    if not _f.exists():
+        continue
+    _css = re.sub(r"/\*[\s\S]*?\*/", "", _f.read_text(encoding="utf-8"))
+    _counts = {}
+    for _sel in re.findall(r"(?m)^([^@{}/][^{}]*)\{", _strip_at_blocks(_css)):
+        _sel = _sel.strip()
+        if "," in _sel:
+            continue
+        _counts[_sel] = _counts.get(_sel, 0) + 1
+    for _sel, _n in sorted(_counts.items()):
+        if _n > 1:
+            log(_name, f'selector "{_sel}" defined {_n} times -- likely a name collision')
+
 # ---- link integrity
 pagenames = {p.name for p in FILES}
 for f, hs in hrefs.items():
