@@ -48,10 +48,6 @@ VERCEL_JSON = """{
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/google127df8f4f5b6efd9.html",
-      "destination": "/google127df8f4f5b6efd9.txt" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -248,7 +244,7 @@ SCRIPT_RE = re.compile(r"<script data-page>([\s\S]*?)</script>")
 NEW_DESIGN = {"index.html", "privacy.html", "terms.html"}
 # Google's search-console token: a .html name wrapped around one line of text.
 # Rewriting any part of it breaks verification.
-OPAQUE = {"google127df8f4f5b6efd9.txt"}
+OPAQUE = {"google127df8f4f5b6efd9.html"}
 
 
 def externalise():

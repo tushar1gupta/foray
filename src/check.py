@@ -6,7 +6,7 @@ from html.parser import HTMLParser
 SITE = pathlib.Path(__file__).resolve().parent.parent
 # the search-console token is a .html name around a single line of text, so
 # none of the page checks apply to it
-OPAQUE = {"google127df8f4f5b6efd9.txt"}
+OPAQUE = {"google127df8f4f5b6efd9.html"}
 FILES = [p for p in sorted(SITE.glob("*.html")) if p.name not in OPAQUE]
 VOID = {"area","base","br","col","embed","hr","img","input","link","meta",
         "param","source","track","wbr"}
