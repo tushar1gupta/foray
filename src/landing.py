@@ -521,7 +521,7 @@ CSS = r"""
    Cap it against the viewport and let the box scroll rather than overflow. */
 .lp-modal.wide{max-width:min(720px,94vw)}
 .lp-modal.wide .box{max-height:92vh; overflow-y:auto}
-.lp-cal{min-width:320px; height:min(660px,62vh); border-radius:12px; overflow:hidden;
+.lp-calembed{min-width:320px; height:min(660px,62vh); border-radius:12px; overflow:hidden;
   background:var(--tint3)}
 .lp-calnote{font-size:12.5px; color:var(--muted)}
 
@@ -1751,7 +1751,7 @@ BODY = """
       <span class="lbl" style="color:var(--accent-deep)">For companies</span>
       <h3>Grab 15 minutes with us.</h3>
       <p>Five tailored candidates, our read on each. You pay only when you hire.</p>
-      <div class="lp-cal calendly-inline-widget" data-url="https://calendly.com/sathya-goforay/30min"></div>
+      <div class="lp-calembed calendly-inline-widget" data-url="https://calendly.com/sathya-goforay/30min"></div>
       <p class="lp-calnote">Not loading? <a href="https://calendly.com/sathya-goforay/30min" target="_blank" rel="noopener">Open the
         calendar in a new tab</a>.</p>
     </div>
