@@ -371,6 +371,7 @@
           + "day your spot opens."
       ];
     }
+    told = true;
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
 
@@ -413,7 +414,14 @@
     function choose() {
       if (b.classList.contains("liked") || busy || handedOver) return;
       b.classList.add("liked");
-      b.removeAttribute("tabindex");
+      /* One pick settles it. Leaving the others looking tappable invites a
+         second like on a thread that has already moved past the question. */
+      Array.prototype.forEach.call(thread.querySelectorAll(".lp-msg.pickable"), function (o) {
+        o.classList.remove("pickable");
+        o.removeAttribute("role");
+        o.removeAttribute("tabindex");
+      });
+      b.classList.add("liked");
       react(b, "\u2764\uFE0F", true);
       sendTurn(m[1], m[2]);
     }
@@ -428,13 +436,25 @@
     handedOver = true;
     input.disabled = true;
     input.placeholder = "Join the waitlist to keep going";
-    var cta = document.createElement("button");
-    cta.type = "button";
-    cta.className = "lp-btn";
-    cta.style.cssText = "align-self:center; margin-top:6px";
-    cta.textContent = "Join the waitlist";
-    cta.setAttribute("data-open", "lp-waitlist");
-    thread.appendChild(cta);
+    /* Foray sends the link the way it would send anything else: in the thread,
+       as something to tap, rather than as a button floating under it. */
+    var card = el("div", "lp-msg them wide lp-wlcard");
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.innerHTML =
+      '<span class="lp-wl-head">' +
+        '<span class="lp-logo lp-wl-mark" aria-hidden="true"><b><i></i><i></i><i></i><i></i></b></span>' +
+        '<b>Join the waitlist</b></span>' +
+      '<span class="lp-wl-sub">Name, email, phone. First 10 applications free.</span>';
+    function openWaitlist() {
+      var d = document.getElementById("lp-waitlist");
+      if (d && d.showModal && !d.open) d.showModal();
+    }
+    card.addEventListener("click", openWaitlist);
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openWaitlist(); }
+    });
+    thread.appendChild(card);
     thread.scrollTop = thread.scrollHeight;
   }
 
@@ -483,7 +503,8 @@
     }
 
     function maybeHandOver() {
-      if (handedOver || joined || turns < TURNS_BEFORE_WAITLIST) return;
+      if (handedOver || joined) return;
+      if (!told && turns < TURNS_BEFORE_WAITLIST) return;
       setTimeout(function () {
         /* If they got here by liking a role they have just been told all this. */
         if (!told) {

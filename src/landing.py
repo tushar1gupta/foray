@@ -111,7 +111,8 @@ CSS = r"""
 .lp-hero-copy{max-width:var(--wrap); margin:0 auto; padding:clamp(40px,6vw,64px) var(--gut) 0;
   display:flex; flex-direction:column; align-items:center; gap:18px; text-align:center}
 .lp-hero-copy h1{max-width:18ch}
-.lp-sub{color:var(--muted); font-size:clamp(16px,1.7vw,18px); max-width:56ch}
+.lp-sub{color:var(--muted); font-style:italic; font-size:clamp(14.5px,1.45vw,16px);
+  max-width:56ch}
 .lp-stage{position:relative; padding:clamp(28px,4vw,36px) var(--gut) clamp(48px,6vw,64px)}
 
 /* drifting job chips behind the phone */
@@ -168,6 +169,15 @@ CSS = r"""
 .lp-msg.pickable:hover{transform:translateY(-1px); box-shadow:0 5px 16px rgba(20,16,40,.14)}
 .lp-msg.pickable:focus-visible{outline:2px solid var(--primary); outline-offset:2px}
 .lp-msg.pickable.liked{cursor:default; transform:none; box-shadow:none}
+/* the waitlist link Foray sends at the end of the demo */
+.lp-wlcard{cursor:pointer; background:var(--tint); border:1.5px solid var(--primary);
+  gap:3px; transition:transform .14s ease, box-shadow .14s ease}
+.lp-wlcard:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(106,80,200,.22)}
+.lp-wlcard:focus-visible{outline:2px solid var(--primary); outline-offset:2px}
+.lp-wl-head{display:flex; align-items:center; gap:8px; color:var(--primary); font-size:14px}
+.lp-wl-head b{font-weight:600}
+.lp-wl-mark{font-size:0; gap:0}
+.lp-wl-sub{font-size:12px; color:var(--muted)}
 @keyframes lp-react-in{from{transform:scale(0); opacity:0}to{transform:scale(1); opacity:1}}
 .lp-msg.me{align-self:flex-end; background:var(--imsg-out); color:#fff; border-bottom-right-radius:6px}
 .lp-msg.them{align-self:flex-start; background:var(--imsg-in); color:#1A1A1A; border-bottom-left-radius:6px}
@@ -939,6 +949,7 @@ JS = r"""
           + "day your spot opens."
       ];
     }
+    told = true;
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
 
@@ -981,7 +992,14 @@ JS = r"""
     function choose() {
       if (b.classList.contains("liked") || busy || handedOver) return;
       b.classList.add("liked");
-      b.removeAttribute("tabindex");
+      /* One pick settles it. Leaving the others looking tappable invites a
+         second like on a thread that has already moved past the question. */
+      Array.prototype.forEach.call(thread.querySelectorAll(".lp-msg.pickable"), function (o) {
+        o.classList.remove("pickable");
+        o.removeAttribute("role");
+        o.removeAttribute("tabindex");
+      });
+      b.classList.add("liked");
       react(b, "\u2764\uFE0F", true);
       sendTurn(m[1], m[2]);
     }
@@ -996,13 +1014,25 @@ JS = r"""
     handedOver = true;
     input.disabled = true;
     input.placeholder = "Join the waitlist to keep going";
-    var cta = document.createElement("button");
-    cta.type = "button";
-    cta.className = "lp-btn";
-    cta.style.cssText = "align-self:center; margin-top:6px";
-    cta.textContent = "Join the waitlist";
-    cta.setAttribute("data-open", "lp-waitlist");
-    thread.appendChild(cta);
+    /* Foray sends the link the way it would send anything else: in the thread,
+       as something to tap, rather than as a button floating under it. */
+    var card = el("div", "lp-msg them wide lp-wlcard");
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.innerHTML =
+      '<span class="lp-wl-head">' +
+        '<span class="lp-logo lp-wl-mark" aria-hidden="true"><b><i></i><i></i><i></i><i></i></b></span>' +
+        '<b>Join the waitlist</b></span>' +
+      '<span class="lp-wl-sub">Name, email, phone. First 10 applications free.</span>';
+    function openWaitlist() {
+      var d = document.getElementById("lp-waitlist");
+      if (d && d.showModal && !d.open) d.showModal();
+    }
+    card.addEventListener("click", openWaitlist);
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openWaitlist(); }
+    });
+    thread.appendChild(card);
     thread.scrollTop = thread.scrollHeight;
   }
 
@@ -1051,7 +1081,8 @@ JS = r"""
     }
 
     function maybeHandOver() {
-      if (handedOver || joined || turns < TURNS_BEFORE_WAITLIST) return;
+      if (handedOver || joined) return;
+      if (!told && turns < TURNS_BEFORE_WAITLIST) return;
       setTimeout(function () {
         /* If they got here by liking a role they have just been told all this. */
         if (!told) {
@@ -1595,7 +1626,7 @@ BODY = """
               looks like.</span></div>
           <div class="a">
             <button type="button" class="lp-btn" data-open="lp-hire">Book on Calendly</button>
-            <small>calendly.com/sathya-goforay &middot; 15 min</small>
+            <small>15 minutes &middot; no obligation</small>
           </div>
         </div>
       </div>
