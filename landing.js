@@ -195,9 +195,9 @@
     thread.scrollTop = thread.scrollHeight;
     return b;
   }
-  function react(msg, glyph, mine) {
+  function react(msg, glyph) {
     msg.classList.add("reacted");
-    var t = el("span", "lp-react" + (mine ? " mine" : ""), glyph);
+    var t = el("span", "lp-react", glyph);
     t.appendChild(el("i"));
     t.appendChild(el("i"));
     msg.appendChild(t);
@@ -392,22 +392,6 @@
     return t;
   }
 
-  /* Built from what they actually told us. Inventing "senior backend engineer
-     at stripe" for somebody who said they design is worse than saying nothing:
-     the whole point on the day is that the roles come back off the brief. */
-  function matches() {
-    var role = brief.role || "engineer";
-    var place = brief.place || "remote";
-    return [
-      "got it: " + role + ", " + place + ". give me a second.",
-      "three worth your time:",
-      "01 \u00b7 " + role + " at stripe. " + place + ", $185\u2013210k",
-      "02 \u00b7 " + role + " at anthropic. " + place + ", $240k + equity",
-      "03 \u00b7 " + role + " at figma. " + place + ", $195k",
-      "like the one you want and i'll get the application ready"
-    ];
-  }
-
   function offlineReplies(text) {
     var t = (text || "").trim();
 
@@ -455,17 +439,14 @@
         place = place ? place + " or remote" : "remote";
       brief.place = place;
       stage = 5; tries = 0;
-      return matches();
-    }
-
-    if (stage === 5) {
-      stage = 6;
       told = true;
+      /* Where the page runs out of what it actually knows. Naming roles from
+         here would be a guess dressed as a match. */
       return [
-        "on it. normally i'd tailor a resume to that posting and write to their hiring manager, "
-          + "and you'd see both before anything went out.",
-        "this is the demo though, so it stops here. join the waitlist and i'll do it for real the "
-          + "day your spot opens."
+        "got it: " + brief.role + ", " + place + ". that's the brief.",
+        "i'm not going to make matches up on a landing page. the real thread reads live "
+          + "postings and comes back with the ones that actually fit.",
+        "join the waitlist and i'll do exactly that the day your spot opens."
       ];
     }
 
@@ -498,36 +479,6 @@
     (sess.messages || []).forEach(function (m) {
       if (m && m.body) bubble(m.direction === "inbound" ? "me" : "them", m.body);
     });
-  }
-
-  /* Only the numbered suggestion lines are pickable. The label is the role
-     itself, which is what the thread should say they liked. */
-  function offerPick(b, line) {
-    var m = /^(0[123]) \u00b7 ([^.]+)\./.exec(line);
-    if (!m) return b;
-    b.classList.add("pickable");
-    b.setAttribute("role", "button");
-    b.setAttribute("tabindex", "0");
-    b.setAttribute("aria-label", "Like " + m[2]);
-    function choose() {
-      if (b.classList.contains("liked") || busy || handedOver) return;
-      b.classList.add("liked");
-      /* One pick settles it. Leaving the others looking tappable invites a
-         second like on a thread that has already moved past the question. */
-      Array.prototype.forEach.call(thread.querySelectorAll(".lp-msg.pickable"), function (o) {
-        o.classList.remove("pickable");
-        o.removeAttribute("role");
-        o.removeAttribute("tabindex");
-      });
-      b.classList.add("liked");
-      react(b, "\u2764\uFE0F", true);
-      sendTurn(m[1], m[2]);
-    }
-    b.addEventListener("click", choose);
-    b.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); }
-    });
-    return b;
   }
 
   function handOver() {
@@ -563,26 +514,19 @@
     var text = input.value.trim();
     if (!text) return;
     input.value = "";
-    sendTurn(text, null);
+    sendTurn(text);
   }
 
-  function sendTurn(text, liked) {
+  function sendTurn(text) {
     if (!text || busy || handedOver) return;
     goLive();
     busy = true;
     turns++;
-    if (liked) {
-      /* A tapback is not a message. Note what they liked the way a real thread
-         does rather than putting a bare "01" in a blue bubble. */
-      thread.appendChild(el("span", "lp-meta right", "you liked \u201C" + liked + "\u201D"));
-      thread.scrollTop = thread.scrollHeight;
-    } else {
-      var mine = bubble("me", text);
-      var glyph = reactionFor(text, turns);
-      if (glyph) {
-        lastReact = turns;
-        setTimeout(function () { react(mine, glyph); }, 1300);
-      }
+    var mine = bubble("me", text);
+    var glyph = reactionFor(text, turns);
+    if (glyph) {
+      lastReact = turns;
+      setTimeout(function () { react(mine, glyph); }, 1300);
     }
     var dots = typing();
 
@@ -591,7 +535,7 @@
       lines.forEach(function (line, i) {
         setTimeout(function () {
           if (i === 0 && dots.parentNode) dots.parentNode.removeChild(dots);
-          offerPick(bubble("them", line), line);
+          bubble("them", line);
           if (i === lines.length - 1) {
             busy = false;
             maybeHandOver();

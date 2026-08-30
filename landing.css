@@ -95,13 +95,6 @@ animation:lp-react-in .4s cubic-bezier(.34,1.56,.64,1) both}
 .lp-react i{position:absolute; border-radius:50%; background:#fff; border:1px solid #E6E3F0}
 .lp-react i:first-child{width:8px; height:8px; bottom:-4px; right:2px}
 .lp-react i:last-child{width:4px; height:4px; bottom:-8px; right:-1px}
-.lp-react.mine{left:auto; right:-16px; transform-origin:15% 85%}
-.lp-react.mine i:first-child{right:auto; left:2px}
-.lp-react.mine i:last-child{right:auto; left:-1px}
-.lp-msg.pickable{cursor:pointer; transition:transform .14s ease, box-shadow .14s ease}
-.lp-msg.pickable:hover{transform:translateY(-1px); box-shadow:0 5px 16px rgba(20,16,40,.14)}
-.lp-msg.pickable:focus-visible{outline:2px solid var(--primary); outline-offset:2px}
-.lp-msg.pickable.liked{cursor:default; transform:none; box-shadow:none}
 .lp-wlcard{cursor:pointer; background:var(--tint); border:1.5px solid var(--primary);
 gap:3px; transition:transform .14s ease, box-shadow .14s ease}
 .lp-wlcard:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(106,80,200,.22)}
