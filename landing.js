@@ -444,9 +444,7 @@
          here would be a guess dressed as a match. */
       return [
         "got it: " + brief.role + ", " + place + ". that's the brief.",
-        "i'm not going to make matches up on a landing page. the real thread reads live "
-          + "postings and comes back with the ones that actually fit.",
-        "join the waitlist and i'll do exactly that the day your spot opens."
+        "join the waitlist and i'll come back with the roles that fit the day your spot opens."
       ];
     }
 
