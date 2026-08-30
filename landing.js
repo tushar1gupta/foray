@@ -16,6 +16,20 @@
 
   /* ---- dialogs -------------------------------------------------------- */
   var clip = document.getElementById("lp-voice");
+  /* Calendly's widget is a third party, and most visitors never open the hire
+     dialog. Fetch it the first time somebody does rather than on every page
+     load. widget.js scans for .calendly-inline-widget when it runs, and by then
+     the container is already in the document. */
+  var calendarAsked = false;
+  function loadCalendar() {
+    if (calendarAsked) return;
+    calendarAsked = true;
+    var s = document.createElement("script");
+    s.src = "https://assets.calendly.com/assets/external/widget.js";
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
   function playVoice() {
     if (!clip) return;
     try {
@@ -30,12 +44,33 @@
   }
 
   document.addEventListener("click", function (e) {
+    /* Puts the visitor back at the top, where the waitlist and the agent both
+       are, and opens the form once the scroll has settled. Opening it mid-flight
+       parks the page somewhere odd behind the dialog. */
+    if (e.target.closest("[data-waitlist]")) {
+      var from = e.target.closest("dialog");
+      if (from) from.close();
+      /* Instant, not smooth. Opening the dialog locks the page, and a smooth
+         scroll still running at that moment stops dead -- from the foot of the
+         page that leaves the visitor exactly where they started. The dialog
+         covers the jump, and what matters is where they land when they close
+         it. */
+      var hero = document.getElementById("lp-hero");
+      if (hero) window.scrollTo({ top: hero.offsetTop, behavior: "instant" });
+      requestAnimationFrame(function () {
+        var wl = document.getElementById("lp-waitlist");
+        if (wl && wl.showModal && !wl.open) wl.showModal();
+      });
+      return;
+    }
+
     var open = e.target.closest("[data-open]");
     if (open) {
       var d = document.getElementById(open.getAttribute("data-open"));
       if (d && d.showModal) {
         d.showModal();
         if (d.id === "lp-call") playVoice();
+        if (d.id === "lp-hire") loadCalendar();
       }
       return;
     }
@@ -95,6 +130,10 @@
       wlSubmit.disabled = true;
       wlSubmit.textContent = "Joining\u2026";
 
+      var slow = setTimeout(function () {
+        if (wlSubmit.disabled) wlSubmit.textContent = "Still going…";
+      }, 4000);
+
       fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -106,11 +145,15 @@
       }).then(function (r) {
         return r.json().catch(function () { return { ok: false }; });
       }).then(function (out) {
+        clearTimeout(slow);
         if (!out || !out.ok) throw new Error((out && out.error) || "That did not go through.");
+        wlSubmit.disabled = false;
+        wlSubmit.textContent = "Join the waitlist";
         wlForm.hidden = true;
         wlDone.hidden = false;
         joined = true;
       }).catch(function (err) {
+        clearTimeout(slow);
         wlSubmit.disabled = false;
         wlSubmit.textContent = "Join the waitlist";
         wlErr.textContent = err.message || "That did not go through. Try again in a moment.";
@@ -131,12 +174,14 @@
   var busy = false;
   var demoTimers = [];
   /* The agent is a demo until we open. Let somebody get a real feel for it --
-     a few turns is enough to see how it answers -- then hand them to the
-     waitlist rather than letting the conversation run on into nothing. */
-  var TURNS_BEFORE_WAITLIST = 4;
+     long enough to take the brief and come back with roles, which is the part
+     worth showing -- then hand them to the waitlist rather than letting the
+     conversation run on into nothing. */
+  var TURNS_BEFORE_WAITLIST = 6;
   var turns = 0;
   var joined = false;
   var handedOver = false;
+  var told = false;
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -150,6 +195,45 @@
     thread.scrollTop = thread.scrollHeight;
     return b;
   }
+  function react(msg, glyph, mine) {
+    msg.classList.add("reacted");
+    var t = el("span", "lp-react" + (mine ? " mine" : ""), glyph);
+    t.appendChild(el("i"));
+    t.appendChild(el("i"));
+    msg.appendChild(t);
+  }
+
+  /* Tapbacks land where a person would actually reach for one, picked off what
+     the message says rather than off its position in the thread -- somebody who
+     opens with their name is at a different point from somebody who opens with
+     hi. Two in a row reads as a bot with a stuck key, so a reaction normally
+     needs a clear turn after the last one. Saying yes and picking a role are
+     exempt: those are the two moments a reaction is most worth having, and
+     they tend to arrive back to back. */
+  var lastReact = -9;
+  function reactionFor(text, n) {
+    var t = text.trim().toLowerCase();
+    var glyph = "", always = false;
+    if (/^(ha){2,}$|^(lol|lmao|haha)\b/.test(t)) {
+      glyph = "\uD83D\uDE02";
+    } else if (/^(yes|yep|yeah|yup|sure|perfect|great|nice|please|do it|go for it|sounds good|let's go)\b/.test(t)) {
+      glyph = "\u2764\uFE0F"; always = true;
+    } else if (/^(0?[123])\b/.test(t)) {
+      glyph = "\u2764\uFE0F"; always = true;              /* picking one of the roles */
+    } else if (/\b(asap|urgent|right now|this week|today)\b/.test(t)) {
+      glyph = "\u203C\uFE0F";
+    } else if (/(linkedin\.com|github\.com|\.pdf|\bresume\b|\bcv\b|\bportfolio\b)/.test(t)) {
+      glyph = "\uD83D\uDC40";                             /* something to go and read */
+    } else if (/\$|\b\d{3}\s?k\b/.test(t)) {
+      glyph = "\uD83D\uDC40";                             /* a number worth a look */
+    } else if (/\b(staff|principal|senior|lead|founding|engineer|developer|designer|scientist|analyst)\b/.test(t)) {
+      glyph = "\uD83D\uDC4D";
+    }
+    if (!glyph) return "";
+    if (!always && n - lastReact < 2) return "";
+    return glyph;
+  }
+
   function typing() {
     var d = el("div", "lp-dots");
     d.innerHTML = "<i></i><i></i><i></i>";
@@ -167,7 +251,7 @@
     [1300, "them", "got it. backend, 6 yrs, go + postgres. what comp, and where do you want to be?"],
     [1000, "me", "sf hybrid, 180k+"],
     [1500, "job", ""],
-    [1000, "meta-right", "you liked “01 Senior Backend Engineer · Stripe”"],
+    [1000, "meta-right", "you liked “Senior Backend Engineer · Stripe”"],
     [800, "them", "on it. stripe it is. tailored resume and a short note to the hiring manager. good to go?"],
     [900, "me", "YES"],
     [500, "meta-right", "Read"],
@@ -177,6 +261,7 @@
   function jobCard() {
     var thumb = document.getElementById("lp-thumb-src");
     var badge = document.getElementById("lp-stripe-src");
+    var badge2 = document.getElementById("lp-anthropic-src");
     var w = el("div", "lp-msg them wide");
     w.innerHTML =
       '<span>found 2 worth your time. like the one you want and i will get your application ready:</span>' +
@@ -191,14 +276,21 @@
           '</span>' +
           '<span class="lp-job-body"><span class="n">01</span>' +
           '<span class="t">Senior Backend Engineer</span>' +
-          '<span class="s">SF hybrid · $185–210k</span>' +
-          '<span class="u">stripe.com/jobs</span></span>' +
+          '<span class="s">SF hybrid · $185–210k</span></span>' +
         '</span>' +
       '</span>' +
       '<span class="lp-job" style="margin-top:8px">' +
-        '<span class="lp-job-card"><span class="lp-job-body"><span class="n">02</span>' +
-        '<span class="t">Member of Technical Staff · Anthropic</span>' +
-        '<span class="s">SF hybrid · $240k + equity</span></span></span>' +
+        '<span class="lp-job-card">' +
+          '<span class="lp-job-shot" style="--shot:#191919">' +
+            '<span class="row"><span class="badge">' + (badge2 ? badge2.innerHTML : "") + '</span>' +
+            '<span class="co">Careers at Anthropic</span></span>' +
+            '<span class="bar"></span><span class="bar short"></span>' +
+            '<span class="cta">Apply now</span>' +
+          '</span>' +
+          '<span class="lp-job-body"><span class="n">02</span>' +
+          '<span class="t">Member of Technical Staff</span>' +
+          '<span class="s">SF hybrid · $240k + equity</span></span>' +
+        '</span>' +
       '</span>';
     thread.appendChild(w);
   }
@@ -227,27 +319,58 @@
     thread.appendChild(el("span", "lp-meta", "Live"));
   }
 
+  /* The moment somebody starts typing, the demo gets out of the way -- and an
+     empty box is a bad thing to type into, so Foray says hello while they are
+     still composing. On the live path render() redraws from the server
+     transcript, so this greeting is only ever the local one. */
+  var greeted = false;
+  function greet() {
+    if (greeted) return;
+    greeted = true;
+    goLive();
+    var dots = typing();
+    setTimeout(function () {
+      if (dots.parentNode) dots.parentNode.removeChild(dots);
+      bubble("them", "hey, i'm foray. tell me what you're after and i'll go find it.");
+    }, 650);
+  }
+  input.addEventListener("input", greet);
+
   /* The fallback, used only when no widget token is configured or the API is
-     unreachable. The copy is the real intake's, not an approximation: the
-     greeting is messaging/prompts.py greeting_for(), the first two asks are
-     messaging/identity.py ASKS in missing_identity() order (name, then email),
-     and the rest are prompts.QUESTIONS in gate order. Keep them in step -- a
-     visitor who types here should get the same conversation the live thread
-     would give them, minus the part where we remember it. */
+     unreachable. The asks track the real intake: messaging/identity.py ASKS in
+     missing_identity() order (name, then email), then prompts.QUESTIONS in gate
+     order. Keep them in step -- a visitor who types here should get the same
+     conversation the live thread would give them, minus the part where we
+     remember it. The greeting is deliberately not greeting_for()'s: that one
+     discloses the agent as an AI because SMS wants it to, and this is a demo
+     widget on our own page, where it only reads as throat-clearing. */
   var stage = 0;
   function offlineReplies() {
     var s = stage++;
     if (s === 0) return [
-      "hey, i'm foray from Foray. i'm an ai, and i'm here to take a few details so we can match you to the right roles. it takes a couple of minutes.",
-      "first things first — what name should i put on this?"
+      "good to meet you. a few details and i can start matching. couple of minutes, tops.",
+      "what name should i put on this?"
     ];
     if (s === 1) return ["and the best email to reach you on?"];
     if (s === 2) return ["what kind of role are you looking for next?"];
-    if (s === 3) return ["whereabouts are you based, and which locations would you work in?"];
-    if (s === 4) return ["what are you targeting on compensation? base or total is fine."];
-    if (s === 5) return [
-      "that's the gate closed — on the live line this is where matches start landing in your thread."
+    if (s === 3) return ["where are you based, and where would you want to work?"];
+    if (s === 4) return [
+      "got it. that's the brief. give me a second.",
+      "three worth your time:",
+      "01 · senior backend engineer at stripe. sf hybrid, $185–210k",
+      "02 · member of technical staff at anthropic. sf hybrid, $240k + equity",
+      "03 · platform engineer at figma. sf hybrid, $195k",
+      "like the one you want and i'll get the application ready"
     ];
+    if (s === 5) {
+      told = true;
+      return [
+        "on it. normally i'd tailor a resume to that posting and write to their hiring manager, "
+          + "and you'd see both before anything went out.",
+        "this is the demo though, so it stops here. join the waitlist and i'll do it for real the "
+          + "day your spot opens."
+      ];
+    }
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
 
@@ -278,6 +401,29 @@
     });
   }
 
+  /* Only the numbered suggestion lines are pickable. The label is the role
+     itself, which is what the thread should say they liked. */
+  function offerPick(b, line) {
+    var m = /^(0[123]) \u00b7 ([^.]+)\./.exec(line);
+    if (!m) return b;
+    b.classList.add("pickable");
+    b.setAttribute("role", "button");
+    b.setAttribute("tabindex", "0");
+    b.setAttribute("aria-label", "Like " + m[2]);
+    function choose() {
+      if (b.classList.contains("liked") || busy || handedOver) return;
+      b.classList.add("liked");
+      b.removeAttribute("tabindex");
+      react(b, "\u2764\uFE0F", true);
+      sendTurn(m[1], m[2]);
+    }
+    b.addEventListener("click", choose);
+    b.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); }
+    });
+    return b;
+  }
+
   function handOver() {
     handedOver = true;
     input.disabled = true;
@@ -292,14 +438,34 @@
     thread.scrollTop = thread.scrollHeight;
   }
 
+  /* Liking one of the suggestions has to move the conversation on the same way
+     typing does, so the thread-advancing half of submit lives here and takes
+     the pick as an argument. */
   function submit() {
     var text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    sendTurn(text, null);
+  }
+
+  function sendTurn(text, liked) {
     if (!text || busy || handedOver) return;
     goLive();
-    input.value = "";
     busy = true;
     turns++;
-    bubble("me", text);
+    if (liked) {
+      /* A tapback is not a message. Note what they liked the way a real thread
+         does rather than putting a bare "01" in a blue bubble. */
+      thread.appendChild(el("span", "lp-meta right", "you liked \u201C" + liked + "\u201D"));
+      thread.scrollTop = thread.scrollHeight;
+    } else {
+      var mine = bubble("me", text);
+      var glyph = reactionFor(text, turns);
+      if (glyph) {
+        lastReact = turns;
+        setTimeout(function () { react(mine, glyph); }, 1300);
+      }
+    }
     var dots = typing();
 
     function offline() {
@@ -307,7 +473,7 @@
       lines.forEach(function (line, i) {
         setTimeout(function () {
           if (i === 0 && dots.parentNode) dots.parentNode.removeChild(dots);
-          bubble("them", line);
+          offerPick(bubble("them", line), line);
           if (i === lines.length - 1) {
             busy = false;
             maybeHandOver();
@@ -319,8 +485,11 @@
     function maybeHandOver() {
       if (handedOver || joined || turns < TURNS_BEFORE_WAITLIST) return;
       setTimeout(function () {
-        bubble("them", "this is the demo, so it stops here. we're opening spots in batches \u2014 " +
-          "join the waitlist and i'll pick it up for real the day yours is ready.");
+        /* If they got here by liking a role they have just been told all this. */
+        if (!told) {
+          bubble("them", "this is the demo, so it stops here. we're opening spots in batches. " +
+            "join the waitlist and i'll pick it up for real the day yours is ready.");
+        }
         handOver();
       }, 900);
     }

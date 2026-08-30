@@ -6,7 +6,8 @@ Run src/configure.py afterwards to stamp the domain and emit the static assets.
 """
 import json, pathlib
 from scene import field, frames
-from landing import CSS as LP_CSS, JS as LP_JS, BODY as LP_BODY
+from landing import CSS as LP_CSS, JS as LP_JS, BODY as LP_BODY, legal_shell
+from legal import PRIVACY_H1, PRIVACY_BODY, TERMS_H1, TERMS_BODY
 
 OUT = pathlib.Path(__file__).resolve().parent.parent
 OUT.mkdir(parents=True, exist_ok=True)
@@ -592,7 +593,7 @@ LANDING_FONTS = ("https://fonts.googleapis.com/css2?"
 
 
 def landing(title, desc):
-    """index.html — its own chrome, its own palette, its own script."""
+    """index.html: its own chrome, its own palette, its own script."""
     body = LP_BODY.replace("{email}", EMAIL)
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -617,6 +618,31 @@ def landing(title, desc):
 </html>
 """
 
+def legal(title, desc, h1, prose):
+    """A legal page: the landing chrome and palette, and no script at all."""
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{LANDING_FONTS}" rel="stylesheet">
+<style>{LP_CSS}</style>
+<script>
+  window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arguments); }};
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+{legal_shell(h1, prose)}
+</body>
+</html>
+"""
+
+
 def shell(page, title, desc, body):
     nav = "".join('<a href="%s"%s>%s</a>' % (h, ' class="on"' if h == page else "", t)
                   for h, t in NAVLINKS)
@@ -637,7 +663,7 @@ def shell(page, title, desc, body):
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-<div class="ticker"><div class="wrap lbl"><s>&mdash;</s>Now booking engineering searches for Q4<s>&mdash;</s></div></div>
+<div class="ticker"><div class="wrap lbl"><s>&middot;</s>Now booking engineering searches for Q4<s>&middot;</s></div></div>
 <header>
   <div class="wrap nav">
     <a href="index.html" class="mark" aria-label="Foray home"><b><i></i><i></i><i></i><i></i></b>Foray</a>
@@ -1090,12 +1116,26 @@ pages = {
     "engineers.html": ("For engineers | Foray",
                        "Join the Foray pool with your LinkedIn and GitHub. We contact you only when a role fits.",
                        engineers_body),
+    "privacy.html": ("Privacy Policy | Foray",
+                     "How GoForay, Co. collects, uses, and protects the information "
+                     "engineers and companies give us.",
+                     None),   # prose comes from legal.py, not from a body here
+    "terms.html": ("Terms of Service | Foray",
+                   "The agreement between you and GoForay, Co. when you use Foray.",
+                   None),
     "companies.html": ("For companies | Foray",
                        "Post an engineering role to Foray. Paste your job description and we reply within a day.",
                        companies_body),
 }
 
 for name, (title, desc, body) in pages.items():
-    html = landing(title, desc) if name == "index.html" else shell(name, title, desc, body)
+    if name == "index.html":
+        html = landing(title, desc)
+    elif name == "privacy.html":
+        html = legal(title, desc, PRIVACY_H1, PRIVACY_BODY)
+    elif name == "terms.html":
+        html = legal(title, desc, TERMS_H1, TERMS_BODY)
+    else:
+        html = shell(name, title, desc, body)
     (OUT / name).write_text(html, encoding="utf-8")
     print("wrote", name, f"{len((OUT / name).read_text(encoding='utf-8')) // 1024} KB")

@@ -198,7 +198,7 @@
           if(v){ok=true;parts.push((f.getAttribute('data-label')||f.name||'Field')+': '+v);}
         }
         if(!ok){var first=root.querySelector('input,textarea');if(first){first.focus();}return;}
-        window.location.href='mailto:contact@goforay.io?subject='+
+        window.location.href='mailto:tushar@goforay.io?subject='+
           encodeURIComponent(root.getAttribute('data-compose'))+
           '&body='+encodeURIComponent(parts.join('\n')+'\n\n');
       });
