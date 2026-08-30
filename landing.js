@@ -177,7 +177,7 @@
      long enough to take the brief and come back with roles, which is the part
      worth showing -- then hand them to the waitlist rather than letting the
      conversation run on into nothing. */
-  var TURNS_BEFORE_WAITLIST = 6;
+  var TURNS_BEFORE_WAITLIST = 12;
   var turns = 0;
   var joined = false;
   var handedOver = false;
@@ -344,25 +344,122 @@
      remember it. The greeting is deliberately not greeting_for()'s: that one
      discloses the agent as an AI because SMS wants it to, and this is a demo
      widget on our own page, where it only reads as throat-clearing. */
+  /* The ladder used to be a counter: stage++ on every message, whatever it
+     said. So "tg" passed as an email, then as a role, then as a location, and
+     three matches with salaries came back off four junk answers -- which reads
+     as fake, because it was. Each step now checks the answer to the question it
+     asked, and re-asks when it does not fit. The stage only moves on a real
+     answer. */
   var stage = 0;
-  function offlineReplies() {
-    var s = stage++;
-    if (s === 0) return [
-      "good to meet you. a few details and i can start matching. couple of minutes, tops.",
-      "what name should i put on this?"
-    ];
-    if (s === 1) return ["and the best email to reach you on?"];
-    if (s === 2) return ["what kind of role are you looking for next?"];
-    if (s === 3) return ["where are you based, and where would you want to work?"];
-    if (s === 4) return [
-      "got it. that's the brief. give me a second.",
+  var brief = { name: "", email: "", role: "", place: "" };
+
+  /* Repeating one sentence word for word is how a form behaves, not a person.
+     Each stage keeps its own count and moves down its list. */
+  var tries = 0;
+  function again(list) { return [list[Math.min(tries++, list.length - 1)]]; }
+
+  var NAME_AGAIN = [
+    "a name first, whatever you go by. we'll get to the rest.",
+    "anything works. first name is plenty."
+  ];
+  var EMAIL_AGAIN = [
+    "that isn't an address i can reach you at. what's your email?",
+    "still need an email. something in the shape of you@company.com.",
+    "i can't line anything up without a way to reach you. an email and we're moving."
+  ];
+  var ROLE_AGAIN = [
+    "a bit more than that. backend, infra, ml, product, design, what are you after?",
+    "give me the job title you'd want to see on the offer.",
+    "even roughly. what kind of engineering do you want to be doing?"
+  ];
+  var PLACE_AGAIN = [
+    "whereabouts? a city is plenty, or remote.",
+    "just a city, or say remote and i'll work with that."
+  ];
+
+  function letters(t) { return t.replace(/[^a-z]/gi, "").length; }
+  function isEmail(t) { return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(t); }
+  function isLink(t) { return /https?:\/\/|www\.|linkedin\.com|github\.com/i.test(t); }
+
+  /* Their own words, trimmed to something that fits on a card: first clause,
+     no trailing punctuation, no sentence-length essays. */
+  function tidy(t, cap) {
+    t = t.split(/[,.;\n]/)[0].trim().toLowerCase();
+    t = t.replace(
+      /^(i(?:'m| am)? |i want |looking for |currently |living |based |located |in |at |a |an |the )+/,
+      "");
+    if (t.length > cap) t = t.slice(0, cap).replace(/\s+\S*$/, "");
+    return t;
+  }
+
+  /* Built from what they actually told us. Inventing "senior backend engineer
+     at stripe" for somebody who said they design is worse than saying nothing:
+     the whole point on the day is that the roles come back off the brief. */
+  function matches() {
+    var role = brief.role || "engineer";
+    var place = brief.place || "remote";
+    return [
+      "got it: " + role + ", " + place + ". give me a second.",
       "three worth your time:",
-      "01 · senior backend engineer at stripe. sf hybrid, $185–210k",
-      "02 · member of technical staff at anthropic. sf hybrid, $240k + equity",
-      "03 · platform engineer at figma. sf hybrid, $195k",
+      "01 \u00b7 " + role + " at stripe. " + place + ", $185\u2013210k",
+      "02 \u00b7 " + role + " at anthropic. " + place + ", $240k + equity",
+      "03 \u00b7 " + role + " at figma. " + place + ", $195k",
       "like the one you want and i'll get the application ready"
     ];
-    if (s === 5) {
+  }
+
+  function offlineReplies(text) {
+    var t = (text || "").trim();
+
+    if (stage === 0) {
+      stage = 1;
+      return [
+        "good to meet you. a few details and i can start matching. couple of minutes, tops.",
+        "what name should i put on this?"
+      ];
+    }
+
+    if (stage === 1) {
+      if (isEmail(t) || isLink(t) || letters(t) < 2 || t.length > 60)
+        return again(NAME_AGAIN);
+      brief.name = tidy(t, 40);
+      stage = 2; tries = 0;
+      return ["thanks. and the best email to reach you on?"];
+    }
+
+    if (stage === 2) {
+      /* Never waved through. An address we cannot send to is the one answer
+         that makes the whole thread pointless. */
+      if (!isEmail(t))
+        return again(EMAIL_AGAIN);
+      brief.email = t;
+      stage = 3; tries = 0;
+      return ["what kind of role are you looking for next?"];
+    }
+
+    if (stage === 3) {
+      if (letters(t) < 4)
+        return again(ROLE_AGAIN);
+      brief.role = tidy(t, 42);
+      stage = 4; tries = 0;
+      return ["where are you based, and where would you want to work?"];
+    }
+
+    if (stage === 4) {
+      if (letters(t) < 2)
+        return again(PLACE_AGAIN);
+      /* "based in nyc, would do remote" should read as a place on a card, and
+         the remote part is the half they actually chose. */
+      var place = tidy(t, 24);
+      if (/\bremote\b/i.test(t) && place.indexOf("remote") < 0)
+        place = place ? place + " or remote" : "remote";
+      brief.place = place;
+      stage = 5; tries = 0;
+      return matches();
+    }
+
+    if (stage === 5) {
+      stage = 6;
       told = true;
       return [
         "on it. normally i'd tailor a resume to that posting and write to their hiring manager, "
@@ -371,6 +468,7 @@
           + "day your spot opens."
       ];
     }
+
     told = true;
     return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
   }
@@ -489,7 +587,7 @@
     var dots = typing();
 
     function offline() {
-      var lines = offlineReplies();
+      var lines = offlineReplies(text);
       lines.forEach(function (line, i) {
         setTimeout(function () {
           if (i === 0 && dots.parentNode) dots.parentNode.removeChild(dots);
