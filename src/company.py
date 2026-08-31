@@ -189,7 +189,7 @@ BAND = """    <section class="lp-band">
                 <span class="c" style="background:var(--band-acc2); color:var(--band)">MT 4:00</span>
               </span>
             </span>
-            <p>Five per role, pre-interviewed, with our read attached.</p>
+            <p>Five per role, qualified, with our read attached.</p>
           </a>
 
           <a href="#book" class="lp-step" style="animation-delay:.25s">
@@ -245,8 +245,7 @@ def body():
           <span class="lbl" style="color:var(--primary)">For companies</span>
           <h1>Five candidates on your calendar. You pay when you hire.</h1>
           <p class="sub">Send us any role and consider it handled. We reach the people you
-            want, interview every one ourselves, and hand you introductions with our read
-            attached.</p>
+            want and hand you introductions with our read attached.</p>
         </div>
 
         <form class="co-intake" id="co-form" novalidate>
@@ -284,7 +283,7 @@ def body():
 
     <div class="co-strip">
       <div class="n"><b>1,500+</b><span class="lbl" style="color:var(--muted)">candidates
-        pre-interviewed</span></div>
+        qualified</span></div>
       <div class="n"><b>$0</b><span class="lbl" style="color:var(--muted)">until you hire</span></div>
       <ul>{chips}</ul>
     </div>
