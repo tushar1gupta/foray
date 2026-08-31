@@ -17,8 +17,13 @@ if (attachDatabasePool) attachDatabasePool(pool);
 /* Required labels mirror the data-req attributes in the markup. Keep in sync. */
 const FORMS = {
   company: {
-    required: ['Name', 'Company', 'Email', 'Job posting link', 'Job description'],
-    subject: f => 'New search: ' + (f.Company || 'unknown') + (f.Role ? ' - ' + f.Role : ''),
+    required: ['Email'],
+    // The page offers one box for the role and decides which of these it is by
+    // whether it starts with http, so exactly one of them arrives. Requiring
+    // both would reject every real submission.
+    oneOf: ['Job posting link', 'Job description'],
+    subject: f => 'New search: ' + (f.Company || domainOf(f.Email))
+      + (f.Role ? ' - ' + f.Role : ''),
   },
   engineer: {
     required: ['Name', 'Email', 'LinkedIn', 'GitHub', 'What they want next'],
@@ -41,6 +46,13 @@ const MAX_BODY = 96 * 1024;
 const MAX_FIELDS = 40;
 const RATE_MAX = 5;
 const RATE_WINDOW = '15 minutes';
+/* No Company field is collected any more, so the notification subject falls
+ * back to the part of the address that identifies who is asking. */
+function domainOf(email) {
+  const at = String(email || '').lastIndexOf('@');
+  return at < 0 ? 'unknown' : String(email).slice(at + 1).toLowerCase();
+}
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 
@@ -125,6 +137,9 @@ function validate(kind, fields) {
 
   const missing = spec.required.filter(r => !clean[r]);
   if (missing.length) return { error: 'Missing required fields.', missing };
+  if (spec.oneOf && !spec.oneOf.some(k => clean[k])) {
+    return { error: 'Tell us about the role.', missing: spec.oneOf };
+  }
   if (!EMAIL_RE.test(clean.Email)) return { error: 'That email address looks wrong.' };
   if (clean.Phone && (clean.Phone.match(/\d/g) || []).length < PHONE_DIGITS_MIN) {
     return { error: 'That phone number looks too short.', missing: ['Phone'] };

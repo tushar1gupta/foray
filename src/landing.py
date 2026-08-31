@@ -92,6 +92,29 @@ CSS = r"""
 .lp-logo i{width:5px; height:5px; background:var(--primary); border-radius:1px}
 .lp-logo i:nth-child(2){opacity:.5} .lp-logo i:nth-child(3){opacity:.4}
 .lp-clock{display:flex; gap:10px; margin-left:auto; color:var(--muted)}
+/* The audience switch: two anchors dressed as a segmented control, so it needs
+   no script, survives a right-click into a new tab, and gives each side of the
+   business a URL worth putting in an email. */
+.lp-switch{display:flex; margin:0 auto; padding:3px; gap:2px; border-radius:999px;
+  background:var(--tint2); border:1px solid var(--line)}
+.lp-switch a{padding:7px 15px; border-radius:999px; color:var(--muted); white-space:nowrap;
+  transition:background .18s ease, color .18s ease}
+.lp-switch a:hover{color:var(--ink)}
+.lp-switch a.on{background:var(--primary); color:#fff}
+@media(max-width:640px){
+  .lp-switch{order:3; width:100%; margin:2px 0 0}
+  .lp-switch a{flex:1; text-align:center}
+}
+/* a quiet route to the other side of the business, for anyone who arrived on
+   the wrong one */
+.lp-crosslink{padding:0 var(--gut) clamp(40px,5vw,60px)}
+.lp-crosslink .wrap{max-width:var(--wrap); margin:0 auto}
+.lp-crosslink a{display:flex; align-items:center; gap:18px; justify-content:space-between;
+  padding:20px 24px; border:1px solid var(--line); border-radius:16px; background:var(--tint3);
+  color:var(--ink); transition:border-color .18s ease, transform .18s ease}
+.lp-crosslink a:hover{border-color:var(--primary); transform:translateY(-2px)}
+.lp-crosslink b{font-weight:600}
+.lp-crosslink .go{color:var(--primary); font-size:20px}
 .lp-clock span{font-variant-numeric:tabular-nums}
 @media(max-width:900px){.lp-clock{display:none} .lp-head .lp-btn{margin-left:auto}}
 
@@ -1251,26 +1274,53 @@ def _bars():
     return "".join(out)
 
 
-def legal_shell(h1, prose):
-    """A legal page wearing the landing page's chrome.
+def head_bar(active):
+    """The ticker and top bar every page shares.
 
-    Links, not buttons: these pages ship no script, so there is no waitlist
-    dialog here to open. Everything points back at the landing page, which is
-    where it lives.
+    `active` is "candidates", "companies" or None. Both the strip above the bar
+    and the call to action follow the audience, because the two sides of the
+    business are selling different things.
     """
+    def tab(href, label, key):
+        on = ' class="on" aria-current="page"' if key == active else ""
+        return '<a href="%s"%s>%s</a>' % (href, on, label)
+
+    if active == "companies":
+        note = ("Now booking searches &middot; five pre-interviewed candidates per role "
+                "&middot; success fee only")
+        cta = '<a class="lp-btn" href="#role">Send us a role</a>'
+    elif active == "candidates":
+        note = ("Now in private beta &middot; join the waitlist for early access "
+                "&middot; first 10 applications free")
+        cta = '<button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>'
+    else:
+        note = ("Now in private beta &middot; join the waitlist for early access "
+                "&middot; first 10 applications free")
+        cta = '<a class="lp-btn" href="index.html">Join the waitlist</a>'
+
     return (
-        '<div class="lp">\n\n'
-        '  <div class="lp-ticker lbl">Now in private beta &middot; join the waitlist for early '
-        'access &middot; first 10 applications free</div>\n\n'
+        '  <div class="lp-ticker lbl">' + note + '</div>\n\n'
         '  <header class="lp-head">\n'
         '    <a href="index.html" class="lp-logo" aria-label="Foray home">' + LOGOMARK + 'Foray</a>\n'
-        '    <span class="lp-clock lbl"><span>San Francisco</span></span>\n'
-        '    <a class="lp-btn" href="index.html">Join the waitlist</a>\n'
-        '  </header>\n\n'
-        '  <main class="lp-legal">\n'
-        '    <h1>' + h1 + '</h1>\n'
-        '    <div class="body">\n' + prose + '\n    </div>\n'
-        '  </main>\n\n'
+        '    <nav class="lp-switch lbl" aria-label="Who you are">'
+        + tab("index.html", "For candidates", "candidates")
+        + tab("companies.html", "For companies", "companies")
+        + '</nav>\n'
+        '    ' + cta + '\n'
+        '  </header>\n'
+    )
+
+
+def foot(active):
+    """The shared footer. Only the page you are already on swaps a link for the
+    dialog that opens faster than a reload."""
+    cand = active == "candidates"
+    here = "" if active == "companies" else "companies.html"
+    wl = ('<button type="button" data-open="lp-waitlist">Join the waitlist</button>' if cand
+          else '<a href="index.html">Join the waitlist</a>')
+    agent = ('<button type="button" data-chat>Try the agent</button>' if cand
+             else '<a href="index.html#lp-phone">Try the agent</a>')
+    return (
         '  <footer class="lp-foot">\n'
         '    <div class="wrap">\n'
         '      <div class="lp-fcols">\n'
@@ -1280,24 +1330,46 @@ def legal_shell(h1, prose):
         'recruiting agent.</p>\n'
         '        </div>\n'
         '        <div><h4>Engineers</h4><ul>\n'
-        '          <li><a href="index.html">Join the waitlist</a></li>\n'
-        '          <li><a href="index.html#lp-phone">Try the agent</a></li>\n'
+        '          <li>' + wl + '</li>\n'
+        '          <li>' + agent + '</li>\n'
         '        </ul></div>\n'
         '        <div><h4>Hiring</h4><ul>\n'
-        '          <li><a href="index.html#companies">Book 15 minutes</a></li>\n'
+        '          <li><a href="' + here + '#role">Send us a role</a></li>\n'
+        '          <li><a href="' + here + '#book">Book 15 minutes</a></li>\n'
         '        </ul></div>\n'
         '        <div><h4>Contact</h4><ul>\n'
-        '          <li><a href="index.html">Join the waitlist</a></li>\n'
+        '          <li>' + wl + '</li>\n'
         '          <li style="color:var(--muted)">San Francisco, CA</li>\n'
         '        </ul></div>\n'
         '      </div>\n'
         '      <div class="lp-fbot lbl">\n'
         '        <span>&copy; 2026 GoForay, Co.</span>\n'
-        '        <span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span>\n'
+        '        <span><a href="privacy.html">Privacy</a> &middot; '
+        '<a href="terms.html">Terms</a></span>\n'
         '        <span>Built in San Francisco</span>\n'
         '      </div>\n'
         '    </div>\n'
-        '  </footer>\n\n'
+        '  </footer>\n'
+    )
+
+
+def legal_shell(h1, prose):
+    """A legal page wearing the landing page's chrome.
+
+    Links, not buttons: these pages ship no script, so there is no waitlist
+    dialog here to open. Everything points back at the landing page, which is
+    where it lives.
+    """
+    return (
+        '<div class="lp">\n\n'
+        + head_bar(None)
+        + '\n'
+        '  <main class="lp-legal">\n'
+        '    <h1>' + h1 + '</h1>\n'
+        '    <div class="body">\n' + prose + '\n    </div>\n'
+        '  </main>\n\n'
+        + foot(None)
+        + '\n'
         '</div>\n'
     )
 
@@ -1305,14 +1377,7 @@ def legal_shell(h1, prose):
 BODY = """
 <div class="lp" data-api="https://app.goforay.io" data-widget-token="">
 
-  <div class="lp-ticker lbl">Now in private beta · join the waitlist for early access · first 10 applications free</div>
-
-  <header class="lp-head">
-    <a href="index.html" class="lp-logo" aria-label="Foray home">{logomark}Foray</a>
-    <div class="lp-clock lbl"><span>San Francisco</span><span id="lp-clk">--:--</span></div>
-    <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
-  </header>
-
+{head_bar}
   <main>
     <section class="lp-hero" id="lp-hero">
       <div class="lp-hero-copy">
@@ -1346,23 +1411,6 @@ BODY = """
       </div>
     </section>
 
-    <section class="lp-doors">
-      <div class="wrap">
-        <button type="button" class="lp-door cand" data-open="lp-waitlist">
-          <span class="ico">{icon_chat_w}</span>
-          <span><span class="tt">I&rsquo;m a candidate</span>
-            <span class="ss">Join the waitlist &middot; first 10 applications free</span></span>
-          <span class="arw" aria-hidden="true">{icon_arrow_w}</span>
-        </button>
-        <button type="button" class="lp-door hire" data-open="lp-hire">
-          <span class="ico">{icon_team_a}</span>
-          <span><span class="tt">I&rsquo;m hiring</span>
-            <span class="ss">Book 15 minutes &middot; success fee only</span></span>
-          <span class="arw" aria-hidden="true">{icon_arrow_a}</span>
-        </button>
-        <span class="lp-free">10 applications, free</span>
-      </div>
-    </section>
 
     <section class="lp-sec white">
       <div class="wrap">
@@ -1580,86 +1628,13 @@ BODY = """
       </div>
     </section>
 
-    <section class="lp-band" id="companies">
+    <section class="lp-crosslink">
       <div class="wrap">
-        <div class="lp-band-intro">
-          <span class="lbl">For companies</span>
-          <h2>Hiring? We&rsquo;ve already interviewed the pool.</h2>
-          <p>Tell us the role and the bar, then consider it handled. White glove the whole way:
-            we reach the engineers you want, vet every one ourselves, and hand you introductions
-            on your calendar.</p>
-        </div>
-
-        <div class="lp-stats">
-          <div><b>1,500+</b><span class="lbl">Engineers, pre-interviewed</span></div>
-          <div><b>$0</b><span class="lbl">Until you hire &middot; success fee only</span></div>
-        </div>
-
-        <div class="lp-steps">
-          <button type="button" class="lp-step" data-open="lp-hire" style="animation-delay:.05s">
-            <span class="lbl">Step 1 &middot; Reach</span>
-            <h3>We reach the exact engineers you want</h3>
-            <span class="lp-mini-panel">
-              <span style="align-self:flex-start; background:#fff; color:var(--ink); border-radius:10px 10px 10px 3px; padding:6px 10px; font-size:11.5px">
-                hey noah, staff platform role at a series B. $210k. interested?</span>
-              <span class="lp-out"><span class="av" style="background:var(--primary2); color:#fff">N</span>
-                <span class="ln"></span><span class="st">REPLIED</span></span>
-              <span class="lp-out"><span class="av" style="background:var(--accent); color:var(--band)">PS</span>
-                <span class="ln"></span><span class="st">REPLIED</span></span>
-              <span class="lp-out"><span class="av" style="background:var(--band-acc2); color:var(--band)">MT</span>
-                <span class="ln"></span><span class="st" style="background:rgba(255,255,255,.12); color:rgba(255,255,255,.75)">REACHED</span></span>
-            </span>
-            <p>Named lists, message-first. Engineers who ignore InMail answer us.</p>
-          </button>
-
-          <button type="button" class="lp-step" data-open="lp-hire" style="animation-delay:.15s">
-            <span class="lbl">Step 2 &middot; Introductions</span>
-            <h3>Interviews land on your calendar</h3>
-            <span class="lp-mini-panel">
-              <span class="lp-week">
-                <span class="d">MON</span><span class="d">TUE</span><span class="d">WED</span><span class="d">THU</span><span class="d">FRI</span>
-                <span class="c"></span>
-                <span class="c" style="background:var(--primary2); color:#fff">N 2:30</span>
-                <span class="c"></span>
-                <span class="c" style="background:var(--accent); color:var(--band)">PS 11:00</span>
-                <span class="c" style="background:var(--band-acc2); color:var(--band)">MT 4:00</span>
-              </span>
-            </span>
-            <p>Five per role, pre-interviewed, with our read attached.</p>
-          </button>
-
-          <button type="button" class="lp-step" data-open="lp-hire" style="animation-delay:.25s">
-            <span class="lbl">Step 3 &middot; Success fee</span>
-            <h3>We earn when you hire</h3>
-            <span class="lp-mini-panel lp-ledger">
-              <div class="win"><span class="tick">{icon_check_dark}</span>
-                <span style="font-weight:600">Offer signed</span>
-                <span class="amt" style="color:var(--band-acc)">success fee</span></div>
-              <div>{icon_x_m}<span style="color:rgba(255,255,255,.75)">No hire</span><span class="amt" style="color:rgba(255,255,255,.75)">$0</span></div>
-              <div>{icon_x_m}<span style="color:rgba(255,255,255,.75)">Retainers</span><span class="amt" style="color:rgba(255,255,255,.75)">never</span></div>
-            </span>
-            <p>We make money when you make money.</p>
-          </button>
-        </div>
-
-        <div class="lp-funnel">
-          <div class="lp-funnel-top lbl"><span>Everyone who could do the job</span>
-            <span class="hit">Five reach your calendar</span></div>
-          <div class="lp-bars" aria-hidden="true">{bars}</div>
-          <div class="lp-funnel-foot"><span>1,500 profiles reviewed per search</span>
-            <span aria-hidden="true">&rarr;</span>
-            <span style="color:var(--band-acc)">5 introductions, with our read on each</span></div>
-        </div>
-
-        <div class="lp-booking">
-          <div class="t"><b>Grab 15 minutes with us.</b>
-            <span>Bring the role. We&rsquo;ll walk you through the pool and show you what our read
-              looks like.</span></div>
-          <div class="a">
-            <button type="button" class="lp-btn" data-open="lp-hire">Book on Calendly</button>
-            <small>15 minutes &middot; no obligation</small>
-          </div>
-        </div>
+        <a href="companies.html">
+          <span><b>Hiring?</b> Five pre-interviewed candidates on your calendar,
+            and you pay only when you hire.</span>
+          <span class="go" aria-hidden="true">&rarr;</span>
+        </a>
       </div>
     </section>
 
@@ -1674,33 +1649,7 @@ BODY = """
     </section>
   </main>
 
-  <footer class="lp-foot">
-    <div class="wrap">
-      <div class="lp-fcols">
-        <div>
-          <span class="lp-logo" aria-hidden="true">{logomark}Foray</span>
-          <p style="color:var(--muted); margin-top:16px; max-width:30ch">Your autonomous recruiting agent.</p>
-        </div>
-        <div><h4>Engineers</h4><ul>
-          <li><button type="button" data-open="lp-waitlist">Join the waitlist</button></li>
-          <li><button type="button" data-chat>Try the agent</button></li>
-        </ul></div>
-        <div><h4>Hiring</h4><ul>
-          <li><button type="button" data-open="lp-hire">Book 15 minutes</button></li>
-        </ul></div>
-        <div><h4>Contact</h4><ul>
-          <li><button type="button" data-open="lp-waitlist">Join the waitlist</button></li>
-          <li style="color:var(--muted)">San Francisco, CA</li>
-        </ul></div>
-      </div>
-      <div class="lp-fbot lbl">
-        <span>&copy; 2026 GoForay, Co.</span>
-        <span><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></span>
-        <span>Built in San Francisco</span>
-      </div>
-    </div>
-  </footer>
-
+{foot}
   <audio id="lp-voice" preload="none" src="/foray-voice.mp3"></audio>
   <span hidden id="lp-thumb-src">{icon_thumb_w}</span>
   <span hidden id="lp-stripe-src">{stripe_badge}</span>
@@ -1791,6 +1740,8 @@ BODY = """
 </div>
 """.format(
     logomark=LOGOMARK,
+    head_bar=head_bar("candidates"),
+    foot=foot("candidates"),
     email="{email}",
     drift_a=_drift(DRIFT_A),
     drift_b=_drift(DRIFT_B),
