@@ -208,7 +208,7 @@ module.exports = async (req, res) => {
       if (rows[0].n >= RATE_MAX) {
         return res.status(429).json({
           ok: false,
-          error: 'Too many submissions just now. Email contact@goforay.io instead.',
+          error: 'Too many submissions just now. Try again in a few minutes.',
         });
       }
     }
@@ -218,7 +218,7 @@ module.exports = async (req, res) => {
        VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
       [
         body.kind,
-        v.clean.Name,
+        v.clean.Name || domainOf(v.clean.Email),
         v.clean.Email,
         JSON.stringify(v.clean),
         String(req.headers['user-agent'] || '').slice(0, 500),
@@ -241,7 +241,7 @@ module.exports = async (req, res) => {
     console.error('submission failed:', err);
     return res.status(500).json({
       ok: false,
-      error: 'Something broke on our end. Email contact@goforay.io and we will pick it up.',
+      error: 'Something broke on our end. Try again in a moment.',
     });
   }
 };
