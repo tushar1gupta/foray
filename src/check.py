@@ -117,20 +117,25 @@ for p in FILES:
 # component borrowing a class an old one already owned. It is silent: the
 # second rule just starts applying to the first one's markup.
 #
-# Rules inside @media are excluded. Redefining a selector for a breakpoint is
-# the whole point of a media query, and externalise() strips indentation, so
-# without this they all look top-level.
+# Rules inside an at-rule block are excluded. Redefining a selector per
+# breakpoint or per feature test is what @media and @supports are for, and
+# externalise() strips indentation, so without this every one of them looks
+# top-level.
 def _strip_at_blocks(css):
     out, i, n = [], 0, len(css)
     while i < n:
-        at = css.find("@media", i)
+        at = css.find("@", i)
         if at < 0:
             out.append(css[i:])
             break
-        out.append(css[i:at])
         brace = css.find("{", at)
-        if brace < 0:
-            break
+        semi = css.find(";", at)
+        if brace < 0 or (0 <= semi < brace):
+            # a statement at-rule such as @import or @charset, not a block
+            out.append(css[i:(semi + 1) if semi >= 0 else n])
+            i = (semi + 1) if semi >= 0 else n
+            continue
+        out.append(css[i:at])
         depth, k = 1, brace + 1
         while k < n and depth:
             if css[k] == "{":

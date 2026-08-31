@@ -79,10 +79,21 @@ CSS = r"""
 
 /* ticker + header */
 .lp-ticker{background:var(--primary); color:#fff; text-align:center; padding:9px var(--gut)}
-.lp-head{
-  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
-  max-width:var(--wrap); margin:0 auto; padding:20px var(--gut); border-bottom:1px solid var(--line);
+/* Full bleed on the outside so the background spans the window, layout on the
+   inside so it still lines up with the rest of the page. Sticky needs the
+   former: a max-width bar lets content scroll past on either side of it. */
+.lp-head{position:sticky; top:0; z-index:20; border-bottom:1px solid var(--line);
+  background:rgba(250,248,252,.86);
+  -webkit-backdrop-filter:saturate(180%) blur(12px); backdrop-filter:saturate(180%) blur(12px)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .lp-head{background:var(--bg)}
 }
+.lp-head-in{
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  max-width:var(--wrap); margin:0 auto; padding:20px var(--gut);
+}
+/* an in-page link would otherwise land its target underneath the bar */
+html{scroll-padding-top:100px}
 .lp-logo{display:inline-flex; align-items:center; gap:12px; font-weight:600; font-size:19px;
   letter-spacing:.2em; text-transform:uppercase; line-height:1}
 .lp-logo b{display:grid; grid-template-columns:repeat(2,5px); gap:2.5px}
@@ -102,17 +113,26 @@ CSS = r"""
 .lp-switch a:hover{color:var(--ink)}
 .lp-switch a.on{background:var(--primary); color:#fff}
 @media(max-width:640px){
-  .lp-switch{order:3; width:100%; margin:2px 0 0}
-  .lp-switch a{flex:1; text-align:center}
+  html{scroll-padding-top:76px}
+  .lp-head-in{padding:12px var(--gut); gap:10px}
+  .lp-head .lp-logo{font-size:18px; gap:10px}
+  .lp-head .lp-logo b{grid-template-columns:repeat(2,5px); gap:2.5px}
+  .lp-head .lp-logo i{width:5px; height:5px}
+  .lp-head-in > .lp-btn{display:none}
+  .lp-switch{margin:0 0 0 auto}
+  .lp-switch a{padding:6px 12px; font-size:10.5px; letter-spacing:.08em}
+  .lp-sw-for{display:none}
 }
 /* a quiet route to the other side of the business, for anyone who arrived on
    the wrong one */
-.lp-crosslink{padding:0 var(--gut) clamp(40px,5vw,60px)}
+.lp-crosslink{padding:clamp(30px,4vw,48px) var(--gut) clamp(40px,5vw,60px)}
 .lp-crosslink .wrap{max-width:var(--wrap); margin:0 auto}
 .lp-crosslink a{display:flex; align-items:center; gap:18px; justify-content:space-between;
-  padding:20px 24px; border:1px solid var(--line); border-radius:16px; background:var(--tint3);
-  color:var(--ink); transition:border-color .18s ease, transform .18s ease}
-.lp-crosslink a:hover{border-color:var(--primary); transform:translateY(-2px)}
+  padding:22px 26px; border:1px solid var(--primary2); border-radius:16px;
+  background:var(--tint); color:var(--ink);
+  transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease}
+.lp-crosslink a:hover{border-color:var(--primary); transform:translateY(-2px);
+  box-shadow:0 10px 26px rgba(106,80,200,.18)}
 .lp-crosslink b{font-weight:600}
 .lp-crosslink .go{color:var(--primary); font-size:20px}
 .lp-clock span{font-variant-numeric:tabular-nums}
@@ -1289,7 +1309,8 @@ def head_bar(active):
     """
     def tab(href, label, key):
         on = ' class="on" aria-current="page"' if key == active else ""
-        return '<a href="%s"%s>%s</a>' % (href, on, label)
+        return ('<a href="%s"%s><span class="lp-sw-for">For </span>%s</a>'
+                % (href, on, label))
 
     if active == "companies":
         note = ("Now booking searches &middot; five qualified candidates per role "
@@ -1307,12 +1328,14 @@ def head_bar(active):
     return (
         '  <div class="lp-ticker lbl">' + note + '</div>\n\n'
         '  <header class="lp-head">\n'
+        '    <div class="lp-head-in">\n'
         '    <a href="index.html" class="lp-logo" aria-label="Foray home">' + LOGOMARK + 'Foray</a>\n'
         '    <nav class="lp-switch lbl" aria-label="Who you are">'
-        + tab("index.html", "For candidates", "candidates")
-        + tab("companies.html", "For companies", "companies")
+        + tab("index.html", "candidates", "candidates")
+        + tab("companies.html", "companies", "companies")
         + '</nav>\n'
         '    ' + cta + '\n'
+        '    </div>\n'
         '  </header>\n'
     )
 
