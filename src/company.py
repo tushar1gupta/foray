@@ -10,30 +10,7 @@ site; it reuses the same tokens and card classes.
 """
 from landing import _bars, chip, head_bar, foot, _svg, I
 
-ROLES = [
-    ("Founding engineer", "0&ndash;4 yrs",
-     "Has built something end to end without anyone checking on them."),
-    ("Backend and distributed systems", "2&ndash;7 yrs",
-     "Can tell you what breaks first in a system and why."),
-    ("Infrastructure and platform", "3&ndash;8 yrs",
-     "Has owned a build or deploy path that other teams relied on."),
-    ("Applied ML and inference", "2&ndash;7 yrs",
-     "Measures the work. Benchmarks and latency budgets, not demos."),
-    ("Forward-deployed engineer", "2&ndash;6 yrs",
-     "Writes code in front of a customer and stays comfortable doing it."),
-    ("Full-stack product engineer", "1&ndash;6 yrs",
-     "Ships user-facing work quickly without leaving a mess behind."),
-]
-
 CAL = "https://calendly.com/sathya-goforay/30min"
-
-
-def _roles_table():
-    rows = "".join(
-        "<tr><td><b>%s</b></td><td>%s</td><td>%s</td></tr>" % r for r in ROLES)
-    return ('<div class="scroll"><table class="co-roles">'
-            '<tr><th>Role</th><th>Experience</th><th>What we screen for</th></tr>'
-            + rows + "</table></div>")
 
 
 CSS = """
@@ -61,6 +38,7 @@ CSS = """
   text-transform:uppercase; color:var(--muted); margin-bottom:6px}
 .co-intake .row{display:flex; flex-wrap:wrap; gap:12px; align-items:center}
 .co-intake .or{color:var(--muted); font-size:13px}
+.co-terms{font-size:12.5px; color:var(--muted); margin:0}
 .co-err{color:#B3261E; font-size:13px; min-height:1em; margin:0}
 .co-done{display:flex; flex-direction:column; gap:10px; align-items:flex-start}
 .co-done .big{font-size:19px; font-weight:600}
@@ -75,14 +53,6 @@ CSS = """
 .co-sec h2{font-size:clamp(24px,3vw,36px)}
 .co-sec .lede{color:var(--muted); max-width:56ch; margin-top:10px}
 
-.co-roles{width:100%; border-collapse:collapse; margin-top:22px; font-size:14px}
-.co-roles th,.co-roles td{text-align:left; padding:13px 16px; border-bottom:1px solid var(--line);
-  vertical-align:top}
-.co-roles th{font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--muted)}
-.co-roles td{color:var(--muted)}
-.co-roles td b{color:var(--ink); font-weight:600}
-.co-roles tr:last-child td{border-bottom:0}
 
 .co-book{background:var(--tint3); border-top:1px solid var(--line)}
 .co-book .wrap{max-width:var(--wrap); margin:0 auto; padding:clamp(36px,4.6vw,60px) var(--gut)}
@@ -192,7 +162,7 @@ BAND = """    <section class="lp-band">
         <div class="lp-steps">
           <a href="#book" class="lp-step" style="animation-delay:.05s">
             <span class="lbl">Step 1 &middot; Reach</span>
-            <h3>We reach the exact engineers you want</h3>
+            <h3>We reach the exact people you want</h3>
             <span class="lp-mini-panel">
               <span style="align-self:flex-start; background:#fff; color:var(--ink); border-radius:10px 10px 10px 3px; padding:6px 10px; font-size:11.5px">
                 hey noah, staff platform role at a series B. $210k. interested?</span>
@@ -203,7 +173,7 @@ BAND = """    <section class="lp-band">
               <span class="lp-out"><span class="av" style="background:var(--band-acc2); color:var(--band)">MT</span>
                 <span class="ln"></span><span class="st" style="background:rgba(255,255,255,.12); color:rgba(255,255,255,.75)">REACHED</span></span>
             </span>
-            <p>Named lists, message-first. Engineers who ignore InMail answer us.</p>
+            <p>Named lists, message-first. People who ignore InMail answer us.</p>
           </a>
 
           <a href="#book" class="lp-step" style="animation-delay:.15s">
@@ -273,8 +243,8 @@ def body():
       <div class="wrap">
         <div>
           <span class="lbl" style="color:var(--primary)">For companies</span>
-          <h1>Five engineers on your calendar. You pay when you hire.</h1>
-          <p class="sub">Send us the role and consider it handled. We reach the engineers you
+          <h1>Five candidates on your calendar. You pay when you hire.</h1>
+          <p class="sub">Send us any role and consider it handled. We reach the people you
             want, interview every one ourselves, and hand you introductions with our read
             attached.</p>
         </div>
@@ -295,6 +265,7 @@ def body():
           <input type="text" name="confirm_url" tabindex="-1" autocomplete="off"
                  aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px">
           <p class="co-err" id="co-err" role="alert"></p>
+          <p class="co-terms">No retainer. You pay only when you hire.</p>
           <div class="row">
             <button type="submit" class="lp-btn" id="co-submit">Send it over</button>
             <span class="or">or <a href="#book" style="color:var(--primary); text-decoration:underline;
@@ -312,20 +283,13 @@ def body():
     </section>
 
     <div class="co-strip">
-      <div class="n"><b>1,500+</b><span class="lbl" style="color:var(--muted)">engineers
+      <div class="n"><b>1,500+</b><span class="lbl" style="color:var(--muted)">candidates
         pre-interviewed</span></div>
       <div class="n"><b>$0</b><span class="lbl" style="color:var(--muted)">until you hire</span></div>
       <ul>{chips}</ul>
     </div>
 
 {band}
-
-    <section class="co-sec">
-      <h2>What we search for.</h2>
-      <p class="lede">Early and mid-level engineering roles. If yours is not on this list, send it
-        anyway and we will tell you honestly whether we are the right people for it.</p>
-      {roles}
-    </section>
 
     <section class="co-book" id="book">
       <div class="wrap">
@@ -352,4 +316,4 @@ def body():
 """ + foot("companies") + """
 </div>
 """).replace("{band}", band).replace("{chips}", chips) \
-     .replace("{roles}", _roles_table()).replace("{cal}", CAL)
+     .replace("{cal}", CAL)

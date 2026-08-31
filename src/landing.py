@@ -1286,7 +1286,7 @@ def head_bar(active):
         return '<a href="%s"%s>%s</a>' % (href, on, label)
 
     if active == "companies":
-        note = ("Now booking engineering searches &middot; five pre-interviewed per role "
+        note = ("Now booking searches &middot; five pre-interviewed candidates per role "
                 "&middot; success fee only")
         cta = '<a class="lp-btn" href="#role">Send us a role</a>'
     elif active == "candidates":
@@ -1631,7 +1631,7 @@ BODY = """
     <section class="lp-crosslink">
       <div class="wrap">
         <a href="companies.html">
-          <span><b>Hiring engineers?</b> Five pre-interviewed candidates on your calendar,
+          <span><b>Hiring?</b> Five pre-interviewed candidates on your calendar,
             and you pay only when you hire.</span>
           <span class="go" aria-hidden="true">&rarr;</span>
         </a>

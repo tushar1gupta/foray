@@ -21,9 +21,9 @@ PAGES = {
     "index.html": ("Foray | Engineering search for startups",
                    "Foray runs early and mid-level engineering searches for startups from seed "
                    "through growth stage."),
-    "companies.html": ("Hiring engineers | Foray",
-                       "Send us the role and we come back within a day with five pre-interviewed "
-                       "engineers and our read on each."),
+    "companies.html": ("Hiring | Foray",
+                       "Send us any role and we come back within a day with five "
+                       "pre-interviewed candidates and our read on each."),
     # Hand-written rather than generated, but they still want a canonical tag,
     # the share card and a place in the sitemap.
     "privacy.html": ("Privacy policy | Foray",
