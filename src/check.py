@@ -86,7 +86,8 @@ for p in FILES:
     # the older form pages share the other. The legal pages ship no script at
     # all, so only the form pages are required to pull app.js.
     if not re.search(r"<style>", src):
-        new_design = p.name in {"index.html", "privacy.html", "terms.html"}
+        new_design = p.name in {"index.html", "companies.html", "privacy.html",
+                                "terms.html", "404.html"}
         need = ['href="/landing.css"'] if new_design else ['href="/style.css"', 'src="/app.js"']
         for _need in need:
             if _need not in src:
@@ -141,7 +142,7 @@ def _strip_at_blocks(css):
     return "".join(out)
 
 
-for _name in ("landing.css", "style.css"):
+for _name in ("landing.css", "company.css", "style.css"):
     _f = SITE / _name
     if not _f.exists():
         continue
@@ -191,15 +192,30 @@ for name in pagenames - {"index.html"}:
         notes.append(f"index.html does not link directly to {name}")
 
 # ---- CSS sanity (shared block, check once)
-_ext_css = SITE / "style.css"
-if _ext_css.exists():
-    css = _ext_css.read_text(encoding="utf-8")
+# Every stylesheet the site ships, concatenated. There used to be exactly one;
+# naming it explicitly meant the check died the day it was renamed.
+_sheets = [f for f in (SITE.glob("*.css")) if f.name != "og.css"]
+if _sheets:
+    css = "\n".join(f.read_text(encoding="utf-8") for f in sorted(_sheets))
 else:
-    css = re.search(r"<style>([\s\S]*?)</style>", FILES[0].read_text(encoding="utf-8")).group(1)
+    _inline = re.search(r"<style>([\s\S]*?)</style>", FILES[0].read_text(encoding="utf-8"))
+    css = _inline.group(1) if _inline else ""
+    if not css:
+        log("css", "no stylesheet found, inline or external")
 if css.count("{") != css.count("}"):
     log("css", f"unbalanced braces: {css.count('{')} open vs {css.count('}')} close")
-declared = set(re.findall(r"(--[a-z0-9-]+)\s*:", css))
-used = set(re.findall(r"var\((--[a-z0-9-]+)", css))
+# Some custom properties are per-element and live in markup rather than in a
+# stylesheet: style="--tx:24px" on a drifting dot, --shot on a job card header
+# that landing.js assembles at runtime. Both the declaration and the use can sit
+# outside the CSS, so scan the pages and the scripts for each.
+_markup = ""
+for _p in list(FILES) + [SITE / n for n in ("landing.js", "company.js", "app.js")]:
+    if _p.exists():
+        _markup += _p.read_text(encoding="utf-8")
+declared = (set(re.findall(r"(--[a-z0-9-]+)\s*:", css))
+            | set(re.findall(r"(--[a-z0-9-]+)\s*:", _markup)))
+used = (set(re.findall(r"var\((--[a-z0-9-]+)", css))
+        | set(re.findall(r"var\((--[a-z0-9-]+)", _markup)))
 missing = used - declared
 if missing:
     log("css", f"var() with no declaration: {sorted(missing)}")
@@ -214,15 +230,21 @@ for cls in sorted(set(re.findall(r"\.([a-z][a-z0-9-]{1,14})[\s,{:>.]", css)) - J
     if f'class="' in markup and not re.search(r'class="[^"]*\b%s\b' % re.escape(cls), markup):
         notes.append(f"css: .{cls} never used in markup")
 
-# cream/warm-background leftovers
+# Cream leftovers from the mint design. The First-light palette has a
+# deliberate amber, so the accent tokens are exempt -- otherwise the rule fires
+# on the one warm colour that is supposed to be there.
+_accent = set(re.findall(r"--accent[a-z-]*\s*:\s*(#[0-9A-Fa-f]{6})", css))
 for hexv in re.findall(r"#[0-9A-Fa-f]{6}", css):
+    if hexv in _accent:
+        continue
     r, g, b = (int(hexv[i:i+2], 16) for i in (1, 3, 5))
     if r > 200 and g > 195 and b < g - 6 and r > b + 8:   # warm = red exceeds blue
         log("css", f"warm/cream tone still present: {hexv}")
 
 # forms must not be real <form> elements: there is no backend to submit to
 _script = "".join(f.read_text(encoding="utf-8") for f in
-                  (SITE / "app.js", SITE / "landing.js") if f.exists())
+                  (SITE / "app.js", SITE / "landing.js", SITE / "company.js")
+                  if f.exists())
 
 for _f in FILES:
     _s = _f.read_text(encoding="utf-8")

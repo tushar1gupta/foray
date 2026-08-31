@@ -21,12 +21,9 @@ PAGES = {
     "index.html": ("Foray | Engineering search for startups",
                    "Foray runs early and mid-level engineering searches for startups from seed "
                    "through growth stage."),
-    "companies.html": ("For companies | Foray",
-                       "Post an engineering role to Foray. Paste your job description and we reply "
-                       "within a day."),
-    "engineers.html": ("For engineers | Foray",
-                       "Join the Foray pool with your LinkedIn and GitHub. We contact you only when "
-                       "a role fits."),
+    "companies.html": ("Hiring engineers | Foray",
+                       "Send us the role and we come back within a day with five pre-interviewed "
+                       "engineers and our read on each."),
     # Hand-written rather than generated, but they still want a canonical tag,
     # the share card and a place in the sitemap.
     "privacy.html": ("Privacy policy | Foray",
@@ -48,6 +45,9 @@ VERCEL_JSON = """{
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/engineers", "destination": "/", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -203,32 +203,7 @@ def stamp(domain, email):
         f"{urls}</urlset>\n", encoding="utf-8")
 
     # 404 built from a real shell so it is not a bare Vercel page. Spliced from
-    # companies.html rather than index: the landing page carries its own chrome
-    # and stylesheet, and the 404 body below is written against the shared one.
-    idx = (SITE / "companies.html").read_text(encoding="utf-8")
-    head = idx[:idx.index("<main>")]
-    tail = idx[idx.index("<footer>"):]
-    head = head.replace("<title>For companies | Foray</title>",
-                        "<title>Page not found | Foray</title>")
-    (SITE / "404.html").write_text(head + """<main>
-  <section class="sec first">
-    <div class="wrap">
-      <div class="head">
-        <p class="lbl dim">404</p>
-        <div>
-          <h1 class="t2">That Page Does Not Exist.</h1>
-          <p class="lede">It may have moved. These are the ones that are here.</p>
-          <div class="acts">
-            <a href="/companies" class="btn">Post a role</a>
-            <a href="/engineers" class="btn ghost">Join the pool</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
-""" + tail, encoding="utf-8")
-    print("  wrote favicon.svg, vercel.json, robots.txt, sitemap.xml, 404.html")
+    print("  wrote favicon.svg, vercel.json, robots.txt, sitemap.xml")
 
 
 COMMENT_RE = re.compile(r"/\*[\s\S]*?\*/")
@@ -241,10 +216,16 @@ STYLE_RE = re.compile(r"<style>([\s\S]*?)</style>")
 SCRIPT_RE = re.compile(r"<script data-page>([\s\S]*?)</script>")
 
 
-NEW_DESIGN = {"index.html", "privacy.html", "terms.html"}
+NEW_DESIGN = {"index.html", "companies.html", "privacy.html", "terms.html", "404.html"}
 # Google's search-console token: a .html name wrapped around one line of text.
 # Rewriting any part of it breaks verification.
 OPAQUE = {"google127df8f4f5b6efd9.html"}
+# Which asset each new-design page gets. The candidate and company pages carry
+# different scripts, and externalise() walks *.html in sorted order, so sharing
+# one name would let companies.html overwrite the chat before index.html is
+# reached. The stylesheet is shared, since both inline the same base.
+SHEET = dict.fromkeys(NEW_DESIGN, "landing.css")
+SCRIPT = {"index.html": "landing.js", "companies.html": "company.js"}
 
 
 def externalise():
@@ -276,22 +257,26 @@ def externalise():
 
         if m_css:
             if is_landing:
-                # three pages carry the same stylesheet inline; write it once
-                if "landing.css" not in wrote:
-                    (SITE / "landing.css").write_text(tidy(m_css.group(1)), encoding="utf-8")
-                    wrote.append("landing.css")
+                # every new-design page inlines the same base stylesheet; the
+                # company page appends its own, so keep the longest
+                css = tidy(m_css.group(1))
+                out = SITE / SHEET[f.name]
+                if not out.exists() or len(css) > len(out.read_text(encoding="utf-8")):
+                    out.write_text(css, encoding="utf-8")
+                if SHEET[f.name] not in wrote:
+                    wrote.append(SHEET[f.name])
             elif shared_css is None:
                 shared_css = m_css.group(1)
-            href = "/landing.css" if is_landing else "/style.css"
+            href = "/" + SHEET[f.name] if is_landing else "/style.css"
             page = page.replace(m_css.group(0),
                                 '<link rel="stylesheet" href="%s">' % href)
         if m_js:
             if is_landing:
-                (SITE / "landing.js").write_text(m_js.group(1).strip(), encoding="utf-8")
-                wrote.append("landing.js")
+                (SITE / SCRIPT[f.name]).write_text(m_js.group(1).strip(), encoding="utf-8")
+                wrote.append(SCRIPT[f.name])
             elif shared_js is None:
                 shared_js = m_js.group(1)
-            src = "/landing.js" if is_landing else "/app.js"
+            src = "/" + SCRIPT[f.name] if is_landing else "/app.js"
             page = page.replace(m_js.group(0),
                                 '<script src="%s" defer></script>' % src)
         f.write_text(page, encoding="utf-8")
