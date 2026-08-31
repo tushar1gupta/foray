@@ -111,7 +111,7 @@ def notfound():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page not found | Foray</title>
-<meta name="description" content="That page does not exist. Foray finds roles for candidates and pre-interviewed candidates for companies.">
+<meta name="description" content="That page does not exist. Foray finds roles for candidates and qualified candidates for companies.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -160,7 +160,7 @@ pages = {
                    "The agreement between you and GoForay, Co. when you use Foray."),
     "companies.html": ("Hiring | Foray",
                        "Send us any role and we come back within a day with five "
-                       "pre-interviewed candidates and our read on each. Success fee only, "
+                       "qualified candidates and our read on each. Success fee only, "
                        "nothing until you hire."),
 }
 

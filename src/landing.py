@@ -127,6 +127,12 @@ CSS = r"""
 .lp-btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line2)}
 .lp-btn.ghost:hover{border-color:var(--primary); color:var(--primary)}
 .lp-btn.on-dark{background:#fff; color:var(--ink)}
+/* `.lp a{color:inherit}` above is 0,1,1 and beats `.lp-btn` at 0,1,0, so an
+   anchor wearing the button class renders ink on purple. Name both. */
+.lp a.lp-btn{color:#fff}
+.lp a.lp-btn.ghost{color:var(--ink)}
+.lp a.lp-btn.ghost:hover{color:var(--primary)}
+.lp a.lp-btn.on-dark{color:var(--ink)}
 
 /* hero */
 .lp-hero{background:linear-gradient(180deg,var(--sky2) 0%,var(--sky3) 45%,var(--bg) 100%);
@@ -1286,7 +1292,7 @@ def head_bar(active):
         return '<a href="%s"%s>%s</a>' % (href, on, label)
 
     if active == "companies":
-        note = ("Now booking searches &middot; five pre-interviewed candidates per role "
+        note = ("Now booking searches &middot; five qualified candidates per role "
                 "&middot; success fee only")
         cta = '<a class="lp-btn" href="#role">Send us a role</a>'
     elif active == "candidates":
@@ -1631,7 +1637,7 @@ BODY = """
     <section class="lp-crosslink">
       <div class="wrap">
         <a href="companies.html">
-          <span><b>Hiring?</b> Five pre-interviewed candidates on your calendar,
+          <span><b>Hiring?</b> Five qualified candidates on your calendar,
             and you pay only when you hire.</span>
           <span class="go" aria-hidden="true">&rarr;</span>
         </a>

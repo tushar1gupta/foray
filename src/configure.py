@@ -23,7 +23,7 @@ PAGES = {
                    "through growth stage."),
     "companies.html": ("Hiring | Foray",
                        "Send us any role and we come back within a day with five "
-                       "pre-interviewed candidates and our read on each."),
+                       "qualified candidates and our read on each."),
     # Hand-written rather than generated, but they still want a canonical tag,
     # the share card and a place in the sitemap.
     "privacy.html": ("Privacy policy | Foray",
@@ -244,6 +244,8 @@ def externalise():
         return re.sub(BLANKS_RE, chr(10), css).strip()
 
     shared_css = shared_js = None
+    # name -> the longest inline sheet seen for it in THIS run
+    sheets = {}
     wrote = []
     for f in sorted(SITE.glob("*.html")):
         if f.name in OPAQUE:
@@ -257,14 +259,15 @@ def externalise():
 
         if m_css:
             if is_landing:
-                # every new-design page inlines the same base stylesheet; the
-                # company page appends its own, so keep the longest
+                # Every new-design page inlines the same base sheet and the
+                # company page appends its own, so the longest is the superset.
+                # Compare only against this run: measured against the file on
+                # disk the sheet could never shrink, and a change that made it
+                # smaller would be dropped without a word.
                 css = tidy(m_css.group(1))
-                out = SITE / SHEET[f.name]
-                if not out.exists() or len(css) > len(out.read_text(encoding="utf-8")):
-                    out.write_text(css, encoding="utf-8")
-                if SHEET[f.name] not in wrote:
-                    wrote.append(SHEET[f.name])
+                name = SHEET[f.name]
+                if len(css) > len(sheets.get(name, "")):
+                    sheets[name] = css
             elif shared_css is None:
                 shared_css = m_css.group(1)
             href = "/" + SHEET[f.name] if is_landing else "/style.css"
@@ -280,6 +283,10 @@ def externalise():
             page = page.replace(m_js.group(0),
                                 '<script src="%s" defer></script>' % src)
         f.write_text(page, encoding="utf-8")
+
+    for name, css in sheets.items():
+        (SITE / name).write_text(css, encoding="utf-8")
+        wrote.append(name)
 
     if shared_css:
         (SITE / "style.css").write_text(tidy(shared_css), encoding="utf-8")
