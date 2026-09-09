@@ -49,9 +49,14 @@ CSS = """
 .co-done{display:flex; flex-direction:column; gap:10px; align-items:flex-start}
 .co-done .big{font-size:19px; font-weight:600}
 
+/* Four facts, so a grid rather than space-between: wrapping a flex row left the
+   fourth one stranded on a line of its own. This wraps 4 -> 2x2 -> 1. */
 .co-strip{max-width:var(--wrap); margin:0 auto; padding:clamp(28px,3.4vw,40px) var(--gut);
-  display:flex; flex-wrap:wrap; gap:14px 40px; align-items:center; justify-content:space-between}
-.co-strip .n{display:flex; align-items:baseline; gap:9px}
+  display:grid; gap:20px 32px; align-items:baseline;
+  grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.co-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.co-strip{grid-template-columns:1fr}}
+.co-strip .n{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap}
 .co-strip .n b{font-size:clamp(22px,2.4vw,30px); letter-spacing:-.03em}
 .co-strip ul{display:flex; flex-wrap:wrap; gap:10px; list-style:none}
 
