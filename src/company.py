@@ -1,14 +1,20 @@
-"""The company page: markup and behaviour for companies.html.
+"""The homepage: markup and behaviour for index.html.
 
-Everything company-facing used to be one band near the bottom of the landing
-page, behind four sections addressed to candidates. This is that band given a
-page of its own, with the intake moved to the top where a hiring manager who
-already knows what they want can act on the first screen.
+This is the whole site now. It was /companies, one of two audience pages; the
+candidate landing page it used to sit behind is parked in
+src/parked/candidates.py. The intake stays at the top, where a hiring manager
+who already knows what they want can act on the first screen.
+
+Copy rule: Foray reads as a recruiting agency here. No agent, no automation, no
+"we text them" -- a candidate we have messaged may well look this page up, and
+finding the machine that messaged them described as a product is the impression
+we are avoiding. What we say to buyers is reach, judgment and a success fee.
+The AI disclosures in legal.py stay accurate and are not covered by this rule.
 
 Chrome, palette and components come from landing.py. Nothing here restyles the
 site; it reuses the same tokens and card classes.
 """
-from landing import _bars, chip, head_bar, foot, _svg, I
+from landing import _bars, head_bar, foot, _svg, I
 
 CAL = "https://calendly.com/sathya-goforay/30min"
 
@@ -49,9 +55,8 @@ CSS = """
 .co-strip .n b{font-size:clamp(22px,2.4vw,30px); letter-spacing:-.03em}
 .co-strip ul{display:flex; flex-wrap:wrap; gap:10px; list-style:none}
 
-.co-sec{max-width:var(--wrap); margin:0 auto; padding:clamp(36px,4.6vw,60px) var(--gut)}
-.co-sec h2{font-size:clamp(24px,3vw,36px)}
-.co-sec .lede{color:var(--muted); max-width:56ch; margin-top:10px}
+.co-book h2,.ca-work h2{font-size:clamp(24px,3vw,36px)}
+.ca-work .lede,.co-book .lede{color:var(--muted); max-width:56ch; margin-top:10px}
 
 
 .co-book{background:var(--tint3); border-top:1px solid var(--line)}
@@ -157,27 +162,28 @@ JS = r"""
 """
 
 
-BAND = """    <section class="lp-band">
+BAND = """    <section class="lp-band" id="how">
       <div class="wrap">
         <div class="lp-steps">
           <a href="#book" class="lp-step" style="animation-delay:.05s">
-            <span class="lbl">Step 1 &middot; Reach</span>
-            <h3>We reach the exact people you want</h3>
+            <span class="lbl">Step 1 &middot; The search</span>
+            <h3>We go and find the people you want</h3>
             <span class="lp-mini-panel">
-              <span style="align-self:flex-start; background:#fff; color:var(--ink); border-radius:10px 10px 10px 3px; padding:6px 10px; font-size:11.5px">
-                hey noah, staff platform role at a series B. $210k. interested?</span>
               <span class="lp-out"><span class="av" style="background:var(--primary2); color:#fff">N</span>
-                <span class="ln"></span><span class="st">REPLIED</span></span>
+                <span class="ln"></span><span class="st">SHORTLISTED</span></span>
               <span class="lp-out"><span class="av" style="background:var(--accent); color:var(--band)">PS</span>
-                <span class="ln"></span><span class="st">REPLIED</span></span>
+                <span class="ln"></span><span class="st">SHORTLISTED</span></span>
               <span class="lp-out"><span class="av" style="background:var(--band-acc2); color:var(--band)">MT</span>
-                <span class="ln"></span><span class="st" style="background:rgba(255,255,255,.12); color:rgba(255,255,255,.75)">REACHED</span></span>
+                <span class="ln"></span><span class="st" style="background:rgba(255,255,255,.12); color:rgba(255,255,255,.75)">SCREENED</span></span>
+              <span class="lp-out"><span class="av" style="background:rgba(255,255,255,.16); color:#fff">JR</span>
+                <span class="ln"></span><span class="st" style="background:rgba(255,255,255,.12); color:rgba(255,255,255,.75)">SPEAKING</span></span>
             </span>
-            <p>Named lists, message-first. People who ignore InMail answer us.</p>
+            <p>We build the list for your role, work it by hand, and speak to
+              everyone before you do.</p>
           </a>
 
           <a href="#book" class="lp-step" style="animation-delay:.15s">
-            <span class="lbl">Step 2 &middot; Introductions</span>
+            <span class="lbl">Step 2 &middot; The shortlist</span>
             <h3>Interviews land on your calendar</h3>
             <span class="lp-mini-panel">
               <span class="lp-week">
@@ -189,11 +195,11 @@ BAND = """    <section class="lp-band">
                 <span class="c" style="background:var(--band-acc2); color:var(--band)">MT 4:00</span>
               </span>
             </span>
-            <p>Five per role, qualified, with our read attached.</p>
+            <p>Five per role, each one screened, with our honest read on the fit.</p>
           </a>
 
           <a href="#book" class="lp-step" style="animation-delay:.25s">
-            <span class="lbl">Step 3 &middot; Success fee</span>
+            <span class="lbl">Step 3 &middot; The fee</span>
             <h3>We earn when you hire</h3>
             <span class="lp-mini-panel lp-ledger">
               <div class="win"><span class="tick">{icon_check_dark}</span>
@@ -202,17 +208,17 @@ BAND = """    <section class="lp-band">
               <div>{icon_x_m}<span style="color:rgba(255,255,255,.75)">No hire</span><span class="amt" style="color:rgba(255,255,255,.75)">$0</span></div>
               <div>{icon_x_m}<span style="color:rgba(255,255,255,.75)">Retainers</span><span class="amt" style="color:rgba(255,255,255,.75)">never</span></div>
             </span>
-            <p>We make money when you make money.</p>
+            <p>No retainer, no exclusivity. We are paid on a placement or not at all.</p>
           </a>
         </div>
 
         <div class="lp-funnel">
-          <div class="lp-funnel-top lbl"><span>Everyone who could do the job</span>
-            <span class="hit">Five reach your calendar</span></div>
+          <div class="lp-funnel-top lbl"><span>Every engineer who could do the job</span>
+            <span class="hit">Five you meet</span></div>
           <div class="lp-bars" aria-hidden="true">{bars}</div>
-          <div class="lp-funnel-foot"><span>1,500 profiles reviewed per search</span>
+          <div class="lp-funnel-foot"><span>We do the filtering</span>
             <span aria-hidden="true">&rarr;</span>
-            <span style="color:var(--band-acc)">5 introductions, with our read on each</span></div>
+            <span style="color:var(--band-acc)">Your time goes to five real candidates</span></div>
         </div>
 
       </div>
@@ -221,31 +227,26 @@ BAND = """    <section class="lp-band">
 
 
 def body():
-    """The company page, from the ticker down to the footer."""
+    """The homepage, from the ticker down to the footer."""
     band = BAND.format(
         bars=_bars(),
         icon_check_dark=_svg(I["check"], 12, "var(--band)", extra=' stroke-width="3"'),
         icon_x_m=_svg(I["x"], 14, "rgba(255,255,255,.5)"),
     )
-    chips = "".join([
-        chip("anthropic", "Anthropic", "0"),
-        chip("openai", "OpenAI", ".2"),
-        chip("googlegemini", "Google DeepMind", ".4"),
-        chip("meta", "Meta", ".6"),
-        chip("stripe", "Stripe", ".8"),
-    ])
     return ("""
 <div class="lp">
 
-""" + head_bar("companies") + """
+""" + head_bar("home") + """
   <main>
     <section class="co-hero">
       <div class="wrap">
         <div>
-          <span class="lbl" style="color:var(--primary)">For companies</span>
-          <h1>Five candidates on your calendar. You pay when you hire.</h1>
-          <p class="sub">Send us any role and consider it handled. We reach the people you
-            want and hand you introductions with our read attached.</p>
+          <span class="lbl" style="color:var(--primary)">Engineering search &middot; San Francisco</span>
+          <h1>Five engineers worth interviewing. You pay when you hire.</h1>
+          <p class="sub">Foray is a recruiting agency for startups hiring engineers, seed
+            through growth stage. Send us a role and we run the search: we find the people,
+            speak to them ourselves, and bring you a shortlist of five with an honest read
+            on each.</p>
         </div>
 
         <form class="co-intake" id="co-form" novalidate>
@@ -264,7 +265,7 @@ def body():
           <input type="text" name="confirm_url" tabindex="-1" autocomplete="off"
                  aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px">
           <p class="co-err" id="co-err" role="alert"></p>
-          <p class="co-terms">No retainer. You pay only when you hire.</p>
+          <p class="co-terms">No retainer, no exclusivity. You pay only when you hire.</p>
           <div class="row">
             <button type="submit" class="lp-btn" id="co-submit">Send it over</button>
             <span class="or">or <a href="#book" style="color:var(--primary); text-decoration:underline;
@@ -274,18 +275,21 @@ def body():
 
         <div class="co-intake co-done" id="co-done" hidden>
           <span class="big">On it.</span>
-          <p style="color:var(--muted)">We start on the search today and come back to you within
-            a day, with names and our read on each. Nothing is owed unless you hire.</p>
+          <p style="color:var(--muted)">We will read the role and come back to you within a
+            day to agree the brief, then start the search. Nothing is owed unless you hire.</p>
           <a class="lp-btn" href="#book">Book 15 minutes</a>
         </div>
       </div>
     </section>
 
     <div class="co-strip">
-      <div class="n"><b>1,500+</b><span class="lbl" style="color:var(--muted)">candidates
-        qualified</span></div>
+      <div class="n"><b>5</b><span class="lbl" style="color:var(--muted)">candidates
+        per role</span></div>
       <div class="n"><b>$0</b><span class="lbl" style="color:var(--muted)">until you hire</span></div>
-      <ul>{chips}</ul>
+      <div class="n"><b>Seed&ndash;Series C</b><span class="lbl" style="color:var(--muted)">stages
+        we cover</span></div>
+      <div class="n"><b>Backend, infra, ML</b><span class="lbl" style="color:var(--muted)">and
+        full stack</span></div>
     </div>
 
 {band}
@@ -293,8 +297,8 @@ def body():
     <section class="co-book" id="book">
       <div class="wrap">
         <h2>Grab 15 minutes.</h2>
-        <p class="lede">Bring the role. We will walk you through the pool and show you what our
-          read looks like.</p>
+        <p class="lede">Bring the role. We will tell you straight what the market looks
+          like for it, what it will take to hire, and what our shortlist would look like.</p>
         <div class="co-embed calendly-inline-widget" id="co-embed" data-url="{cal}"></div>
         <p class="co-booknote">Not loading? <a href="{cal}" target="_blank" rel="noopener">Open the
           calendar in a new tab</a>.</p>
@@ -303,16 +307,15 @@ def body():
 
     <section class="lp-crosslink">
       <div class="wrap">
-        <a href="index.html">
-          <span><b>Looking for a role yourself?</b> Foray finds them, writes the application,
-            and applies for you.</span>
+        <a href="candidates.html">
+          <span><b>Are you an engineer?</b> Introduce yourself and we will reach out when a
+            role we are working is a genuine fit.</span>
           <span class="go" aria-hidden="true">&rarr;</span>
         </a>
       </div>
     </section>
   </main>
 
-""" + foot("companies") + """
+""" + foot("home") + """
 </div>
-""").replace("{band}", band).replace("{chips}", chips) \
-     .replace("{cal}", CAL)
+""").replace("{band}", band).replace("{cal}", CAL)

@@ -3,7 +3,9 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/engineers", "destination": "/", "permanent": true }
+    { "source": "/engineers", "destination": "/candidates", "permanent": true },
+    { "source": "/companies", "destination": "/", "permanent": true },
+    { "source": "/hiring", "destination": "/", "permanent": true }
   ],
   "headers": [
     {

@@ -26,7 +26,11 @@ const FORMS = {
       + (f.Role ? ' - ' + f.Role : ''),
   },
   engineer: {
-    required: ['Name', 'Email', 'LinkedIn', 'GitHub', 'What they want next'],
+    // GitHub is asked for but not required: plenty of strong infra, ML and
+    // backend people have nothing public, and rejecting them costs us the
+    // record we wanted. Phone and Location are optional too, and both are
+    // worth having -- they are how we follow up and how we filter later.
+    required: ['Name', 'Email', 'LinkedIn', 'What they want next'],
     subject: f => 'Engineer intake: ' + (f.Name || 'unknown'),
   },
   waitlist: {
@@ -40,7 +44,7 @@ const FORMS = {
  * only catches an empty box or an obvious typo. */
 const PHONE_DIGITS_MIN = 7;
 
-const CAPS = { 'Job description': 20000, 'What they want next': 8000, Email: 320, Name: 200, Phone: 40 };
+const CAPS = { 'Job description': 20000, 'What they want next': 8000, Email: 320, Name: 200, Phone: 40, Location: 200 };
 const CAP_DEFAULT = 2000;
 const MAX_BODY = 96 * 1024;
 const MAX_FIELDS = 40;

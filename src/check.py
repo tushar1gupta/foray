@@ -82,16 +82,10 @@ for p in FILES:
 
     hrefs[p.name] = re.findall(r'href="([^"]+)"', src)
 
-    # Two stylesheets, not one: the pages built from landing.py share theirs and
-    # the older form pages share the other. The legal pages ship no script at
-    # all, so only the form pages are required to pull app.js.
-    if not re.search(r"<style>", src):
-        new_design = p.name in {"index.html", "companies.html", "privacy.html",
-                                "terms.html", "404.html"}
-        need = ['href="/landing.css"'] if new_design else ['href="/style.css"', 'src="/app.js"']
-        for _need in need:
-            if _need not in src:
-                log(p.name, f"missing {_need}")
+    # One stylesheet now. There used to be a second for a legacy shell; every
+    # page wears the same one since the candidate landing page was parked.
+    if not re.search(r"<style>", src) and 'href="/landing.css"' not in src:
+        log(p.name, 'missing href="/landing.css"')
 
     # required head elements
     for need, label in [(r"<html lang=", "lang attribute"),
@@ -147,7 +141,7 @@ def _strip_at_blocks(css):
     return "".join(out)
 
 
-for _name in ("landing.css", "company.css", "style.css"):
+for _name in ("landing.css",):
     _f = SITE / _name
     if not _f.exists():
         continue
@@ -214,7 +208,7 @@ if css.count("{") != css.count("}"):
 # that landing.js assembles at runtime. Both the declaration and the use can sit
 # outside the CSS, so scan the pages and the scripts for each.
 _markup = ""
-for _p in list(FILES) + [SITE / n for n in ("landing.js", "company.js", "app.js")]:
+for _p in list(FILES) + [SITE / n for n in ("company.js", "candidate.js")]:
     if _p.exists():
         _markup += _p.read_text(encoding="utf-8")
 declared = (set(re.findall(r"(--[a-z0-9-]+)\s*:", css))
@@ -248,7 +242,7 @@ for hexv in re.findall(r"#[0-9A-Fa-f]{6}", css):
 
 # forms must not be real <form> elements: there is no backend to submit to
 _script = "".join(f.read_text(encoding="utf-8") for f in
-                  (SITE / "app.js", SITE / "landing.js", SITE / "company.js")
+                  (SITE / "company.js", SITE / "candidate.js")
                   if f.exists())
 
 for _f in FILES:
@@ -328,7 +322,7 @@ import subprocess, tempfile, json as _json
 for _f in FILES:
     _s = _f.read_text(encoding="utf-8")
     _m = re.search(r"<script>([\s\S]*?)</script>", _s)
-    _ext_js = SITE / "app.js"
+    _ext_js = SITE / ("candidate.js" if _f.name == "candidates.html" else "company.js")
     if not _m and _ext_js.exists():
         class _Shim:
             def group(self, _n): return _ext_js.read_text(encoding="utf-8")

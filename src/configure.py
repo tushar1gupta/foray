@@ -19,11 +19,12 @@ import pathlib
 SITE = pathlib.Path(__file__).resolve().parent.parent
 PAGES = {
     "index.html": ("Foray | Engineering search for startups",
-                   "Foray runs early and mid-level engineering searches for startups from seed "
-                   "through growth stage."),
-    "companies.html": ("Hiring | Foray",
-                       "Send us any role and we come back within a day with five "
-                       "qualified candidates and our read on each."),
+                   "Foray is a recruiting agency for startups hiring engineers, seed through "
+                   "growth stage. Send us a role and we bring you five candidates worth "
+                   "interviewing. Success fee only, nothing until you hire."),
+    "candidates.html": ("For engineers | Foray",
+                        "Tell us what you want next and we will come to you when one of our "
+                        "searches is a genuine fit. Free for you, always."),
     # Hand-written rather than generated, but they still want a canonical tag,
     # the share card and a place in the sitemap.
     "privacy.html": ("Privacy policy | Foray",
@@ -46,7 +47,9 @@ VERCEL_JSON = """{
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/engineers", "destination": "/", "permanent": true }
+    { "source": "/engineers", "destination": "/candidates", "permanent": true },
+    { "source": "/companies", "destination": "/", "permanent": true },
+    { "source": "/hiring", "destination": "/", "permanent": true }
   ],
   "headers": [
     {
@@ -121,11 +124,15 @@ def og_card(domain):
     # left side: type
     d.rectangle([64, 92, 92, 106], fill=MINT)
     d.text((104, 84), "FORAY", font=small, fill=TEXT)
-    d.text((64, 236), "Your autonomous", font=sans, fill=TEXT)
-    d.text((64, 312), "recruiting agent.", font=sans, fill=TEXT)
+    # This card is the whole site to anyone who never clicks: it is what unfurls
+    # in iMessage, LinkedIn and email previews. It said "Your autonomous
+    # recruiting agent" while we were messaging candidates, which told every one
+    # of them they had been contacted by software. It says what we are instead.
+    d.text((64, 236), "Engineering search", font=sans, fill=TEXT)
+    d.text((64, 312), "for startups.", font=sans, fill=TEXT)
     d.rectangle([64, 410, 150, 412], fill=MINT)
-    d.text((64, 440), "We find the roles, write the application,", font=tiny, fill=MUT)
-    d.text((64, 472), "and apply for you.", font=tiny, fill=MUT)
+    d.text((64, 440), "Five candidates worth interviewing.", font=tiny, fill=MUT)
+    d.text((64, 472), "You pay when you hire.", font=tiny, fill=MUT)
     d.text((64, 540), domain, font=tiny, fill=MINT)
 
     img = img.convert("P", palette=Image.ADAPTIVE, colors=8)
@@ -216,16 +223,17 @@ STYLE_RE = re.compile(r"<style>([\s\S]*?)</style>")
 SCRIPT_RE = re.compile(r"<script data-page>([\s\S]*?)</script>")
 
 
-NEW_DESIGN = {"index.html", "companies.html", "privacy.html", "terms.html", "404.html"}
+NEW_DESIGN = {"index.html", "candidates.html", "privacy.html", "terms.html", "404.html"}
 # Google's search-console token: a .html name wrapped around one line of text.
 # Rewriting any part of it breaks verification.
 OPAQUE = {"google127df8f4f5b6efd9.html"}
-# Which asset each new-design page gets. The candidate and company pages carry
-# different scripts, and externalise() walks *.html in sorted order, so sharing
-# one name would let companies.html overwrite the chat before index.html is
-# reached. The stylesheet is shared, since both inline the same base.
+# Which asset each page gets. The two form pages carry different scripts, and
+# externalise() walks *.html in sorted order, so sharing one name would let
+# whichever came first be overwritten. The stylesheet is shared, since both
+# inline the same base. index.html is the company page now, so it takes
+# company.js; there is no landing.js any more.
 SHEET = dict.fromkeys(NEW_DESIGN, "landing.css")
-SCRIPT = {"index.html": "landing.js", "companies.html": "company.js"}
+SCRIPT = {"index.html": "company.js", "candidates.html": "candidate.js"}
 
 
 def externalise():

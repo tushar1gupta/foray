@@ -1,19 +1,25 @@
 #!/usr/bin/env python3
-"""The landing page: markup, styles and behaviour for index.html.
+"""The shared shell: palette, components and chrome for every page.
 
-Kept out of ``generate.py`` because it shares nothing with the two form pages:
-its own header and footer, its own palette, and a chat widget the other pages
-have no use for. ``generate.py`` imports ``CSS``, ``JS`` and ``BODY`` and wraps
-them in a bare document; the legacy chrome is deliberately not applied.
+This file used to be the candidate landing page and is still named for it. It
+is now only the design system -- tokens, the card and button classes, the icon
+set, the ticker, the top bar and the footer -- imported by company.py,
+candidate.py and legal pages alike. The candidate page itself is parked in
+src/parked/candidates.py and is no longer generated.
 
-The palette is "First light", dawn purple, chosen against the mint the rest of
-the site still uses. When the other two pages are restyled the tokens below
-become the shared set and the ``:root`` here can move up into ``generate.py``.
+The palette is "First light", dawn purple. Every page wears it; there is no
+second shell left to reconcile it with.
 
 Brand marks for the matched companies are read from ``src/logos`` at build time
 and inlined, so the page makes no third-party requests. They identify the
 company whose role is being shown; they are not endorsements and must not be
 used as a "trusted by" wall.
+
+Copy rule, deliberate: nothing in the shared chrome describes software. Foray
+presents as a recruiting agency, so the footer tagline, the ticker and the
+calls to action all talk about searches and introductions, never about an agent
+or automation. The AI disclosures in legal.py are a separate matter -- those
+describe what actually happens and must stay accurate.
 """
 import pathlib
 
@@ -56,7 +62,6 @@ CSS = r"""
   --accent:#E8A33C; --accent-soft:#F7DFA9; --accent-deep:#7A5410;
   --band:#241C3B; --band-acc:#E9C36A; --band-acc2:#C9B4EE;
   --line:rgba(42,33,64,.12); --line2:rgba(42,33,64,.2);
-  --imsg-in:#E9E9EB; --imsg-out:#0A84FF;
   --wrap:1320px; --gut:clamp(20px,4.4vw,64px);
   background:var(--bg); color:var(--ink);
   font-family:'Schibsted Grotesk',system-ui,-apple-system,sans-serif;
@@ -74,20 +79,18 @@ CSS = r"""
 .lp a{color:inherit; text-decoration:none}
 .lp .wrap{max-width:var(--wrap); margin:0 auto; padding:0 var(--gut)}
 .lp .lbl{font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase}
-.lp .mark-hl{background:var(--accent-soft); border-radius:6px; padding:0 .14em}
 .lp :focus-visible{outline:2px solid var(--primary); outline-offset:3px}
-
 /* ticker + header */
 .lp-ticker{background:var(--primary); color:#fff; text-align:center; padding:9px var(--gut)}
-/* Full bleed on the outside so the background spans the window, layout on the
+/* Full bleed on the outside so the background spans the window,layout on the
    inside so it still lines up with the rest of the page. Sticky needs the
    former: a max-width bar lets content scroll past on either side of it. */
 .lp-head{position:sticky; top:0; z-index:20; border-bottom:1px solid var(--line);
   background:rgba(250,248,252,.86);
   -webkit-backdrop-filter:saturate(180%) blur(12px); backdrop-filter:saturate(180%) blur(12px)}
+
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  .lp-head{background:var(--bg)}
-}
+.lp-head{background:var(--bg)}}
 .lp-head-in{
   display:flex; align-items:center; gap:16px; flex-wrap:wrap;
   max-width:var(--wrap); margin:0 auto; padding:20px var(--gut);
@@ -101,29 +104,20 @@ html{scroll-padding-top:100px}
 .lp-head .lp-logo b{grid-template-columns:repeat(2,7px); gap:3px}
 .lp-head .lp-logo i{width:7px; height:7px; border-radius:1.5px}
 .lp-logo i{width:5px; height:5px; background:var(--primary); border-radius:1px}
-.lp-logo i:nth-child(2){opacity:.5} .lp-logo i:nth-child(3){opacity:.4}
-.lp-clock{display:flex; gap:10px; margin-left:auto; color:var(--muted)}
-/* The audience switch: two anchors dressed as a segmented control, so it needs
-   no script, survives a right-click into a new tab, and gives each side of the
-   business a URL worth putting in an email. */
-.lp-switch{display:flex; margin:0 auto; padding:3px; gap:2px; border-radius:999px;
+.lp-logo i:nth-child(2){opacity:.5}
+.lp-logo i:nth-child(3){opacity:.4}
+/* The audience switch: two anchors dressed as a segmented control,so it needs
+   no script,survives a right-click into a new tab{display:flex; margin:0 auto; padding:3px; gap:2px; border-radius:999px;
   background:var(--tint2); border:1px solid var(--line)}
-.lp-switch a{padding:7px 15px; border-radius:999px; color:var(--muted); white-space:nowrap;
-  transition:background .18s ease, color .18s ease}
-.lp-switch a:hover{color:var(--ink)}
-.lp-switch a.on{background:var(--primary); color:#fff}
+
 @media(max-width:640px){
-  html{scroll-padding-top:76px}
-  .lp-head-in{padding:12px var(--gut); gap:10px}
-  .lp-head .lp-logo{font-size:18px; gap:10px}
-  .lp-head .lp-logo b{grid-template-columns:repeat(2,5px); gap:2.5px}
-  .lp-head .lp-logo i{width:5px; height:5px}
-  .lp-head-in > .lp-btn{display:none}
-  .lp-switch{margin:0 0 0 auto}
-  .lp-switch a{padding:6px 12px; font-size:10.5px; letter-spacing:.08em}
-  .lp-sw-for{display:none}
-}
-/* a quiet route to the other side of the business, for anyone who arrived on
+html{scroll-padding-top:76px}
+.lp-head-in{padding:12px var(--gut); gap:10px}
+.lp-head .lp-logo{font-size:18px; gap:10px}
+.lp-head .lp-logo b{grid-template-columns:repeat(2,5px); gap:2.5px}
+.lp-head .lp-logo i{width:5px; height:5px}
+.lp-head-in > .lp-btn{display:none}}
+/* a quiet route to the other side of the business,for anyone who arrived on
    the wrong one */
 .lp-crosslink{padding:clamp(30px,4vw,48px) var(--gut) clamp(40px,5vw,60px)}
 .lp-crosslink .wrap{max-width:var(--wrap); margin:0 auto}
@@ -135,9 +129,9 @@ html{scroll-padding-top:100px}
   box-shadow:0 10px 26px rgba(106,80,200,.18)}
 .lp-crosslink b{font-weight:600}
 .lp-crosslink .go{color:var(--primary); font-size:20px}
-.lp-clock span{font-variant-numeric:tabular-nums}
-@media(max-width:900px){.lp-clock{display:none} .lp-head .lp-btn{margin-left:auto}}
 
+@media(max-width:900px){
+.lp-head .lp-btn{margin-left:auto}}
 /* buttons */
 .lp-btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;
   font:inherit; font-size:11.5px; font-weight:600; letter-spacing:.15em; text-transform:uppercase;
@@ -146,314 +140,39 @@ html{scroll-padding-top:100px}
 .lp-btn:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(42,33,64,.22)}
 .lp-btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line2)}
 .lp-btn.ghost:hover{border-color:var(--primary); color:var(--primary)}
-.lp-btn.on-dark{background:#fff; color:var(--ink)}
-/* `.lp a{color:inherit}` above is 0,1,1 and beats `.lp-btn` at 0,1,0, so an
+/* `.lp a{color:inherit}
+` above is 0,1,1 and beats `.lp-btn` at 0,1,0,so an
    anchor wearing the button class renders ink on purple. Name both. */
 .lp a.lp-btn{color:#fff}
 .lp a.lp-btn.ghost{color:var(--ink)}
 .lp a.lp-btn.ghost:hover{color:var(--primary)}
-.lp a.lp-btn.on-dark{color:var(--ink)}
+/* Four rows spread down the panel,alternating direction{top:8%; animation:lp-left 34s linear infinite; opacity:.85}
 
-/* hero */
-.lp-hero{background:linear-gradient(180deg,var(--sky2) 0%,var(--sky3) 45%,var(--bg) 100%);
-  position:relative; overflow:hidden}
-.lp-hero-copy{max-width:var(--wrap); margin:0 auto; padding:clamp(40px,6vw,64px) var(--gut) 0;
-  display:flex; flex-direction:column; align-items:center; gap:18px; text-align:center}
-.lp-hero-copy h1{max-width:18ch}
-.lp-sub{color:var(--muted); font-style:italic; font-size:clamp(14.5px,1.45vw,16px);
-  max-width:56ch}
-.lp-stage{position:relative; padding:clamp(28px,4vw,36px) var(--gut) clamp(48px,6vw,64px)}
-
-/* drifting job chips behind the phone */
-.lp-drift{position:absolute; inset:0; overflow:hidden; pointer-events:none}
-.lp-drift-row{position:absolute; display:flex; width:max-content; will-change:transform}
-/* Four rows spread down the panel, alternating direction, none of them sharing
-   a duration -- matching speeds make separate rows read as one moving block. */
-.lp-drift-row:nth-child(1){top:8%; animation:lp-left 34s linear infinite; opacity:.85}
-.lp-drift-row:nth-child(2){top:28%; animation:lp-right 44s linear infinite; opacity:.6}
-.lp-drift-row:nth-child(3){top:52%; animation:lp-left 52s linear infinite; opacity:.45}
-.lp-drift-row:nth-child(4){top:74%; animation:lp-right 39s linear infinite; opacity:.32}
-.lp-drift-row span{background:#fff; border:1px solid var(--line); border-radius:999px;
-  padding:8px 16px; font-size:12.5px; color:var(--muted); white-space:nowrap; margin-right:14px}
-.lp-drift-row span.hit{border-color:var(--primary); color:var(--primary)}
 @keyframes lp-left{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes lp-right{from{transform:translateX(-50%)}to{transform:translateX(0)}}
-@media(max-width:720px){.lp-drift{display:none}}
+/* A tapback sits on the far corner of the bubble it belongs to{margin-top:18px}
 
-/* phone */
-.lp-phone{position:relative; width:min(400px,100%); margin:0 auto; background:#fff;
-  border:1px solid var(--line); border-radius:32px; padding:22px;
-  display:flex; flex-direction:column; gap:12px; box-shadow:0 28px 70px rgba(42,33,64,.18)}
-.lp-try{position:absolute; top:-16px; right:-14px; z-index:5; transform:rotate(2deg);
-  background:var(--primary); color:#fff; border-radius:999px; padding:9px 18px;
-  display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600;
-  box-shadow:0 10px 24px rgba(42,33,64,.3)}
-@media(max-width:520px){.lp-try{right:-4px; font-size:12px; padding:7px 14px}}
-.lp-phone-head{display:flex; align-items:center; gap:10px; padding-bottom:12px; border-bottom:1px solid var(--line)}
-.lp-phone-head .lp-logo{font-size:12px; gap:8px}
-.lp-phone-head .lp-logo b{grid-template-columns:repeat(2,4px); gap:2px}
-.lp-phone-head .lp-logo i{width:4px; height:4px}
-.lp-live{margin-left:auto; font-size:11.5px; color:var(--muted)}
-.lp-thread{display:flex; flex-direction:column; gap:9px; min-height:430px}
-.lp-msg{position:relative; max-width:88%; padding:9px 13px; font-size:13.5px; line-height:1.45;
-  border-radius:18px; animation:lp-rise .35s ease both}
-/* A tapback sits on the far corner of the bubble it belongs to, trailing two
-   small bubbles back toward it -- the way the other party's reaction lands in
-   iMessage. The extra top margin keeps it from clipping the message above. */
-.lp-msg.reacted{margin-top:18px}
-.lp-react{position:absolute; top:-16px; left:-16px; min-width:27px; height:27px; padding:0 5px;
-  border-radius:14px; background:#fff; border:1px solid #E6E3F0;
-  display:flex; align-items:center; justify-content:center; font-size:13px; line-height:1;
-  box-shadow:0 2px 8px rgba(20,16,40,.14); transform-origin:85% 85%;
-  animation:lp-react-in .4s cubic-bezier(.34,1.56,.64,1) both}
-.lp-react i{position:absolute; border-radius:50%; background:#fff; border:1px solid #E6E3F0}
-.lp-react i:first-child{width:8px; height:8px; bottom:-4px; right:2px}
-.lp-react i:last-child{width:4px; height:4px; bottom:-8px; right:-1px}
-/* the waitlist link Foray sends at the end of the demo */
-.lp-wlcard{cursor:pointer; background:var(--tint); border:1.5px solid var(--primary);
-  gap:3px; transition:transform .14s ease, box-shadow .14s ease}
-.lp-wlcard:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(106,80,200,.22)}
-.lp-wlcard:focus-visible{outline:2px solid var(--primary); outline-offset:2px}
-.lp-wl-head{display:flex; align-items:center; gap:8px; color:var(--primary); font-size:14px}
-.lp-wl-head b{font-weight:600}
-.lp-wl-mark{font-size:0; gap:0}
-.lp-wl-sub{font-size:12px; color:var(--muted)}
-@keyframes lp-react-in{from{transform:scale(0); opacity:0}to{transform:scale(1); opacity:1}}
-.lp-msg.me{align-self:flex-end; background:var(--imsg-out); color:#fff; border-bottom-right-radius:6px}
-.lp-msg.them{align-self:flex-start; background:var(--imsg-in); color:#1A1A1A; border-bottom-left-radius:6px}
-.lp-msg.wide{max-width:92%; display:flex; flex-direction:column; gap:8px}
-.lp-meta{align-self:center; font-size:10.5px; color:#9A9FA4; font-weight:500; animation:lp-rise .35s ease both}
-.lp-meta.right{align-self:flex-end}
 @keyframes lp-rise{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
-.lp-dots{align-self:flex-start; background:var(--imsg-in); border-radius:18px 18px 18px 6px;
-  padding:11px 14px; display:flex; gap:4px}
-.lp-dots i{width:6px; height:6px; border-radius:50%; background:#8E8E93; animation:lp-bounce 1s ease-in-out infinite}
-.lp-dots i:nth-child(2){animation-delay:.15s} .lp-dots i:nth-child(3){animation-delay:.3s}
-@keyframes lp-bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-3px);opacity:1}}
-
 /* the job card that reads as a link preview */
 /* Both of these are spans holding block-level children. Left inline they grow a
-   line-height strut above the first child, which opens an empty band at the top
-   of the card and, worse, gives the border and the picked-state shadow an extra
-   fragment to paint around -- the stray blue tick at the card's top left. */
-.lp-job{position:relative; display:block; margin-top:6px}
-.lp-job-card{display:block; background:#fff; border:1.5px solid var(--line);
-  border-radius:12px; overflow:hidden}
-.lp-job-card.picked{border-color:var(--imsg-out); box-shadow:0 0 0 1px var(--imsg-out)}
-.lp-job-shot{background:var(--shot,#1A2B4A); padding:10px 12px 12px; display:flex; flex-direction:column; gap:5px}
-.lp-job-shot .row{display:flex; align-items:center; gap:6px}
-.lp-job-shot .badge{width:15px; height:15px; border-radius:3px; background:#fff; display:grid; place-items:center}
-.lp-job-shot .co{color:#fff; font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase}
-.lp-job-shot .bar{height:5px; border-radius:999px; background:rgba(255,255,255,.35)}
-.lp-job-shot .bar.short{width:48%; background:rgba(255,255,255,.22)}
-.lp-job-shot .cta{align-self:flex-start; margin-top:3px; background:var(--primary); color:#fff;
-  border-radius:5px; padding:3px 10px; font-size:9.5px; font-weight:600}
-.lp-job-body{padding:9px 12px; display:flex; flex-direction:column; gap:2px}
-.lp-job-body .n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px;
-  letter-spacing:.14em; color:var(--primary)}
-.lp-job-body .t{font-size:13px; font-weight:600}
-.lp-job-body .s{font-size:12px; color:var(--muted)}
-.lp-job-body .u{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; color:#9AA9B4}
-.lp-tap{position:absolute; top:-14px; right:-6px; z-index:2; background:var(--imsg-out);
-  border:2px solid #fff; border-radius:999px; padding:3px 8px; display:flex;
-  box-shadow:0 3px 8px rgba(42,33,64,.22); animation:lp-pop .4s ease both;
-  /* a beat after the card, so it reads as somebody reacting to it */
-  animation-delay:1.05s}
-@keyframes lp-pop{0%{opacity:0;transform:scale(.3)}70%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
-/* visible to a screen reader, to nothing else. The hidden attribute would
-   take it out of the accessibility tree as well, which defeats the point. */
-.lp-sr{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+   line-height strut above the first child,which opens an empty band at the top
+   of the card and,worse{position:relative; display:block; margin-top:6px}
+/* visible to a screen reader,to nothing else. The hidden attribute would
+   take it out of the accessibility tree as well{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
   overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap}
-.lp-send{display:flex; gap:8px; align-items:center; border-top:1px solid var(--line); padding-top:12px}
-.lp-send input{flex:1; min-width:0; border:1px solid var(--line2); border-radius:999px;
-  padding:10px 14px; font:inherit; font-size:13.5px; background:#fff; color:var(--ink)}
-.lp-send input:focus{outline:none; border-color:var(--primary)}
-.lp-send button{width:36px; height:36px; flex:0 0 auto; border:0; border-radius:50%;
-  background:var(--imsg-out); color:#fff; display:grid; place-items:center; cursor:pointer}
+/* One step per character,and a target the width of the actual string --
+   a generous target reaches full width in the first step or two,which reads
+   as a jump rather than typing{animation-name:lp-t1; animation-timing-function:steps(8)}
 
-/* doors */
-.lp-doors{background:#fff; border-bottom:1px solid var(--line)}
-.lp-doors .wrap{padding-top:40px; padding-bottom:40px; display:grid; gap:16px;
-  grid-template-columns:repeat(auto-fit,minmax(320px,390px)); justify-content:center}
-.lp-door{display:flex; align-items:center; gap:16px; padding:22px 24px; border-radius:18px;
-  cursor:pointer; text-align:left; font:inherit; border:1px solid transparent;
-  transition:transform .2s,box-shadow .2s}
-.lp-door:hover{transform:translateY(-3px); box-shadow:0 18px 40px rgba(42,33,64,.18)}
-.lp-door .ico{width:44px; height:44px; flex:0 0 auto; border-radius:50%; display:grid; place-items:center}
-.lp-door .tt{display:block; font-size:17px; font-weight:600; letter-spacing:-.018em}
-.lp-door .ss{display:block; font-size:13.5px}
-.lp-door .arw{margin-left:auto; transition:transform .2s}
-.lp-door:hover .arw{transform:translateX(5px)}
-.lp-door.cand{background:var(--primary); color:#fff; box-shadow:0 14px 34px rgba(106,80,200,.28)}
-.lp-door.cand .ico{background:rgba(255,255,255,.16)}
-.lp-door.hire{background:#fff; border-color:var(--line2); color:var(--ink)}
-.lp-door.hire .ico{background:var(--accent-soft)}
-.lp-door.hire .ss{color:var(--muted)}
-.lp-free{grid-column:1/-1; justify-self:center; background:var(--accent-soft); color:var(--ink);
-  border-radius:6px; padding:8px 18px; font-size:12.5px; font-weight:600}
-
-/* chapters */
-.lp-sec{padding:clamp(56px,7vw,88px) 0; border-bottom:1px solid var(--line)}
-.lp-sec.alt{background:var(--tint2)}
-.lp-sec.white{background:#fff}
-.lp-head-row{display:flex; align-items:flex-start; gap:clamp(16px,3vw,28px)}
-.lp-num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:clamp(34px,5vw,60px);
-  font-weight:600; color:var(--primary); opacity:.35; line-height:1}
-.lp-kick{color:var(--primary); display:block; margin-bottom:10px}
-.lp-grid{display:grid; gap:16px; margin-top:clamp(32px,4vw,48px)}
-.lp-g3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.lp-g4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
-.lp-g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-.lp-card{background:#fff; border:1px solid var(--line); border-radius:16px; padding:24px;
-  display:flex; flex-direction:column; gap:14px}
-.lp-sec.white .lp-card{background:var(--tint2)}
-.lp-card.tap{cursor:pointer; transition:transform .2s,border-color .2s,box-shadow .2s}
-.lp-card.tap:hover{transform:translateY(-4px); border-color:var(--primary);
-  box-shadow:0 16px 36px rgba(106,80,200,.16)}
-.lp-card h3{font-size:17px}
-.lp-card .note{color:var(--muted); font-size:12.5px}
-.lp-chan-top{display:flex; align-items:center; gap:10px}
-.lp-chan-top .lbl{color:var(--primary)}
-.lp-chan-val{margin-left:auto; font-size:15px; font-weight:600; color:var(--primary)}
-.lp-demo{background:#fff; border:1px solid var(--line); border-radius:16px; padding:14px;
-  min-height:128px; display:flex; flex-direction:column; gap:8px}
-.lp-sec.white .lp-demo{background:#fff}
-.lp-mini{border-radius:12px; padding:6px 11px; font-size:12px; max-width:90%}
-.lp-mini.me{align-self:flex-end; background:var(--imsg-out); color:#fff; border-bottom-right-radius:3px}
-.lp-mini.them{align-self:flex-start; background:var(--imsg-in); color:#1A1A1A; border-bottom-left-radius:3px}
-.lp-wave{display:flex; gap:3px; height:30px; align-items:center; justify-content:center}
-.lp-wave i{width:4px; background:var(--primary); border-radius:2px; animation:lp-eq .9s ease-in-out infinite}
-@keyframes lp-eq{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
-.lp-rec{width:9px; height:9px; border-radius:50%; background:#E24C4C; animation:lp-pulse 1.2s ease-in-out infinite}
-@keyframes lp-pulse{0%,100%{opacity:1}50%{opacity:.25}}
-
-/* journey */
-.lp-track{position:relative; height:56px; margin-top:clamp(28px,4vw,44px)}
-.lp-track .rail{position:absolute; left:10%; right:10%; top:26px; height:2px;
-  background:repeating-linear-gradient(90deg,var(--line2) 0 6px,transparent 6px 14px)}
-.lp-track .stop{position:absolute; top:22px; width:10px; height:10px; margin-left:-5px;
-  border-radius:50%; background:var(--primary)}
-.lp-track .stop.last{background:var(--accent)}
-.lp-walker{position:absolute; top:8px; margin-left:-19px; width:38px; height:38px; border-radius:50%;
-  background:var(--primary); border:3px solid #fff; display:grid; place-items:center;
-  box-shadow:0 6px 16px rgba(42,33,64,.35); animation:lp-walk 9s ease-in-out infinite}
-.lp-walker-arrow{position:absolute; top:16px; margin-left:24px; color:var(--primary);
-  animation:lp-walk 9s ease-in-out infinite}
-@keyframes lp-walk{
-  0%{left:12.5%;opacity:1}10%{left:12.5%}26%{left:37.5%}36%{left:37.5%}
-  52%{left:62.5%}62%{left:62.5%}78%{left:87.5%}92%{left:87.5%;opacity:1}
-  95%{left:87.5%;opacity:0}97%{left:12.5%;opacity:0}100%{left:12.5%;opacity:1}}
-.lp-conf{position:absolute; left:87.5%; top:0}
-.lp-conf i{position:absolute; width:6px; height:6px; border-radius:50%;
-  animation:lp-conf 9s ease-out infinite}
-@keyframes lp-conf{0%,76%{opacity:0;transform:translate(0,0) rotate(0)}
-  80%{opacity:1}94%{opacity:0;transform:translate(var(--tx),var(--ty)) rotate(240deg)}100%{opacity:0}}
-.lp-jcard{animation-duration:9s; animation-timing-function:ease; animation-fill-mode:both;
-  animation-iteration-count:infinite}
-.lp-jcard:nth-child(1){animation-name:lp-rev1}
-.lp-jcard:nth-child(2){animation-name:lp-rev2}
-.lp-jcard:nth-child(3){animation-name:lp-rev3}
-.lp-jcard:nth-child(4){animation-name:lp-rev4}
-@keyframes lp-rev1{0%,2%{opacity:0;transform:translateY(14px)}7%{opacity:1;transform:none}96%{opacity:1}100%{opacity:0}}
-@keyframes lp-rev2{0%,24%{opacity:0;transform:translateY(14px)}29%{opacity:1;transform:none}96%{opacity:1}100%{opacity:0}}
-@keyframes lp-rev3{0%,50%{opacity:0;transform:translateY(14px)}55%{opacity:1;transform:none}96%{opacity:1}100%{opacity:0}}
-@keyframes lp-rev4{0%,76%{opacity:0;transform:translateY(14px)}81%{opacity:1;transform:none}96%{opacity:1}100%{opacity:0}}
-.lp-pill{display:inline-flex; align-items:center; gap:6px; background:var(--tint);
-  color:var(--primary); border-radius:999px; padding:4px 10px; font-size:11px; font-weight:600}
-.lp-tags{display:flex; flex-wrap:wrap; gap:6px}
-.lp-tags span{background:var(--tint); border-radius:999px; padding:4px 11px; font-size:11.5px; font-weight:600}
-.lp-range{position:relative; height:6px; background:var(--line); border-radius:999px; display:block}
-.lp-range i{position:absolute; left:35%; right:20%; top:0; bottom:0; background:var(--primary); border-radius:999px}
-.lp-range b{position:absolute; top:-4px; width:14px; height:14px; border-radius:50%;
-  background:#fff; border:2.5px solid var(--primary)}
-.lp-chip{display:flex; align-items:center; gap:9px; background:#fff; border:1px solid var(--line);
-  border-radius:999px; padding:6px 12px; font-size:12.5px; font-weight:600;
-  animation:lp-chipin 9s ease both infinite; animation-delay:var(--d)}
-.lp-sec.white .lp-chip{background:var(--tint2)}
-@keyframes lp-chipin{0%,55%{opacity:0;transform:scale(.7)}60%{opacity:1;transform:scale(1)}96%{opacity:1}100%{opacity:0}}
-.lp-chip-disc{width:22px; height:22px; flex:0 0 auto; border-radius:50%; background:#fff;
-  border:1px solid var(--line); display:grid; place-items:center}
-.lp-cal{background:var(--accent-soft); border-radius:12px; padding:12px; display:flex; gap:12px; align-items:center}
-.lp-cal .day{background:#fff; border-radius:10px; padding:8px 12px; display:flex; flex-direction:column;
-  align-items:center; box-shadow:0 4px 10px rgba(42,33,64,.1)}
-.lp-cal .day em{font-style:normal; font-size:9px; font-weight:700; letter-spacing:.14em;
-  text-transform:uppercase; color:#E24C4C}
-.lp-cal .day strong{font-size:19px; line-height:1.1}
-
-/* agent-at-work */
-.lp-flow{display:grid; gap:16px; align-items:center; margin-top:clamp(32px,4vw,48px);
-  grid-template-columns:minmax(0,240px) 40px minmax(0,1fr) 40px minmax(0,240px)}
-@media(max-width:980px){.lp-flow{grid-template-columns:1fr}.lp-flow .arw{display:none}}
-.lp-flow .arw{color:var(--primary); justify-self:center}
-.lp-flow .arw path{stroke-dasharray:4 5; animation:lp-dash .9s linear infinite}
-@keyframes lp-dash{to{stroke-dashoffset:-18}}
-.lp-browser{background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden;
-  box-shadow:0 18px 44px rgba(42,33,64,.1)}
-.lp-browser-bar{display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--tint2);
-  border-bottom:1px solid var(--line)}
-.lp-browser-bar i{width:9px; height:9px; border-radius:50%; background:var(--line2)}
-.lp-url{margin-left:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:11.5px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.lp-agent-tag{margin-left:auto; display:flex; align-items:center; gap:6px; background:var(--accent-soft);
-  color:var(--accent-deep); border-radius:999px; padding:4px 10px; font-size:10px; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase; white-space:nowrap}
-.lp-form{position:relative; padding:18px 20px; display:flex; flex-direction:column; gap:10px}
-.lp-row{display:flex; align-items:flex-start; gap:12px}
-.lp-row .k{width:96px; flex:0 0 auto; font-size:11px; font-weight:600; letter-spacing:.1em;
-  text-transform:uppercase; color:var(--muted); padding-top:8px}
-.lp-row .v{flex:1; min-width:0; overflow:hidden; background:var(--tint3); border:1px solid var(--line);
-  border-radius:8px; padding:7px 12px; font-size:13px}
-.lp-type{display:inline-block; overflow:hidden; white-space:nowrap; vertical-align:bottom;
-  max-width:0; animation-duration:7s; animation-timing-function:steps(24); animation-iteration-count:infinite;
-  animation-fill-mode:both}
-/* One step per character, and a target the width of the actual string --
-   a generous target reaches full width in the first step or two, which reads
-   as a jump rather than typing, and takes the nib with it in one hop. */
-.lp-type.t1{animation-name:lp-t1; animation-timing-function:steps(8)}
-.lp-type.t2{animation-name:lp-t2; animation-timing-function:steps(23)}
-.lp-type.t3{animation-name:lp-t3; animation-timing-function:steps(40)}
 @keyframes lp-t1{0%,6%{max-width:0}16%,100%{max-width:9ch}}
-@keyframes lp-t2{0%,22%{max-width:0}34%,100%{max-width:24ch}}
-@keyframes lp-t3{0%,48%{max-width:0}64%,100%{max-width:100%}}
-.lp-pillin{animation:lp-pillin 7s ease both infinite}
-@keyframes lp-pillin{0%,38%{opacity:0;transform:scale(.6)}42%{opacity:1;transform:scale(1)}100%{opacity:1}}
-/* The nib sits inline directly after the text it is writing, so it travels
+/* The nib sits inline directly after the text it is writing,so it travels
    with the characters instead of hovering at the edge of the field. One per
-   row, each shown only while that row is being filled. */
-.lp-nib{display:inline-flex; align-items:center; gap:5px; vertical-align:middle;
+   row{display:inline-flex; align-items:center; gap:5px; vertical-align:middle;
   margin-left:6px; opacity:0; animation-duration:7s; animation-timing-function:ease;
   animation-iteration-count:infinite; animation-fill-mode:both}
-.lp-nib b{background:var(--accent-soft); color:var(--accent-deep); border-radius:5px;
-  padding:2px 6px; font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase}
-.lp-nib i{width:22px; height:22px; flex:0 0 auto; border-radius:6px; background:var(--primary);
-  display:grid; place-items:center; box-shadow:0 4px 10px rgba(42,33,64,.3)}
-.lp-nib.n1{animation-name:lp-nib1} .lp-nib.n2{animation-name:lp-nib2}
-.lp-nib.n3{animation-name:lp-nib3} .lp-nib.n4{animation-name:lp-nib4}
-@keyframes lp-nib1{0%,5%{opacity:0}7%,17%{opacity:1}19%,100%{opacity:0}}
-@keyframes lp-nib2{0%,21%{opacity:0}23%,35%{opacity:1}37%,100%{opacity:0}}
-@keyframes lp-nib4{0%,37%{opacity:0}39%,45%{opacity:1}47%,100%{opacity:0}}
-@keyframes lp-nib3{0%,47%{opacity:0}49%,65%{opacity:1}67%,100%{opacity:0}}
-.lp-progress{flex:1; height:6px; background:var(--line); border-radius:999px; overflow:hidden}
-.lp-progress i{display:block; height:100%; width:4%; background:var(--primary); border-radius:999px;
-  animation:lp-fill 7s ease-in-out infinite}
-@keyframes lp-fill{0%,66%{width:4%}90%{width:96%}100%{width:96%}}
-.lp-assure{display:flex; flex-wrap:wrap; justify-content:center; gap:16px 40px;
-  border-top:1px solid var(--line); margin-top:clamp(28px,4vw,44px); padding-top:28px}
-.lp-assure li{display:flex; align-items:center; gap:10px; color:var(--muted); font-size:14px}
-
 /* companies */
 .lp-band{background:var(--band); color:#fff}
 .lp-band h2{color:#fff; max-width:22ch}
 .lp-band .wrap{padding-top:clamp(56px,7vw,88px); padding-bottom:clamp(56px,7vw,88px)}
-.lp-band-intro{display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center}
-.lp-band-intro .lbl{color:var(--band-acc)}
-.lp-band-intro p{color:rgba(255,255,255,.75); font-size:clamp(15px,1.7vw,17px); max-width:54ch}
-.lp-stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:24px;
-  border-top:1px solid rgba(255,255,255,.14); border-bottom:1px solid rgba(255,255,255,.14);
-  padding:28px 0; margin:clamp(32px,4vw,48px) 0; text-align:center}
-.lp-stats b{display:block; font-size:clamp(28px,3.4vw,34px); font-weight:600;
-  letter-spacing:-.032em; color:var(--band-acc)}
-.lp-stats span{color:rgba(255,255,255,.75)}
 .lp-steps{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .lp-step{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:16px;
   padding:26px; display:flex; flex-direction:column; gap:12px; cursor:pointer;
@@ -479,7 +198,7 @@ html{scroll-padding-top:100px}
 .lp-ledger div+div{border-top:1px solid rgba(255,255,255,.1); padding-top:8px}
 .lp-ledger .amt{margin-left:auto; font-weight:700}
 /* The one row that is a good outcome gets to look like one: lifted off the
-   panel and warmed, rather than sharing the flat treatment of the two nils. */
+   panel and warmed,rather than sharing the flat treatment of the two nils. */
 .lp-ledger .win{background:rgba(233,195,106,.14); border:1px solid rgba(233,195,106,.35);
   border-radius:10px; padding:9px 11px; margin:-2px 0 2px; color:#fff}
 .lp-ledger .win+div{border-top:0; padding-top:0}
@@ -495,21 +214,11 @@ html{scroll-padding-top:100px}
 .lp-funnel-foot{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;
   border-top:1px solid rgba(255,255,255,.12); margin-top:16px; padding-top:12px;
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:rgba(255,255,255,.7)}
-.lp-booking{background:#fff; color:var(--ink); border-radius:18px; padding:clamp(28px,4vw,44px);
-  display:flex; flex-wrap:wrap; align-items:center; gap:24px; margin-top:clamp(32px,4vw,48px)}
-.lp-booking .t{flex:1; min-width:260px; display:flex; flex-direction:column; gap:8px}
-.lp-booking .t b{font-size:clamp(20px,2.6vw,26px); font-weight:600; letter-spacing:-.024em}
-.lp-booking .t span{color:var(--muted); font-size:15px; max-width:52ch}
-.lp-booking .a{display:flex; flex-direction:column; align-items:flex-end; gap:10px}
-.lp-booking .a small{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--muted)}
-
-/* closer + footer */
-.lp-closer{padding:clamp(56px,8vw,96px) 0; text-align:center;
-  background:linear-gradient(180deg,var(--bg) 0%,var(--tint) 100%); border-bottom:1px solid var(--line)}
-.lp-closer .acts{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:28px}
 .lp-foot{padding:clamp(40px,5vw,56px) 0 40px}
 .lp-fcols{display:grid; grid-template-columns:1.4fr repeat(3,1fr); gap:32px}
-@media(max-width:820px){.lp-fcols{grid-template-columns:1fr 1fr}}
+
+@media(max-width:820px){
+.lp-fcols{grid-template-columns:1fr 1fr}}
 .lp-fcols h4{color:var(--muted); margin:0 0 16px; font-size:11px; font-weight:700;
   letter-spacing:.16em; text-transform:uppercase}
 .lp-fcols li{padding:5px 0}
@@ -519,8 +228,7 @@ html{scroll-padding-top:100px}
 .lp-fcols a:hover{color:var(--primary)}
 .lp-fbot{display:flex; flex-wrap:wrap; gap:14px 30px; justify-content:space-between; color:var(--muted);
   border-top:1px solid var(--line); margin-top:clamp(32px,4vw,48px); padding-top:22px}
-
-/* the legal pages: the only long-form prose on the site, so it gets a measure
+/* the legal pages: the only long-form prose on the site,so it gets a measure
    that is comfortable to read rather than the full width of the page */
 .lp-legal{max-width:var(--wrap); margin:0 auto; padding:clamp(34px,5vw,56px) var(--gut) clamp(20px,3vw,32px)}
 .lp-legal h1{font-size:clamp(30px,4.2vw,46px); margin:0 0 4px}
@@ -541,679 +249,18 @@ html{scroll-padding-top:100px}
   vertical-align:top}
 .lp-legal th{color:var(--ink); font-weight:600}
 .lp-legal td{color:var(--muted)}
-/* a wide table should scroll inside itself rather than push the page sideways */
-.lp-legal .scroll{overflow-x:auto}
-
-/* dialogs */
-.lp-modal{border:0; padding:0; background:transparent; max-width:min(480px,92vw)}
-.lp-modal::backdrop{background:rgba(20,14,40,.5)}
-.lp-modal .box{background:#fff; border-radius:22px; padding:clamp(24px,4vw,36px); position:relative;
-  display:flex; flex-direction:column; gap:16px; box-shadow:0 30px 80px rgba(20,14,40,.35)}
-.lp-modal .x{position:absolute; top:16px; right:16px; width:32px; height:32px; border:0; cursor:pointer;
-  border-radius:50%; background:var(--tint2); display:grid; place-items:center}
-.lp-modal .big{font-size:clamp(26px,4vw,34px); font-weight:700; letter-spacing:-.02em; color:var(--primary);
-  font-family:'Bricolage Grotesque',system-ui,sans-serif}
-.lp-modal h3{font-size:clamp(20px,3vw,26px); font-weight:600; letter-spacing:-.024em}
-.lp-modal p{color:var(--muted); font-size:14px}
-.lp-modal .acts{display:flex; flex-wrap:wrap; align-items:center; gap:12px}
-/* The hire dialog carries the real scheduler, which wants more width than a
-   dialog sized for three form fields, and more height than a short laptop has.
-   Cap it against the viewport and let the box scroll rather than overflow. */
-.lp-modal.wide{max-width:min(720px,94vw)}
-.lp-modal.wide .box{max-height:92vh; overflow-y:auto}
-.lp-calembed{min-width:320px; height:min(660px,62vh); border-radius:12px; overflow:hidden;
-  background:var(--tint3)}
-.lp-calnote{font-size:12.5px; color:var(--muted)}
-
+/* The hire dialog carries the real scheduler,which wants more width than a
+   dialog sized for three form fields{max-width:min(720px,94vw)}
 /* ---- waitlist form ---------------------------------------------------- */
 .lp [hidden]{display:none}
-.lp-form-grid{display:grid; gap:12px}
-.lp-field{display:flex; flex-direction:column; gap:6px}
-.lp-field label{font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
-  color:var(--muted)}
-.lp-field input{border:1px solid var(--line2); border-radius:10px; padding:11px 14px;
-  font:inherit; font-size:15px; background:#fff; color:var(--ink)}
-.lp-field input:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--tint)}
-.lp-field input[aria-invalid="true"]{border-color:#C2415A; box-shadow:0 0 0 3px rgba(194,65,90,.12)}
-.lp-field .hint{font-size:11.5px; color:var(--muted)}
-.lp-formnote{font-size:12.5px; color:var(--muted)}
-.lp-formerr{font-size:13px; color:#C2415A; min-height:1.2em}
-.lp-done{display:flex; flex-direction:column; gap:10px; align-items:flex-start}
-.lp-done .tickbig{width:44px; height:44px; border-radius:50%; background:var(--tint);
-  display:grid; place-items:center}
 
-/* ---- the two tracks ---------------------------------------------------- */
-.lp-tracks{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  margin-top:clamp(32px,4vw,48px)}
-.lp-track-card{border-radius:18px; padding:clamp(24px,3vw,32px); display:flex;
-  flex-direction:column; gap:14px; position:relative}
-.lp-track-card .num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px;
-  font-weight:700; letter-spacing:.16em; text-transform:uppercase}
-.lp-track-card h3{font-size:clamp(19px,2.4vw,23px)}
-.lp-track-card p{font-size:14.5px}
-.lp-track-card ul{display:flex; flex-direction:column; gap:8px; margin-top:2px}
-.lp-track-card li{display:flex; gap:9px; align-items:flex-start; font-size:14px}
-.lp-track-card li svg{flex:0 0 auto; margin-top:3px}
-.lp-track-card.self{background:var(--tint2); border:1px solid var(--line)}
-.lp-track-card.self .num{color:var(--primary)}
-.lp-track-card.white-glove{background:var(--band); color:#fff; border:1px solid var(--band)}
-.lp-track-card.white-glove .num{color:var(--band-acc)}
-.lp-track-card.white-glove h3{color:#fff}
-.lp-track-card.white-glove p,.lp-track-card.white-glove li{color:rgba(255,255,255,.78)}
-.lp-track-card .tag{position:absolute; top:-11px; right:20px; border-radius:999px;
-  padding:5px 12px; font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase}
-.lp-track-card.self .tag{background:var(--tint); color:var(--primary)}
-.lp-track-card.white-glove .tag{background:var(--band-acc); color:var(--band)}
-.lp-econ{margin-top:clamp(24px,3vw,32px); text-align:center; color:var(--muted); font-size:14.5px}
-.lp-econ b{color:var(--ink); font-weight:600}
 
 @media (prefers-reduced-motion:reduce){
-  .lp *,.lp *::before,.lp *::after{animation-duration:.01ms!important; animation-iteration-count:1!important;
+.lp *,.lp *::before,.lp *::after{animation-duration:.01ms!important; animation-iteration-count:1!important;
     transition-duration:.01ms!important}
-  .lp-jcard,.lp-chip,.lp-msg,.lp-meta,.lp-step{opacity:1!important; transform:none!important}
-}
+.lp-step{opacity:1!important; transform:none!important}}
 """
 
-
-JS = r"""
-(function () {
-  "use strict";
-  var lp = document.querySelector(".lp");
-  if (!lp) return;
-
-  /* San Francisco clock in the header. */
-  var clock = document.getElementById("lp-clk");
-  function tick() {
-    if (!clock) return;
-    clock.textContent = new Intl.DateTimeFormat("en-US", {
-      timeZone: "America/Los_Angeles", hour: "2-digit", minute: "2-digit", hour12: false
-    }).format(new Date());
-  }
-  tick();
-  setInterval(tick, 30000);
-
-  /* ---- dialogs -------------------------------------------------------- */
-  var clip = document.getElementById("lp-voice");
-  /* Calendly's widget is a third party, and most visitors never open the hire
-     dialog. Fetch it the first time somebody does rather than on every page
-     load. widget.js scans for .calendly-inline-widget when it runs, and by then
-     the container is already in the document. */
-  var calendarAsked = false;
-  function loadCalendar() {
-    if (calendarAsked) return;
-    calendarAsked = true;
-    var s = document.createElement("script");
-    s.src = "https://assets.calendly.com/assets/external/widget.js";
-    s.async = true;
-    document.head.appendChild(s);
-  }
-
-  function playVoice() {
-    if (!clip) return;
-    try {
-      clip.currentTime = 0;
-      var p = clip.play();
-      if (p && p.catch) p.catch(function () {});
-    } catch (err) { /* autoplay refused: the Hear button still works */ }
-  }
-  function stopVoice() {
-    if (!clip) return;
-    try { clip.pause(); clip.currentTime = 0; } catch (err) {}
-  }
-
-  document.addEventListener("click", function (e) {
-    /* Puts the visitor back at the top, where the waitlist and the agent both
-       are, and opens the form once the scroll has settled. Opening it mid-flight
-       parks the page somewhere odd behind the dialog. */
-    if (e.target.closest("[data-waitlist]")) {
-      var from = e.target.closest("dialog");
-      if (from) from.close();
-      /* Instant, not smooth. Opening the dialog locks the page, and a smooth
-         scroll still running at that moment stops dead -- from the foot of the
-         page that leaves the visitor exactly where they started. The dialog
-         covers the jump, and what matters is where they land when they close
-         it. */
-      var hero = document.getElementById("lp-hero");
-      if (hero) window.scrollTo({ top: hero.offsetTop, behavior: "instant" });
-      requestAnimationFrame(function () {
-        var wl = document.getElementById("lp-waitlist");
-        if (wl && wl.showModal && !wl.open) wl.showModal();
-      });
-      return;
-    }
-
-    var open = e.target.closest("[data-open]");
-    if (open) {
-      var d = document.getElementById(open.getAttribute("data-open"));
-      if (d && d.showModal) {
-        d.showModal();
-        if (d.id === "lp-call") playVoice();
-        if (d.id === "lp-hire") loadCalendar();
-      }
-      return;
-    }
-    if (e.target.closest("[data-close]")) {
-      var host = e.target.closest("dialog");
-      if (host) host.close();
-      return;
-    }
-    if (e.target.closest("[data-hear]")) { playVoice(); return; }
-    if (e.target.closest("[data-chat]")) {
-      var host2 = e.target.closest("dialog");
-      if (host2) host2.close();
-      var card = document.getElementById("lp-phone");
-      if (card && card.scrollIntoView) card.scrollIntoView({ behavior: "smooth", block: "center" });
-      var box = document.getElementById("lp-input");
-      if (box) setTimeout(function () { box.focus(); }, 400);
-    }
-  });
-
-  Array.prototype.forEach.call(document.querySelectorAll("dialog"), function (d) {
-    /* clicking the backdrop closes; the inner box stops the bubble */
-    d.addEventListener("click", function (e) { if (e.target === d) d.close(); });
-    d.addEventListener("close", stopVoice);
-  });
-
-
-  /* ---- waitlist ------------------------------------------------------- */
-  var wlForm = document.getElementById("lp-wl-form");
-  if (wlForm) {
-    var wlErr = document.getElementById("lp-wl-err");
-    var wlDone = document.getElementById("lp-wl-done");
-    var wlSubmit = document.getElementById("lp-wl-submit");
-
-    wlForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      if (wlSubmit.disabled) return;
-
-      var fields = {};
-      var firstBad = null;
-      ["Name", "Email", "Phone"].forEach(function (key) {
-        var box = wlForm.elements[key];
-        var val = (box.value || "").trim();
-        fields[key] = val;
-        // The browser's own required/type checks are the first pass; this is
-        // only so the first empty box gets focus rather than a blanket error.
-        var bad = !val || (key === "Email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val));
-        box.setAttribute("aria-invalid", bad ? "true" : "false");
-        if (bad && !firstBad) firstBad = box;
-      });
-      if (firstBad) {
-        wlErr.textContent = "Please check the highlighted field.";
-        firstBad.focus();
-        return;
-      }
-
-      wlErr.textContent = "";
-      wlSubmit.disabled = true;
-      wlSubmit.textContent = "Joining\u2026";
-
-      var slow = setTimeout(function () {
-        if (wlSubmit.disabled) wlSubmit.textContent = "Still going…";
-      }, 4000);
-
-      fetch("/api/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kind: "waitlist",
-          fields: fields,
-          confirm_url: (wlForm.elements.confirm_url || {}).value || ""
-        })
-      }).then(function (r) {
-        return r.json().catch(function () { return { ok: false }; });
-      }).then(function (out) {
-        clearTimeout(slow);
-        if (!out || !out.ok) throw new Error((out && out.error) || "That did not go through.");
-        wlSubmit.disabled = false;
-        wlSubmit.textContent = "Join the waitlist";
-        wlForm.hidden = true;
-        wlDone.hidden = false;
-        joined = true;
-      }).catch(function (err) {
-        clearTimeout(slow);
-        wlSubmit.disabled = false;
-        wlSubmit.textContent = "Join the waitlist";
-        wlErr.textContent = err.message || "That did not go through. Try again in a moment.";
-      });
-    });
-  }
-
-  /* ---- the thread ----------------------------------------------------- */
-  var thread = document.getElementById("lp-thread");
-  var input = document.getElementById("lp-input");
-  var send = document.getElementById("lp-send");
-  if (!thread || !input || !send) return;
-
-  var api = (lp.getAttribute("data-api") || "").replace(/\/+$/, "");
-  var token = lp.getAttribute("data-widget-token") || "";
-  var session = null;
-  var live = false;
-  var busy = false;
-  var demoTimers = [];
-  /* The agent is a demo until we open. Let somebody get a real feel for it --
-     long enough to take the brief and come back with roles, which is the part
-     worth showing -- then hand them to the waitlist rather than letting the
-     conversation run on into nothing. */
-  var TURNS_BEFORE_WAITLIST = 12;
-  var turns = 0;
-  var joined = false;
-  var handedOver = false;
-  var told = false;
-
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  }
-  function bubble(side, text) {
-    var b = el("div", "lp-msg " + side, text);
-    thread.appendChild(b);
-    thread.scrollTop = thread.scrollHeight;
-    return b;
-  }
-  function react(msg, glyph) {
-    msg.classList.add("reacted");
-    var t = el("span", "lp-react", glyph);
-    t.appendChild(el("i"));
-    t.appendChild(el("i"));
-    msg.appendChild(t);
-  }
-
-  /* Tapbacks land where a person would actually reach for one, picked off what
-     the message says rather than off its position in the thread -- somebody who
-     opens with their name is at a different point from somebody who opens with
-     hi. Two in a row reads as a bot with a stuck key, so a reaction normally
-     needs a clear turn after the last one. Saying yes and picking a role are
-     exempt: those are the two moments a reaction is most worth having, and
-     they tend to arrive back to back. */
-  var lastReact = -9;
-  function reactionFor(text, n) {
-    var t = text.trim().toLowerCase();
-    var glyph = "", always = false;
-    if (/^(ha){2,}$|^(lol|lmao|haha)\b/.test(t)) {
-      glyph = "\uD83D\uDE02";
-    } else if (/^(yes|yep|yeah|yup|sure|perfect|great|nice|please|do it|go for it|sounds good|let's go)\b/.test(t)) {
-      glyph = "\u2764\uFE0F"; always = true;
-    } else if (/^(0?[123])\b/.test(t)) {
-      glyph = "\u2764\uFE0F"; always = true;              /* picking one of the roles */
-    } else if (/\b(asap|urgent|right now|this week|today)\b/.test(t)) {
-      glyph = "\u203C\uFE0F";
-    } else if (/(linkedin\.com|github\.com|\.pdf|\bresume\b|\bcv\b|\bportfolio\b)/.test(t)) {
-      glyph = "\uD83D\uDC40";                             /* something to go and read */
-    } else if (/\$|\b\d{3}\s?k\b/.test(t)) {
-      glyph = "\uD83D\uDC40";                             /* a number worth a look */
-    } else if (/\b(staff|principal|senior|lead|founding|engineer|developer|designer|scientist|analyst)\b/.test(t)) {
-      glyph = "\uD83D\uDC4D";
-    }
-    if (!glyph) return "";
-    if (!always && n - lastReact < 2) return "";
-    return glyph;
-  }
-
-  function typing() {
-    var d = el("div", "lp-dots");
-    d.innerHTML = "<i></i><i></i><i></i>";
-    thread.appendChild(d);
-    thread.scrollTop = thread.scrollHeight;
-    return d;
-  }
-
-  /* The scripted demo. Plays until the visitor types, then gets out of the way. */
-  var SCRIPT = [
-    [400, "meta", "Today"],
-    [700, "me", "hey heard you find jobs over text"],
-    [1000, "them", "yep. i'm foray. send your linkedin or a resume and i'll take it from there"],
-    [1100, "me", "linkedin.com/in/priya-builds"],
-    [1300, "them", "got it. backend, 6 yrs, go + postgres. what comp, and where do you want to be?"],
-    [1000, "me", "sf hybrid, 180k+"],
-    [1500, "job", ""],
-    [1000, "meta-right", "you liked “Senior Backend Engineer · Stripe”"],
-    [800, "them", "on it. stripe it is. tailored resume and a short note to the hiring manager. good to go?"],
-    [900, "me", "YES"],
-    [500, "meta-right", "Read"],
-    [1200, "them", "applied. i'll message you the moment they reply"]
-  ];
-
-  function jobCard() {
-    var thumb = document.getElementById("lp-thumb-src");
-    var badge = document.getElementById("lp-stripe-src");
-    var badge2 = document.getElementById("lp-anthropic-src");
-    var w = el("div", "lp-msg them wide");
-    w.innerHTML =
-      '<span>found 2 worth your time. like the one you want and i will get your application ready:</span>' +
-      '<span class="lp-job">' +
-        '<span class="lp-tap" aria-hidden="true">' + (thumb ? thumb.innerHTML : "") + '</span>' +
-        '<span class="lp-job-card picked">' +
-          '<span class="lp-job-shot">' +
-            '<span class="row"><span class="badge">' + (badge ? badge.innerHTML : "") + '</span>' +
-            '<span class="co">Jobs at Stripe</span></span>' +
-            '<span class="bar"></span><span class="bar short"></span>' +
-            '<span class="cta">Apply now</span>' +
-          '</span>' +
-          '<span class="lp-job-body"><span class="n">01</span>' +
-          '<span class="t">Senior Backend Engineer</span>' +
-          '<span class="s">SF hybrid · $185–210k</span></span>' +
-        '</span>' +
-      '</span>' +
-      '<span class="lp-job" style="margin-top:8px">' +
-        '<span class="lp-job-card">' +
-          '<span class="lp-job-shot" style="--shot:#191919">' +
-            '<span class="row"><span class="badge">' + (badge2 ? badge2.innerHTML : "") + '</span>' +
-            '<span class="co">Careers at Anthropic</span></span>' +
-            '<span class="bar"></span><span class="bar short"></span>' +
-            '<span class="cta">Apply now</span>' +
-          '</span>' +
-          '<span class="lp-job-body"><span class="n">02</span>' +
-          '<span class="t">Member of Technical Staff</span>' +
-          '<span class="s">SF hybrid · $240k + equity</span></span>' +
-        '</span>' +
-      '</span>';
-    thread.appendChild(w);
-  }
-
-  function playDemo() {
-    var at = 0;
-    SCRIPT.forEach(function (step) {
-      at += step[0];
-      demoTimers.push(setTimeout(function () {
-        if (live) return;
-        if (step[1] === "meta") thread.appendChild(el("span", "lp-meta", step[2]));
-        else if (step[1] === "meta-right") thread.appendChild(el("span", "lp-meta right", step[2]));
-        else if (step[1] === "job") jobCard();
-        else bubble(step[1], step[2]);
-        thread.scrollTop = thread.scrollHeight;
-      }, at));
-    });
-  }
-
-  function goLive() {
-    if (live) return;
-    live = true;
-    demoTimers.forEach(clearTimeout);
-    demoTimers = [];
-    thread.textContent = "";
-    thread.appendChild(el("span", "lp-meta", "Live"));
-  }
-
-  /* The moment somebody starts typing, the demo gets out of the way -- and an
-     empty box is a bad thing to type into, so Foray says hello while they are
-     still composing. On the live path render() redraws from the server
-     transcript, so this greeting is only ever the local one. */
-  var greeted = false;
-  function greet() {
-    if (greeted) return;
-    greeted = true;
-    goLive();
-    var dots = typing();
-    setTimeout(function () {
-      if (dots.parentNode) dots.parentNode.removeChild(dots);
-      bubble("them", "hey, i'm foray. tell me what you're after and i'll go find it.");
-    }, 650);
-  }
-  input.addEventListener("input", greet);
-
-  /* The fallback, used only when no widget token is configured or the API is
-     unreachable. The asks track the real intake: messaging/identity.py ASKS in
-     missing_identity() order (name, then email), then prompts.QUESTIONS in gate
-     order. Keep them in step -- a visitor who types here should get the same
-     conversation the live thread would give them, minus the part where we
-     remember it. The greeting is deliberately not greeting_for()'s: that one
-     discloses the agent as an AI because SMS wants it to, and this is a demo
-     widget on our own page, where it only reads as throat-clearing. */
-  /* The ladder used to be a counter: stage++ on every message, whatever it
-     said. So "tg" passed as an email, then as a role, then as a location, and
-     three matches with salaries came back off four junk answers -- which reads
-     as fake, because it was. Each step now checks the answer to the question it
-     asked, and re-asks when it does not fit. The stage only moves on a real
-     answer. */
-  var stage = 0;
-  var brief = { name: "", email: "", role: "", place: "" };
-
-  /* Repeating one sentence word for word is how a form behaves, not a person.
-     Each stage keeps its own count and moves down its list. */
-  var tries = 0;
-  function again(list) { return [list[Math.min(tries++, list.length - 1)]]; }
-
-  var NAME_AGAIN = [
-    "a name first, whatever you go by. we'll get to the rest.",
-    "anything works. first name is plenty."
-  ];
-  var EMAIL_AGAIN = [
-    "that isn't an address i can reach you at. what's your email?",
-    "still need an email. something in the shape of you@company.com.",
-    "i can't line anything up without a way to reach you. an email and we're moving."
-  ];
-  var ROLE_AGAIN = [
-    "a bit more than that. backend, infra, ml, product, design, what are you after?",
-    "give me the job title you'd want to see on the offer.",
-    "even roughly. what kind of engineering do you want to be doing?"
-  ];
-  var PLACE_AGAIN = [
-    "whereabouts? a city is plenty, or remote.",
-    "just a city, or say remote and i'll work with that."
-  ];
-
-  function letters(t) { return t.replace(/[^a-z]/gi, "").length; }
-  function isEmail(t) { return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(t); }
-  function isLink(t) { return /https?:\/\/|www\.|linkedin\.com|github\.com/i.test(t); }
-
-  /* Their own words, trimmed to something that fits on a card: first clause,
-     no trailing punctuation, no sentence-length essays. */
-  function tidy(t, cap) {
-    t = t.split(/[,.;\n]/)[0].trim().toLowerCase();
-    t = t.replace(
-      /^(i(?:'m| am)? |i want |looking for |currently |living |based |located |in |at |a |an |the )+/,
-      "");
-    if (t.length > cap) t = t.slice(0, cap).replace(/\s+\S*$/, "");
-    return t;
-  }
-
-  function offlineReplies(text) {
-    var t = (text || "").trim();
-
-    if (stage === 0) {
-      stage = 1;
-      return [
-        "good to meet you. a few details and i can start matching. couple of minutes, tops.",
-        "what name should i put on this?"
-      ];
-    }
-
-    if (stage === 1) {
-      if (isEmail(t) || isLink(t) || letters(t) < 2 || t.length > 60)
-        return again(NAME_AGAIN);
-      brief.name = tidy(t, 40);
-      stage = 2; tries = 0;
-      return ["thanks. and the best email to reach you on?"];
-    }
-
-    if (stage === 2) {
-      /* Never waved through. An address we cannot send to is the one answer
-         that makes the whole thread pointless. */
-      if (!isEmail(t))
-        return again(EMAIL_AGAIN);
-      brief.email = t;
-      stage = 3; tries = 0;
-      return ["what kind of role are you looking for next?"];
-    }
-
-    if (stage === 3) {
-      if (letters(t) < 4)
-        return again(ROLE_AGAIN);
-      brief.role = tidy(t, 42);
-      stage = 4; tries = 0;
-      return ["where are you based, and where would you want to work?"];
-    }
-
-    if (stage === 4) {
-      if (letters(t) < 2)
-        return again(PLACE_AGAIN);
-      /* "based in nyc, would do remote" should read as a place on a card, and
-         the remote part is the half they actually chose. */
-      var place = tidy(t, 24);
-      if (/\bremote\b/i.test(t) && place.indexOf("remote") < 0)
-        place = place ? place + " or remote" : "remote";
-      brief.place = place;
-      stage = 5; tries = 0;
-      told = true;
-      /* Where the page runs out of what it actually knows. Naming roles from
-         here would be a guess dressed as a match. */
-      return [
-        "got it: " + brief.role + ", " + place + ". that's the brief.",
-        "join the waitlist and i'll come back with the roles that fit the day your spot opens."
-      ];
-    }
-
-    told = true;
-    return ["we're opening spots in batches. join the waitlist and i'll pick this up the day yours is ready."];
-  }
-
-  function post(path, body) {
-    return fetch(api + path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    }).then(function (r) {
-      if (!r.ok) {
-        var e = new Error("http " + r.status);
-        e.status = r.status;
-        throw e;
-      }
-      return r.json();
-    });
-  }
-  function clientId() {
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-    return "c-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
-  }
-  function render(sess) {
-    /* The server owns the transcript, so redraw from it rather than appending. */
-    thread.textContent = "";
-    thread.appendChild(el("span", "lp-meta", "Live"));
-    (sess.messages || []).forEach(function (m) {
-      if (m && m.body) bubble(m.direction === "inbound" ? "me" : "them", m.body);
-    });
-  }
-
-  function handOver() {
-    handedOver = true;
-    input.disabled = true;
-    input.placeholder = "Join the waitlist to keep going";
-    /* Foray sends the link the way it would send anything else: in the thread,
-       as something to tap, rather than as a button floating under it. */
-    var card = el("div", "lp-msg them wide lp-wlcard");
-    card.setAttribute("role", "button");
-    card.setAttribute("tabindex", "0");
-    card.innerHTML =
-      '<span class="lp-wl-head">' +
-        '<span class="lp-logo lp-wl-mark" aria-hidden="true"><b><i></i><i></i><i></i><i></i></b></span>' +
-        '<b>Join the waitlist</b></span>' +
-      '<span class="lp-wl-sub">Name, email, phone. First 10 applications free.</span>';
-    function openWaitlist() {
-      var d = document.getElementById("lp-waitlist");
-      if (d && d.showModal && !d.open) d.showModal();
-    }
-    card.addEventListener("click", openWaitlist);
-    card.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openWaitlist(); }
-    });
-    thread.appendChild(card);
-    thread.scrollTop = thread.scrollHeight;
-  }
-
-  /* Liking one of the suggestions has to move the conversation on the same way
-     typing does, so the thread-advancing half of submit lives here and takes
-     the pick as an argument. */
-  function submit() {
-    var text = input.value.trim();
-    if (!text) return;
-    input.value = "";
-    sendTurn(text);
-  }
-
-  function sendTurn(text) {
-    if (!text || busy || handedOver) return;
-    goLive();
-    busy = true;
-    turns++;
-    var mine = bubble("me", text);
-    var glyph = reactionFor(text, turns);
-    if (glyph) {
-      lastReact = turns;
-      setTimeout(function () { react(mine, glyph); }, 1300);
-    }
-    var dots = typing();
-
-    function offline() {
-      var lines = offlineReplies(text);
-      lines.forEach(function (line, i) {
-        setTimeout(function () {
-          if (i === 0 && dots.parentNode) dots.parentNode.removeChild(dots);
-          bubble("them", line);
-          if (i === lines.length - 1) {
-            busy = false;
-            maybeHandOver();
-          }
-        }, 500 + i * 800);
-      });
-    }
-
-    function maybeHandOver() {
-      if (handedOver || joined) return;
-      if (!told && turns < TURNS_BEFORE_WAITLIST) return;
-      setTimeout(function () {
-        /* If they got here by liking a role they have just been told all this. */
-        if (!told) {
-          bubble("them", "this is the demo, so it stops here. we're opening spots in batches. " +
-            "join the waitlist and i'll pick it up for real the day yours is ready.");
-        }
-        handOver();
-      }, 900);
-    }
-
-    if (!token || !api) { offline(); return; }
-
-    var open = session
-      ? Promise.resolve(session)
-      : post("/v1/intake/chat/sessions", { token: token }).then(function (s) { session = s; return s; });
-
-    open.then(function (s) {
-      return post("/v1/intake/chat/sessions/" + encodeURIComponent(s.thread_id) + "/messages",
-        { token: s.thread_token, body: text, client_message_id: clientId() });
-    }).then(function (s) {
-      session = s;
-      busy = false;
-      if (dots.parentNode) dots.parentNode.removeChild(dots);
-      render(s);
-      maybeHandOver();
-    }).catch(function () {
-      /* Never strand the visitor mid-sentence: fall back to the script. */
-      session = null;
-      offline();
-    });
-  }
-
-  send.addEventListener("click", submit);
-  input.addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); });
-  input.addEventListener("focus", function () { goLive(); }, { once: true });
-
-  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduced) {
-    /* No timed reveal: show the conversation as a static transcript. */
-    SCRIPT.forEach(function (step) {
-      if (step[1] === "me" || step[1] === "them") bubble(step[1], step[2]);
-      else if (step[1] === "job") jobCard();
-    });
-  } else {
-    playDemo();
-  }
-})();
-"""
-
-
-# ---- icons -----------------------------------------------------------------
 
 def _svg(paths, size=20, stroke="currentColor", extra=""):
     return ('<svg width="%d" height="%d" viewBox="0 0 24 24" fill="none" stroke="%s" '
@@ -1249,43 +296,6 @@ LOGOMARK = '<b aria-hidden="true"><i></i><i></i><i></i><i></i></b>'
 
 # Roles that drift behind the phone. Real companies and real bands, because a
 # made-up ladder is the first thing an engineer would catch.
-DRIFT_A = [
-    ("Research Engineer · Google DeepMind", "$230k", False),
-    ("Software Engineer, Platform · Tesla", "$195k", False),
-    ("Senior Backend Engineer · Stripe", "$185–210k", True),
-    ("Infra Engineer · OpenAI", "$250k", False),
-    ("Member of Technical Staff · Anthropic", "$240k + equity", False),
-]
-DRIFT_B = [
-    ("Platform Engineer · Microsoft", "$190k", False),
-    ("Product Engineer · Notion", "$185k", False),
-    ("Data Platform · Databricks", "$205k", False),
-    ("Senior Fullstack · Figma", "$180k", False),
-]
-DRIFT_C = [
-    ("Staff Engineer · Airbnb", "$260k", False),
-    ("Backend Engineer · Ramp", "$200k", False),
-    ("ML Engineer · Scale AI", "$225k", False),
-    ("Systems Engineer · Cloudflare", "$195k", False),
-    ("Product Engineer · Linear", "$190k", False),
-]
-DRIFT_D = [
-    ("Full Stack Engineer · Vercel", "$185k", False),
-    ("Infrastructure Engineer · Plaid", "$200k", False),
-    ("Senior Engineer · Discord", "$210k", False),
-    ("Platform Engineer · Rippling", "$195k", False),
-    ("Backend Engineer · Coinbase", "$215k", False),
-    ("Compilers · Modular", "$230k", False),
-]
-
-
-def _drift(items):
-    one = "".join('<span%s>%s · %s</span>' % (' class="hit"' if hit else "", role, pay)
-                  for role, pay, hit in items)
-    # Doubled so the -50% translate loops without a seam.
-    return '<div class="lp-drift-row">%s%s</div>' % (one, one)
-
-
 def _bars():
     """The funnel: everyone who could do the job, five who reach the calendar."""
     import math
@@ -1303,37 +313,26 @@ def _bars():
 def head_bar(active):
     """The ticker and top bar every page shares.
 
-    `active` is "candidates", "companies" or None. Both the strip above the bar
-    and the call to action follow the audience, because the two sides of the
-    business are selling different things.
+    `active` is "home", "candidates" or None. The site sells one thing now --
+    engineering search to companies -- so there is no audience switch in the
+    bar. The candidate intake is reachable from the footer and from our own
+    outreach, not from a toggle that would make the homepage look like it is
+    addressing two people at once.
     """
-    def tab(href, label, key):
-        on = ' class="on" aria-current="page"' if key == active else ""
-        return ('<a href="%s"%s><span class="lp-sw-for">For </span>%s</a>'
-                % (href, on, label))
-
-    if active == "companies":
+    if active == "candidates":
+        note = ("Engineering search for startups &middot; seed through growth "
+                "&middot; San Francisco")
+        cta = '<a class="lp-btn" href="index.html">For companies</a>'
+    else:
         note = ("Now booking searches &middot; five qualified candidates per role "
                 "&middot; success fee only")
-        cta = '<a class="lp-btn" href="#role">Send us a role</a>'
-    elif active == "candidates":
-        note = ("Now in private beta &middot; join the waitlist for early access "
-                "&middot; first 10 applications free")
-        cta = '<button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>'
-    else:
-        note = ("Now in private beta &middot; join the waitlist for early access "
-                "&middot; first 10 applications free")
-        cta = '<a class="lp-btn" href="index.html">Join the waitlist</a>'
+        cta = '<a class="lp-btn" href="index.html#role">Send us a role</a>'
 
     return (
         '  <div class="lp-ticker lbl">' + note + '</div>\n\n'
         '  <header class="lp-head">\n'
         '    <div class="lp-head-in">\n'
         '    <a href="index.html" class="lp-logo" aria-label="Foray home">' + LOGOMARK + 'Foray</a>\n'
-        '    <nav class="lp-switch lbl" aria-label="Who you are">'
-        + tab("index.html", "candidates", "candidates")
-        + tab("companies.html", "companies", "companies")
-        + '</nav>\n'
         '    ' + cta + '\n'
         '    </div>\n'
         '  </header>\n'
@@ -1341,34 +340,34 @@ def head_bar(active):
 
 
 def foot(active):
-    """The shared footer. Only the page you are already on swaps a link for the
-    dialog that opens faster than a reload."""
-    cand = active == "candidates"
-    here = "" if active == "companies" else "companies.html"
-    wl = ('<button type="button" data-open="lp-waitlist">Join the waitlist</button>' if cand
-          else '<a href="index.html">Join the waitlist</a>')
-    agent = ('<button type="button" data-chat>Try the agent</button>' if cand
-             else '<a href="index.html#lp-phone">Try the agent</a>')
+    """The shared footer.
+
+    One column for the people hiring, one for the engineers we place, and no
+    product language: this is a search firm's footer. Deliberately no mailbox --
+    every route in is a form or the calendar, both of which reach somebody.
+    """
+    home = "" if active == "home" else "index.html"
     return (
         '  <footer class="lp-foot">\n'
         '    <div class="wrap">\n'
         '      <div class="lp-fcols">\n'
         '        <div>\n'
         '          <span class="lp-logo" aria-hidden="true">' + LOGOMARK + 'Foray</span>\n'
-        '          <p style="color:var(--muted); margin-top:16px; max-width:30ch">Your autonomous '
-        'recruiting agent.</p>\n'
+        '          <p style="color:var(--muted); margin-top:16px; max-width:32ch">'
+        'Engineering search for startups, from seed through growth stage.</p>\n'
         '        </div>\n'
-        '        <div><h4>Engineers</h4><ul>\n'
-        '          <li>' + wl + '</li>\n'
-        '          <li>' + agent + '</li>\n'
-        '        </ul></div>\n'
         '        <div><h4>Hiring</h4><ul>\n'
-        '          <li><a href="' + here + '#role">Send us a role</a></li>\n'
-        '          <li><a href="' + here + '#book">Book 15 minutes</a></li>\n'
+        '          <li><a href="' + home + '#role">Send us a role</a></li>\n'
+        '          <li><a href="' + home + '#how">How a search runs</a></li>\n'
+        '          <li><a href="' + home + '#book">Book 15 minutes</a></li>\n'
         '        </ul></div>\n'
-        '        <div><h4>Contact</h4><ul>\n'
-        '          <li>' + wl + '</li>\n'
+        '        <div><h4>Engineers</h4><ul>\n'
+        '          <li><a href="candidates.html">Introduce yourself</a></li>\n'
+        '          <li><a href="candidates.html#work">How we work with you</a></li>\n'
+        '        </ul></div>\n'
+        '        <div><h4>Foray</h4><ul>\n'
         '          <li style="color:var(--muted)">San Francisco, CA</li>\n'
+        '          <li style="color:var(--muted)">GoForay, Co.</li>\n'
         '        </ul></div>\n'
         '      </div>\n'
         '      <div class="lp-fbot lbl">\n'
@@ -1380,7 +379,6 @@ def foot(active):
         '    </div>\n'
         '  </footer>\n'
     )
-
 
 def legal_shell(h1, prose):
     """A legal page wearing the landing page's chrome.
@@ -1401,420 +399,3 @@ def legal_shell(h1, prose):
         + '\n'
         '</div>\n'
     )
-
-
-BODY = """
-<div class="lp" data-api="https://app.goforay.io" data-widget-token="">
-
-{head_bar}
-  <main>
-    <section class="lp-hero" id="lp-hero">
-      <div class="lp-hero-copy">
-        <h1>Your <em class="mark-hl">autonomous</em> recruiting agent.</h1>
-        <p class="lp-sub">Foray finds roles worth your time, writes the application, and applies for
-          you. Clear our bar and a recruiter takes it further, straight to the companies we hire for.</p>
-        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center">
-          <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
-          <button type="button" class="lp-btn ghost" data-chat>Try the agent below</button>
-        </div>
-      </div>
-
-      <div class="lp-stage">
-        <div class="lp-drift" aria-hidden="true">{drift_a}{drift_b}{drift_c}{drift_d}</div>
-
-        <div class="lp-phone" id="lp-phone">
-          <span class="lp-try">Try it now, type below {icon_down}</span>
-          <div class="lp-phone-head">
-            <span class="lp-logo" aria-hidden="true">{logomark}Foray</span>
-            <span class="lp-live">Active now</span>
-          </div>
-          <div class="lp-thread" id="lp-thread" role="log" aria-live="polite"
-               aria-label="Conversation with Foray"></div>
-          <div class="lp-send">
-            <label class="lp-sr" for="lp-input">Message Foray</label>
-            <input id="lp-input" type="text" maxlength="4000" autocomplete="off"
-                   placeholder="Message Foray · try anything">
-            <button type="button" id="lp-send" aria-label="Send">{icon_up_w}</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <section class="lp-sec white">
-      <div class="wrap">
-        <div class="lp-head-row">
-          <span class="lp-num" aria-hidden="true">01</span>
-          <div>
-            <span class="lp-kick lbl">For candidates &middot; Ways in</span>
-            <h2>Start wherever you already are.</h2>
-          </div>
-        </div>
-        <div class="lp-grid lp-g3">
-
-          <button type="button" class="lp-card tap" data-open="lp-waitlist">
-            <span class="lp-chan-top">{icon_chat_p}<span class="lbl">Text</span>
-              <span class="lp-chan-val">Waitlist</span></span>
-            <span class="lp-demo">
-              <span class="lp-mini me">hey, looking for a role</span>
-              <span class="lp-mini them">2 matches already. sending now</span>
-              <span class="lp-dots" style="align-self:flex-start"><i></i><i></i><i></i></span>
-            </span>
-            <span class="note">Fastest, once you are in. Matches land in the same thread.</span>
-          </button>
-
-          <button type="button" class="lp-card tap" data-open="lp-call">
-            <span class="lp-chan-top">{icon_phone_p}<span class="lbl">Call</span>
-              <span class="lp-chan-val">Waitlist</span></span>
-            <span class="lp-demo" style="justify-content:center; gap:12px">
-              <span style="display:flex; align-items:center; gap:10px">
-                <span class="lp-rec"></span><span style="font-size:12.5px; font-weight:600">foray &middot; voice</span>
-                <span style="margin-left:auto; font-size:12px; color:var(--muted)">00:42</span>
-              </span>
-              <span class="lp-wave">{wave}</span>
-              <span style="font-size:11.5px; color:var(--muted); text-align:center">
-                &ldquo;&hellip;180k plus, hybrid in SF&rdquo; &middot; noted</span>
-            </span>
-            <span class="note">Foray calls you and takes the brief. Three minutes.</span>
-          </button>
-
-        </div>
-      </div>
-    </section>
-
-    <section class="lp-sec alt">
-      <div class="wrap">
-        <div class="lp-head-row">
-          <span class="lp-num" aria-hidden="true">02</span>
-          <div>
-            <span class="lp-kick lbl">For candidates &middot; Hello to interview</span>
-            <h2>Speedrun the process.</h2>
-          </div>
-        </div>
-
-        <div class="lp-track" aria-hidden="true">
-          <span class="rail"></span>
-          <span class="stop" style="left:12.5%"></span>
-          <span class="stop" style="left:37.5%"></span>
-          <span class="stop" style="left:62.5%"></span>
-          <span class="stop last" style="left:87.5%"></span>
-          <span class="lp-walker">{icon_user_w}</span>
-          <span class="lp-walker-arrow">{icon_arrow_sm}</span>
-          <span class="lp-conf">
-            <i style="--tx:-26px;--ty:-34px;background:var(--accent)"></i>
-            <i style="--tx:24px;--ty:-40px;background:var(--primary2)"></i>
-            <i style="--tx:-38px;--ty:-12px;background:var(--primary)"></i>
-            <i style="--tx:38px;--ty:-16px;background:var(--accent-soft)"></i>
-            <i style="--tx:-14px;--ty:-48px;background:var(--primary2)"></i>
-            <i style="--tx:12px;--ty:-52px;background:var(--accent)"></i>
-          </span>
-        </div>
-
-        <div class="lp-grid lp-g4">
-          <div class="lp-card lp-jcard">
-            <span class="lbl" style="color:var(--primary)">Say hi</span>
-            <span class="lp-demo" style="min-height:0">
-              <span class="lp-mini me">linkedin.com/in/priya-builds</span>
-              <span class="lp-mini them">got it, priya</span>
-              <span class="lp-pill" style="align-self:flex-end">{icon_doc_p} resume.pdf</span>
-            </span>
-            <span class="note">A profile or a resume is the whole application.</span>
-          </div>
-
-          <div class="lp-card lp-jcard">
-            <span class="lbl" style="color:var(--primary)">Tell us your ask</span>
-            <span class="lp-demo" style="min-height:0; gap:12px">
-              <span class="lp-tags"><span>$180k+</span><span>SF hybrid</span><span>Go + Postgres</span></span>
-              <span style="display:flex; flex-direction:column; gap:6px">
-                <span style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted)">
-                  <span>Comp target</span><span style="color:var(--primary); font-weight:700">$180k–220k</span></span>
-                <span class="lp-range"><i></i><b style="left:35%; margin-left:-7px"></b><b style="right:20%; margin-right:-7px"></b></span>
-              </span>
-            </span>
-            <span class="note">Three minutes, once. We remember.</span>
-          </div>
-
-          <div class="lp-card lp-jcard">
-            <span class="lbl" style="color:var(--primary)">We match, fast</span>
-            <ul style="display:flex; flex-direction:column; gap:6px">{chips}</ul>
-            <span class="note">Matches in your thread within minutes.</span>
-          </div>
-
-          <div class="lp-card lp-jcard" style="border-color:var(--accent)">
-            <span class="lbl" style="color:var(--accent-deep)">You interview</span>
-            <span class="lp-cal">
-              <span class="day"><em>Thu</em><strong>11:00</strong></span>
-              <span style="display:flex; flex-direction:column; gap:2px">
-                <span style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700">
-                  {icon_check_p} Interview scheduled</span>
-                <span style="font-size:12px; color:var(--muted)">Senior Backend Engineer &middot; Stripe</span>
-              </span>
-            </span>
-            <span class="note">You said yes and we did the rest. Now it&rsquo;s on your calendar.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="lp-sec white">
-      <div class="wrap">
-        <div class="lp-head-row">
-          <span class="lp-num" aria-hidden="true">03</span>
-          <div>
-            <span class="lp-kick lbl">For candidates &middot; The agent at work</span>
-            <h2>Meet your AI-native recruiter.</h2>
-            <span style="display:flex; align-items:center; gap:10px; margin-top:12px">
-              <span style="width:36px;height:36px;border-radius:9px;background:var(--primary);display:grid;place-items:center">{icon_bolt_w}</span>
-              <span style="display:flex; flex-direction:column; line-height:1.3">
-                <span style="font-size:14px; font-weight:700">foray</span>
-                <span style="font-size:12px; color:var(--muted)">your recruiter, at work below</span></span>
-            </span>
-          </div>
-        </div>
-
-        <div class="lp-flow">
-          <div class="lp-card">
-            <span class="lbl" style="color:var(--muted)">In your thread</span>
-            <span class="lp-mini me" style="align-self:flex-end; font-weight:700">YES</span>
-            <span class="note">One word from you is the green light.</span>
-          </div>
-          <span class="arw" aria-hidden="true">{icon_flow}</span>
-
-          <div class="lp-browser">
-            <div class="lp-browser-bar">
-              <i></i><i></i><i></i>
-              <span class="lp-url">stripe.com/jobs/apply</span>
-              <span class="lp-agent-tag">{icon_bolt_a} foray agent typing</span>
-            </div>
-            <div class="lp-form">
-              <div class="lp-row"><span class="k">Name</span>
-                <span class="v"><span class="lp-type t1">Priya S.</span><span class="lp-nib n1" aria-hidden="true"><b>foray</b><i>{icon_pen_w}</i></span></span></div>
-              <div class="lp-row"><span class="k">Role</span>
-                <span class="v"><span class="lp-type t2">Senior Backend Engineer</span><span class="lp-nib n2" aria-hidden="true"><b>foray</b><i>{icon_pen_w}</i></span></span></div>
-              <div class="lp-row"><span class="k">Resume</span>
-                <span class="v" style="background:none; border:0; padding:0">
-                  <span class="lp-pill lp-pillin">{icon_doc_p} priya_stripe_tailored.pdf</span><span class="lp-nib n4" aria-hidden="true"><b>foray</b><i>{icon_pen_w}</i></span></span></div>
-              <div class="lp-row"><span class="k">Note</span>
-                <span class="v" style="color:var(--muted); font-size:12.5px">
-                  <span class="lp-type t3">Six years of Go and Postgres, owned a payments system&hellip;</span><span class="lp-nib n3" aria-hidden="true"><b>foray</b><i>{icon_pen_w}</i></span></span></div>
-              <div class="lp-row" style="align-items:center; padding-top:4px">
-                <span class="k" aria-hidden="true"></span>
-                <span class="lp-progress"><i></i></span>
-                <span style="font-family:ui-monospace,monospace; font-size:11px; color:var(--primary)">submitting&hellip;</span>
-              </div>
-            </div>
-          </div>
-
-          <span class="arw" aria-hidden="true">{icon_flow}</span>
-          <div class="lp-card">
-            <span class="lbl" style="color:var(--muted)">Back in your thread</span>
-            <span class="lp-mini them" style="align-self:flex-start">applied. i&rsquo;ll message you the moment they reply</span>
-            <span class="note">Follow-ups chased for you, too.</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="lp-sec alt" id="tracks">
-      <div class="wrap">
-        <div class="lp-head-row">
-          <span class="lp-num" aria-hidden="true">04</span>
-          <div>
-            <span class="lp-kick lbl">For candidates &middot; How far it goes</span>
-            <h2>Two tracks. Everyone starts on the first.</h2>
-          </div>
-        </div>
-
-        <div class="lp-tracks">
-          <div class="lp-track-card self">
-            <span class="tag">Everyone</span>
-            <span class="num">Track one</span>
-            <h3>The agent works your search</h3>
-            <p>Tell Foray once what you want. It finds roles, writes each application to the
-              posting, and sends it the moment you say yes, then chases the reply.</p>
-            <ul>
-              <li>{tick_p}<span>Unlimited roles, applied one at a time</span></li>
-              <li>{tick_p}<span>You approve every send</span></li>
-              <li>{tick_p}<span>Free to you. Always</span></li>
-            </ul>
-          </div>
-
-          <div class="lp-track-card white-glove">
-            <span class="tag">By invitation</span>
-            <span class="num">Track two</span>
-            <h3>A recruiter takes you to our clients</h3>
-            <p>Clear our bar and a Foray engineer takes you straight to the companies we
-              hire for. An introduction, not an application.</p>
-            <ul>
-              <li>{tick_g}<span>A named human, not a queue</span></li>
-              <li>{tick_g}<span>Direct introductions to our client roles</span></li>
-              <li>{tick_g}<span>Prep, comp guidance, and a straight read on fit</span></li>
-            </ul>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="lp-crosslink">
-      <div class="wrap">
-        <a href="companies.html">
-          <span><b>Hiring?</b> Five qualified candidates on your calendar,
-            and you pay only when you hire.</span>
-          <span class="go" aria-hidden="true">&rarr;</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="lp-closer">
-      <div class="wrap">
-        <h2>Foray into your <em class="mark-hl">next role</em>.</h2>
-        <div class="acts">
-          <button type="button" class="lp-btn" data-open="lp-waitlist">Join the waitlist</button>
-          <button type="button" class="lp-btn ghost" data-open="lp-hire">Hiring? Book a call</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-{foot}
-  <audio id="lp-voice" preload="none" src="/foray-voice.mp3"></audio>
-  <span hidden id="lp-thumb-src">{icon_thumb_w}</span>
-  <span hidden id="lp-stripe-src">{stripe_badge}</span>
-  <span hidden id="lp-anthropic-src">{anthropic_badge}</span>
-
-  <dialog class="lp-modal" id="lp-waitlist">
-    <div class="box">
-      <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
-      <span class="lbl" style="color:var(--primary)">Private beta</span>
-      <h3>Join the waitlist.</h3>
-
-      <form class="lp-form-grid" id="lp-wl-form" novalidate>
-        <div class="lp-field">
-          <label for="wl-name">Name</label>
-          <input id="wl-name" name="Name" type="text" autocomplete="name" maxlength="200" required>
-        </div>
-        <div class="lp-field">
-          <label for="wl-email">Email</label>
-          <input id="wl-email" name="Email" type="email" autocomplete="email" maxlength="320" required>
-        </div>
-        <div class="lp-field">
-          <label for="wl-phone">Phone</label>
-          <input id="wl-phone" name="Phone" type="tel" autocomplete="tel" maxlength="40" required>
-        </div>
-        <!-- bots fill every field they find; people never see this one -->
-        <input type="text" name="confirm_url" tabindex="-1" autocomplete="off"
-               aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px">
-        <p class="lp-formerr" id="lp-wl-err" role="alert"></p>
-        <div class="acts">
-          <button type="submit" class="lp-btn" id="lp-wl-submit">Join the waitlist</button>
-          <button type="button" class="lp-btn ghost" data-close>Not yet</button>
-        </div>
-      </form>
-
-      <div class="lp-done" id="lp-wl-done" hidden>
-        <span class="tickbig">{icon_check_p}</span>
-        <span style="font-size:19px; font-weight:600">You&rsquo;re on the list.</span>
-        <p>We message in batches, and yours will come from Foray. Nothing else to do.</p>
-        <button type="button" class="lp-btn" data-close>Done</button>
-      </div>
-    </div>
-  </dialog>
-
-  <dialog class="lp-modal" id="lp-text">
-    <div class="box">
-      <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
-      <span class="lbl" style="color:var(--primary)">Message us</span>
-      <h3>One message starts it.</h3>
-      <p>When we open, this is a text thread: send your LinkedIn or a resume and roles come back to you. Join the waitlist and we&rsquo;ll send you the number the day your spot opens.</p>
-      <p>Send anything: your LinkedIn, a resume, or a posting you found and want us to apply to.
-        A real person reviews every match, and we reply in minutes.</p>
-      <span class="lp-free" style="align-self:flex-start">10 applications, free</span>
-      <div class="acts">
-        <button type="button" class="lp-btn" data-chat>Open the chat</button>
-        <button type="button" class="lp-btn ghost" data-close>Got it</button>
-      </div>
-    </div>
-  </dialog>
-
-  <dialog class="lp-modal" id="lp-call">
-    <div class="box">
-      <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
-      <span class="lbl" style="color:var(--primary)">Call us</span>
-      <h3>Three minutes on the phone.</h3>
-      <p>When we open, Foray calls and asks what you want to do, your stack, comp, and where
-        you want to work. Three minutes. Then roles that fit come straight back to you.</p>
-      <p>The voice below is the real one.</p>
-      <div class="acts">
-        <button type="button" class="lp-btn ghost" data-hear id="lp-hear">{icon_speaker} Hear Foray</button>
-        <button type="button" class="lp-btn" data-waitlist>Join the waitlist</button>
-      </div>
-    </div>
-  </dialog>
-
-
-  <dialog class="lp-modal wide" id="lp-hire">
-    <div class="box">
-      <button type="button" class="x" data-close aria-label="Close">{icon_x_i}</button>
-      <span class="lbl" style="color:var(--accent-deep)">For companies</span>
-      <h3>Grab 15 minutes with us.</h3>
-      <p>Five tailored candidates, our read on each. You pay only when you hire.</p>
-      <div class="lp-calembed calendly-inline-widget" data-url="https://calendly.com/sathya-goforay/30min"></div>
-      <p class="lp-calnote">Not loading? <a href="https://calendly.com/sathya-goforay/30min" target="_blank" rel="noopener">Open the
-        calendar in a new tab</a>.</p>
-    </div>
-  </dialog>
-
-</div>
-""".format(
-    logomark=LOGOMARK,
-    head_bar=head_bar("candidates"),
-    foot=foot("candidates"),
-    email="{email}",
-    drift_a=_drift(DRIFT_A),
-    drift_b=_drift(DRIFT_B),
-    drift_c=_drift(DRIFT_C),
-    drift_d=_drift(DRIFT_D),
-    bars=_bars(),
-    chips="".join([
-        chip("anthropic", "Anthropic", "0"),
-        chip("openai", "OpenAI", ".2"),
-        chip("googlegemini", "Google DeepMind", ".4"),
-        chip("meta", "Meta", ".6"),
-        chip("stripe", "Stripe", ".8"),
-    ]),
-    stripe_badge=mark("stripe", 11),
-    anthropic_badge=mark("anthropic", 11),
-    wave="".join('<i style="height:%dpx; animation-delay:%.2fs"></i>' % (h, i * 0.12)
-                 for i, h in enumerate([22, 30, 16, 26, 14, 24, 18])),
-    icon_down=_svg(I["down"], 13),
-    icon_up_w=_svg(I["up"], 15, "#fff"),
-    icon_chat_w=_svg(I["chat"], 20, "#fff"),
-    icon_chat_p=_svg(I["chat"], 20, "var(--primary)"),
-    icon_phone_p=_svg(I["phone"], 20, "var(--primary)"),
-    icon_mail_p=_svg(I["mail"], 20, "var(--primary)"),
-    icon_team_a=_svg(I["team"], 20, "var(--accent-deep)"),
-    icon_arrow_w=_svg(I["arrow"], 18, "#fff"),
-    icon_arrow_a=_svg(I["arrow"], 18, "var(--accent-deep)"),
-    icon_arrow_sm=_svg('<path d="m9 6 6 6-6 6"/>', 16, "var(--primary)"),
-    icon_user_w=_svg(I["user"], 18, "#fff"),
-    icon_check_p=_svg(I["check"], 15, "var(--primary)"),
-    icon_check_g=_svg(I["check"], 14, "var(--band-acc)"),
-    tick_p=_svg(I["check"], 15, "var(--primary)"),
-    tick_g=_svg(I["check"], 15, "var(--band-acc)"),
-    icon_check_dark=_svg(I["check"], 12, "var(--band)", extra=' stroke-width="3"'),
-    icon_x_m=_svg(I["x"], 14, "rgba(255,255,255,.5)"),
-    icon_x_i=_svg(I["x"], 14, "var(--ink)"),
-    icon_doc_p=_svg(I["doc"], 12, "var(--primary)"),
-    icon_pen_w=_svg(I["pen"], 14, "#fff"),
-    icon_eye_p=_svg(I["eye"], 16, "var(--primary)"),
-    icon_bolt_w=_svg(I["bolt"], 17, "#fff"),
-    icon_bolt_a=_svg(I["bolt"], 11, "var(--accent-deep)"),
-    icon_send_w=_svg(I["send"], 11, "#fff"),
-    icon_speaker=_svg(I["speaker"], 14),
-    icon_thumb_w=_svg(I["thumb"], 12, "#fff"),
-    icon_flow=('<svg width="40" height="24" viewBox="0 0 40 24" fill="none" stroke="currentColor" '
-               'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
-               '<path d="M2 12h30"/><path d="m29 6 8 6-8 6" stroke-dasharray="0"/></svg>'),
-)
