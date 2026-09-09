@@ -9,9 +9,12 @@ It exists for two reasons, in this order:
   1. It builds the roster. Every submission is a row we can search when a
      client brief lands, which is the whole point of collecting them.
   2. It is where somebody we have reached out to ends up when they look us up.
-     That is why the hero says plainly that we do outreach and that a person
-     will reply. A candidate arriving here should conclude "small search firm
-     in San Francisco", not "I was messaged by software".
+     A candidate arriving here should conclude "small search firm in San
+     Francisco", not "I was messaged by software". It does this by reading like
+     a firm, not by discussing the outreach: a note acknowledging that we
+     contacted them was tried and removed. Raising it on the page draws
+     attention to the cold contact and invites the question of how they were
+     found, which is a conversation for a reply, not a landing page.
 
 Copy rules, same as the homepage: no agent, no automation, nothing that reads as
 a product, and no function named -- we may search for any of them, and this page
@@ -33,12 +36,6 @@ from landing import head_bar, foot, _svg, I
 
 CSS = """
 /* ---- the candidate page ------------------------------------------------ */
-.ca-note{display:flex; gap:10px; align-items:flex-start; margin-top:18px; padding:12px 14px;
-  background:#fff; border:1px solid var(--line); border-radius:12px; max-width:46ch}
-.ca-note svg{flex:none; margin-top:1px}
-.ca-note p{font-size:13px; color:var(--muted); margin:0}
-.ca-note b{color:var(--ink); font-weight:600}
-
 .ca-work{background:var(--tint3); border-top:1px solid var(--line);
   border-bottom:1px solid var(--line)}
 .ca-work .wrap{max-width:var(--wrap); margin:0 auto;
@@ -159,7 +156,6 @@ def _field(key, label, kind="text", auto=None, ph="", wide=False, required=True,
 
 def body():
     """The candidate page, from the ticker down to the footer."""
-    icon_info = _svg(I["eye"], 16, "var(--primary)")
     fields = (
         _field("Name", "Your name", auto="name", ph="Priya Sharma")
         + _field("Email", "Email", kind="email", auto="email", ph="you@gmail.com")
@@ -190,13 +186,6 @@ def body():
             startups from seed through growth stage, which means we spend our days talking to
             the companies doing the hiring. Introduce yourself and we will keep you in mind
             for the searches we run.</p>
-
-          <div class="ca-note">
-            """ + icon_info + """
-            <p><b>Did we reach out to you?</b> That was us &mdash; this is the firm behind
-              it. If you would rather we did not contact you again, say so in any reply and
-              we will stop.</p>
-          </div>
         </div>
 
         <form class="co-intake" id="ca-form" novalidate>
