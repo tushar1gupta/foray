@@ -7,7 +7,7 @@ the shared shell around them, and this module is the table of what gets written.
 
 index.html is the COMPANY page. It used to be the candidate landing page, which
 is now parked in src/parked/candidates.py -- see that file for why. /companies
-and /engineers redirect to / in vercel.json, so old links still land.
+and /engineers redirect in vercel.json, so old links still land.
 
 Run src/configure.py afterwards to stamp the domain and emit the static assets.
 """
@@ -76,7 +76,7 @@ def notfound():
       <p>It may have moved. These are the ones that are here.</p>
       <p style="display:flex; flex-wrap:wrap; gap:12px; margin-top:22px">
         <a class="lp-btn" href="index.html">Send us a role</a>
-        <a class="lp-btn ghost" href="candidates.html">For engineers</a>
+        <a class="lp-btn ghost" href="candidates.html">For candidates</a>
       </p>
     </div>
   </main>
@@ -91,7 +91,7 @@ def notfound():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page not found | Foray</title>
-<meta name="description" content="That page does not exist. Foray runs engineering searches for startups from seed through growth stage.">
+<meta name="description" content="That page does not exist. Foray is a recruiting agency for startups, seed through growth stage.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,16 +131,16 @@ def legal(title, desc, h1, prose):
 
 
 pages = {
-    "index.html": ("Foray | Engineering search for startups",
-                   "Foray is a recruiting agency for startups hiring engineers, seed through "
-                   "growth stage. Send us a role and we bring you five candidates worth "
-                   "interviewing. Success fee only, nothing until you hire."),
-    "candidates.html": ("For engineers | Foray",
-                        "Tell us what you want next and we will come to you when one of our "
-                        "searches is a genuine fit. Free for you, always."),
+    "index.html": ("Foray | Recruiting for startups",
+                   "Foray is a recruiting agency for startups, seed through growth stage. "
+                   "Send us a role and we bring you five candidates worth interviewing. "
+                   "Success fee only, nothing until you hire."),
+    "candidates.html": ("For candidates | Foray",
+                        "Tell us what you want next and we will keep you in mind for the "
+                        "searches we run. Free for you, always."),
     "privacy.html": ("Privacy Policy | Foray",
                      "How GoForay, Co. collects, uses, and protects the information "
-                     "engineers and companies give us."),
+                     "candidates and companies give us."),
     "terms.html": ("Terms of Service | Foray",
                    "The agreement between you and GoForay, Co. when you use Foray."),
 }

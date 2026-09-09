@@ -6,12 +6,12 @@ chrome as everything else.
 """
 
 PRIVACY_H1 = 'Privacy Policy'
-PRIVACY_DESC = 'How GoForay, Co. collects, uses, and protects the information engineers and companies give us.'
+PRIVACY_DESC = 'How GoForay, Co. collects, uses, and protects the information candidates and companies give us.'
 PRIVACY_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last updated 27 August 2026</p>
 
-<p>Foray is an engineering search firm. Engineers tell us what they want next and we
+<p>Foray is a recruiting agency. Candidates tell us what they want next and we
   bring them roles; companies tell us what they are hiring for and we bring them
-  engineers. This policy explains what we collect while doing that, why, who else
+  candidates. This policy explains what we collect while doing that, why, who else
   sees it, and what you can ask us to do about it.</p>
 
 <p>It covers this website, the forms on it, our phone line, our text conversations,
@@ -24,7 +24,7 @@ PRIVACY_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last up
 
 <h2>What we collect</h2>
 
-<h3>If you are an engineer</h3>
+<h3>If you are a candidate</h3>
 <p>When you join the pool, the form asks for your name, email, LinkedIn, GitHub, and
   a short note on what you want next. Optionally: a piece of work you are proud of,
   years of experience, timeline, location and remote preference, and your work
@@ -80,7 +80,7 @@ PRIVACY_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last up
 
 <h2>How we use it</h2>
 <ul>
-  <li>To match engineers to open roles, and roles to engineers.</li>
+  <li>To match candidates to open roles, and roles to candidates.</li>
   <li>To prepare and submit applications where you have asked us to.</li>
   <li>To tell you where things stand and to answer your questions.</li>
   <li>To introduce you to a company, once you have told us that is okay.</li>
@@ -148,7 +148,7 @@ PRIVACY_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last up
 
 <h2>How long we keep it</h2>
 <p>We keep your profile, your submissions, and our message history for as long as you
-  are working with us and for a reasonable period afterwards, so a returning engineer
+  are working with us and for a reasonable period afterwards, so a returning candidate
   does not start from nothing. Records of the permissions you gave us, including a text opt-in and the exact wording you heard, are kept for as long as we may
   need to show consent was given. Ask us to delete your information and we will,
   subject to records we are required to keep.</p>
@@ -209,7 +209,7 @@ TERMS_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last upda
   <a href="privacy.html">Privacy Policy</a>, which forms part of these terms.</p>
 
 <h2>1. What Foray does</h2>
-<p>Foray is an engineering search firm. For engineers: we take your details, match you
+<p>Foray is a recruiting agency. For candidates: we take your details, match you
   to open roles, prepare applications, submit them where you ask us to, and keep you
   updated. For companies: we run a search against the role you give us and put
   candidates in front of you. Some of that work is done by AI assistants, on the phone
@@ -227,7 +227,7 @@ TERMS_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last upda
   to work where you apply.</p>
 
 <h2>3. What you authorize us to do</h2>
-<p>If you join the pool as an engineer, you are asking us to, and authorizing us to:</p>
+<p>If you join the pool as a candidate, you are asking us to, and authorizing us to:</p>
 <ul>
   <li>Use what you tell us to look for roles matching your stated preferences.</li>
   <li>Prepare application materials for you (a r&eacute;sum&eacute;, a cover letter, and answers to a company's questions) drafted from what you told us.</li>
@@ -270,7 +270,7 @@ TERMS_BODY = r"""<p class="meta lbl">Effective 27 August 2026 &middot; Last upda
   here once it is live.</p>
 
 <h2>7. Fees</h2>
-<p>Foray is free for engineers. If that ever changes we will tell you before any charge
+<p>Foray is free for candidates. If that ever changes we will tell you before any charge
   applies and you will have to agree to it first. We are paid by the companies we search
   for, not by candidates.</p>
 

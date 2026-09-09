@@ -1,7 +1,7 @@
 """The candidate page: markup and behaviour for candidates.html.
 
 Not the old landing page. That one is parked in src/parked/candidates.py and
-sold an autonomous agent; this is a recruiting agency asking an engineer to
+sold an autonomous agent; this is a recruiting agency asking someone to
 introduce themselves so we have them on file when a search fits.
 
 It exists for two reasons, in this order:
@@ -13,10 +13,18 @@ It exists for two reasons, in this order:
      will reply. A candidate arriving here should conclude "small search firm
      in San Francisco", not "I was messaged by software".
 
-Copy rule, same as the homepage: no agent, no automation, nothing that reads as
-a product. Promises here are service promises a human can keep -- we reply, we
-name the company, we tell you the comp. Do not add a claim this page cannot
-honour, because the people reading it have already been contacted by us.
+Copy rules, same as the homepage: no agent, no automation, nothing that reads as
+a product, and no function named -- we may search for any of them, and this page
+is read by people we cold-messaged who have not told us their discipline yet.
+
+Third rule, and the reason this page has no "how we work with you" section:
+**it promises nothing.** It once carried three service pledges -- we name the
+company, comp up front, you never chase us -- and they were cut deliberately.
+Every one of them is a commitment that breaks first under volume, on a page read
+by people we contacted, which is the worst place to be caught out. State facts
+about the firm instead: who pays us, what stage of company we work with, what
+happens to a submission. If you are tempted to add a service level here, put it
+in the outreach where a person can actually stand behind it.
 
 Chrome, palette and the form components come from landing.py and company.py
 (``co-hero``, ``co-intake``); this adds only what is specific to the page.
@@ -61,10 +69,10 @@ JS = r"""
   var done = document.getElementById("ca-done");
   var btn = document.getElementById("ca-submit");
 
-  /* Mirrors FORMS.engineer in api/submit.js. GitHub, phone and location are
+  /* Mirrors FORMS.candidate in api/submit.js. Portfolio, phone and location are
      collected but not required -- see the note there. */
   var REQUIRED = ["Name", "Email", "LinkedIn", "What they want next"];
-  var OPTIONAL = ["Phone", "GitHub", "Location"];
+  var OPTIONAL = ["Phone", "Portfolio", "Location"];
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   form.addEventListener("submit", function (e) {
@@ -105,7 +113,7 @@ JS = r"""
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        kind: "engineer",
+        kind: "candidate",
         fields: fields,
         confirm_url: (form.elements.confirm_url || {}).value || ""
       })
@@ -159,13 +167,13 @@ def body():
                  ph="linkedin.com/in/…")
         + _field("Phone", "Phone", kind="tel", auto="tel", ph="For a quick call",
                  required=False)
-        + _field("GitHub", "GitHub", kind="url", ph="github.com/…",
-                 required=False)
+        + _field("Portfolio", "Portfolio or GitHub", kind="url",
+                 ph="A site, a repo, anything you would show", required=False)
         + _field("Location", "Where you are", ph="San Francisco, or remote",
                  required=False)
         + _field("What they want next", "What you want next", wide=True, rows=True,
-                 ph="The kind of engineering you want to be doing, the stage of company, "
-                    "and the comp you are targeting. A couple of lines is plenty.")
+                 ph="The kind of work you want to be doing, the stage of company, and the "
+                    "comp you are targeting. A couple of lines is plenty.")
     )
 
     return ("""
@@ -176,18 +184,18 @@ def body():
     <section class="co-hero">
       <div class="wrap">
         <div>
-          <span class="lbl" style="color:var(--primary)">For engineers</span>
+          <span class="lbl" style="color:var(--primary)">For candidates</span>
           <h1>Tell us what you want next.</h1>
-          <p class="sub">Foray is a recruiting agency in San Francisco. We run engineering
-            searches for startups from seed through growth stage, which means we spend our
-            days talking to the companies doing the hiring. Introduce yourself and we will
-            come to you when one of those searches is a genuine fit.</p>
+          <p class="sub">Foray is a recruiting agency in San Francisco. We run searches for
+            startups from seed through growth stage, which means we spend our days talking to
+            the companies doing the hiring. Introduce yourself and we will keep you in mind
+            for the searches we run.</p>
 
           <div class="ca-note">
             """ + icon_info + """
-            <p><b>Did we reach out to you?</b> That was us, and a person here is on the
-              other end of it. If you would rather we did not contact you again, say so in
-              any reply and we will stop.</p>
+            <p><b>Did we reach out to you?</b> That was us &mdash; this is the firm behind
+              it. If you would rather we did not contact you again, say so in any reply and
+              we will stop.</p>
           </div>
         </div>
 
@@ -207,40 +215,40 @@ def body():
 
         <div class="co-intake co-done" id="ca-done" hidden>
           <span class="big">Thanks &mdash; you are on our list.</span>
-          <p style="color:var(--muted)">We read every one of these. If something we are
-            working lines up with what you described, you will hear from a person here with
-            the company named and the comp up front. If nothing fits yet, we will hold onto
-            your details rather than pretend otherwise.</p>
+          <p style="color:var(--muted)">Your details are with us now. We get in touch when a
+            client brief looks like what you described, which means it depends on what they
+            are hiring for rather than on anything we can put a date on.</p>
         </div>
       </div>
     </section>
 
     <section class="ca-work" id="work">
       <div class="wrap">
-        <h2>How we work with you.</h2>
-        <p class="lede" style="color:var(--muted); max-width:56ch; margin-top:10px">Recruiters
-          have earned their reputation. These are the things we do differently, and you can
-          hold us to all three.</p>
+        <h2>How this works.</h2>
+        <p class="lede" style="color:var(--muted); max-width:56ch; margin-top:10px">Three
+          things worth knowing before you send anything, so you can judge whether it is
+          worth your time.</p>
 
         <div class="ca-cards">
           <div class="ca-card">
             <span class="ic">""" + _svg(I["check"], 18, "var(--primary)") + """</span>
-            <h3>We name the company</h3>
-            <p>No blind pitches about &ldquo;a well-funded startup&rdquo;. You get the
-              company, the role and the team before you decide whether you are interested.</p>
+            <h3>The companies pay us</h3>
+            <p>A client pays us a fee when they hire someone we introduced. That is the
+              entire business model, and it is why there is no charge to you at any point.</p>
           </div>
           <div class="ca-card">
             <span class="ic">""" + _svg(I["check"], 18, "var(--primary)") + """</span>
-            <h3>Comp up front</h3>
-            <p>We tell you the range at the start, not after two interviews. If it is below
-              what you told us you wanted, we will not waste your afternoon.</p>
+            <h3>Startups, seed to growth</h3>
+            <p>That is the range we run searches across, in every function a company of
+              that size hires for. If you are aiming somewhere else, we are probably not
+              much use to you.</p>
           </div>
           <div class="ca-card">
             <span class="ic">""" + _svg(I["check"], 18, "var(--primary)") + """</span>
-            <h3>You never chase us</h3>
-            <p>We chase the client for feedback and pass it on either way, including a no.
-              Silence is the thing engineers hate most about recruiters and it is the easiest
-              to fix.</p>
+            <h3>You go on the list</h3>
+            <p>What you send sits with us. When a brief comes in that looks like what you
+              described, that is the point at which you hear from us &mdash; so it depends
+              on what our clients are hiring for.</p>
           </div>
         </div>
       </div>
@@ -249,8 +257,8 @@ def body():
     <section class="lp-crosslink">
       <div class="wrap">
         <a href="index.html">
-          <span><b>Hiring engineers?</b> Send us the role and we will bring you five
-            candidates worth interviewing.</span>
+          <span><b>Hiring?</b> Send us the role and we will bring you five candidates
+            worth interviewing.</span>
           <span class="go" aria-hidden="true">&rarr;</span>
         </a>
       </div>

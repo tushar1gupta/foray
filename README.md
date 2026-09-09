@@ -1,7 +1,7 @@
 # Foray
 
-Marketing site for Foray, an engineering search firm placing early and mid-level
-engineers at startups from seed through growth stage.
+Marketing site for Foray, a recruiting agency running searches for startups from
+seed through growth stage, across functions.
 
 Live at **https://goforay.io** (Vercel project `goforay`).
 
@@ -10,9 +10,12 @@ from Python so the palette and the repeated chrome stay in one place.
 
 ## Positioning — read before editing copy
 
+Three constraints on the copy, all deliberate and all load-bearing.
+
+### 1. No agent, no automation
+
 The site presents Foray as a **recruiting agency**. It does not describe an
-agent, a product, or automation of any kind. That is a deliberate constraint,
-not a style preference:
+agent, a product, or automation of any kind:
 
 We do outbound to candidates. A candidate who has just been messaged will look
 us up, and until 2026-09-09 what they found was a homepage headlined "Your
@@ -35,11 +38,34 @@ Two things this rule does **not** cover:
   LinkedIn and email previews. It is the whole site to anyone who never clicks,
   so it gets checked whenever the positioning changes.
 
+### 2. No function is named
+
+We may run a search for any function, so the copy says **roles, candidates and
+people** — never "engineers". Naming one discipline turns away the buyer whose
+opening is in another, and it dates the page the first time we run a GTM search.
+This is why the fact strip carries stages rather than a list of specialisms, and
+why the candidate intake asks for a *portfolio* rather than a GitHub: a designer
+has Dribbble and a salesperson has neither.
+
+The word survives in exactly two places, both correct: the `/engineers` redirect
+(an old URL that has to keep working) and "reverse-engineer" in the terms.
+`grep -ri engineer` should turn up nothing else outside `src/parked/`.
+
+### 3. The candidate page promises nothing
+
+`candidates.html` deliberately makes no service commitment. It carried three —
+we name the company, comp up front, you never chase us — and they were cut: each
+is the kind of pledge that breaks first under volume, on the one page read by
+people we cold-messaged, which is the worst place to be caught out. It states
+facts about the firm instead (who pays us, what stage we work with, what happens
+to a submission). Service levels belong in the outreach, where a person can
+stand behind them.
+
 ## Structure
 
 ```
 index.html          the company page: send us a role  (WAS the candidate page)
-candidates.html     engineer intake: introduce yourself
+candidates.html     candidate intake: introduce yourself
 privacy.html        hand-written prose in src/legal.py
 terms.html          hand-written prose in src/legal.py
 404.html
@@ -51,7 +77,7 @@ favicon.svg
 robots.txt          generated
 sitemap.xml         generated
 vercel.json         clean URLs, redirects, security headers, asset caching
-api/submit.js       the one endpoint: company / engineer / waitlist submissions
+api/submit.js       the one endpoint: company / candidate submissions
 db/schema.sql       the submissions table
 src/
   landing.py        the shared shell: palette, components, ticker, bar, footer
@@ -124,20 +150,30 @@ silently.
 
 - **`company`** — from `index.html`. Email, plus either a job link or a
   description (one box decides which by whether it starts with `http`).
-- **`engineer`** — from `candidates.html`. Name, email, LinkedIn and what they
-  want next are required; phone, GitHub and location are collected but optional,
-  because requiring a GitHub loses the infra and ML people who have nothing
+- **`candidate`** — from `candidates.html`. Name, email, LinkedIn and what they
+  want next are required; phone, portfolio and location are collected but
+  optional, because requiring a portfolio loses the people who have nothing
   public, and the record is the thing we wanted.
-- **`waitlist`** — no page submits this any more. It belonged to the parked
-  candidate page. The rows are still in the table.
+- **`engineer`** — legacy. Candidate rows were filed under this before we
+  recruited across functions. No page submits it; it is still accepted so a
+  cached page cannot start failing, and old rows keep the kind they were stored
+  with. **When you query candidates, query both:**
+  `WHERE kind IN ('candidate','engineer')`. Renaming in place was rejected — a
+  migration that rewrites history to match this month's positioning is not worth
+  the risk to rows we cannot re-collect.
+- **`waitlist`** — no page submits this any more either. It belonged to the
+  parked candidate page. The rows are still in the table.
 
 ## Open items
 
-- [ ] Confirm the claims the copy makes are ones the business actually keeps:
-      five candidates per role, a shortlist you can act on, feedback passed back
-      either way including a no, and no fee unless placed. `candidates.html`
-      promises these to people we have already contacted, so they are the ones
-      to be most careful about.
+- [ ] Confirm the two claims the site still makes are ones the business keeps:
+      **five candidates per role** and **no fee unless placed**. Everything
+      softer than those was removed from `candidates.html` on purpose (see
+      constraint 3 above) — do not put it back without deciding it is true at
+      volume.
+- [ ] The homepage no longer says which functions we cover, which is right for
+      breadth but leaves a buyer without an answer to "do you do my role?".
+      Worth a line once the actual mix is known.
 - [ ] `foray-voice.mp3` is orphaned — only the parked page played it. Left in
       place in case that page returns.
 - [ ] The Calendly embed on `index.html` points at

@@ -15,11 +15,16 @@ and inlined, so the page makes no third-party requests. They identify the
 company whose role is being shown; they are not endorsements and must not be
 used as a "trusted by" wall.
 
-Copy rule, deliberate: nothing in the shared chrome describes software. Foray
-presents as a recruiting agency, so the footer tagline, the ticker and the
-calls to action all talk about searches and introductions, never about an agent
-or automation. The AI disclosures in legal.py are a separate matter -- those
-describe what actually happens and must stay accurate.
+Two copy rules, both deliberate:
+
+1. Nothing here describes software. Foray presents as a recruiting agency, so
+   the footer tagline, the ticker and the calls to action all talk about
+   searches and introductions, never about an agent or automation. The AI
+   disclosures in legal.py are a separate matter -- those describe what actually
+   happens and must stay accurate.
+2. Nothing here names a function. We may recruit for any of them, so the copy
+   says roles, candidates and people -- never "engineers", which reads as the
+   only thing we do and dates the page the first time we run a GTM search.
 """
 import pathlib
 
@@ -294,8 +299,6 @@ I = {
 
 LOGOMARK = '<b aria-hidden="true"><i></i><i></i><i></i><i></i></b>'
 
-# Roles that drift behind the phone. Real companies and real bands, because a
-# made-up ladder is the first thing an engineer would catch.
 def _bars():
     """The funnel: everyone who could do the job, five who reach the calendar."""
     import math
@@ -314,13 +317,13 @@ def head_bar(active):
     """The ticker and top bar every page shares.
 
     `active` is "home", "candidates" or None. The site sells one thing now --
-    engineering search to companies -- so there is no audience switch in the
+    recruiting to companies -- so there is no audience switch in the
     bar. The candidate intake is reachable from the footer and from our own
     outreach, not from a toggle that would make the homepage look like it is
     addressing two people at once.
     """
     if active == "candidates":
-        note = ("Engineering search for startups &middot; seed through growth "
+        note = ("Recruiting for startups &middot; seed through growth "
                 "&middot; San Francisco")
         cta = '<a class="lp-btn" href="index.html">For companies</a>'
     else:
@@ -342,7 +345,7 @@ def head_bar(active):
 def foot(active):
     """The shared footer.
 
-    One column for the people hiring, one for the engineers we place, and no
+    One column for the people hiring, one for the people we place, and no
     product language: this is a search firm's footer. Deliberately no mailbox --
     every route in is a form or the calendar, both of which reach somebody.
     """
@@ -354,16 +357,16 @@ def foot(active):
         '        <div>\n'
         '          <span class="lp-logo" aria-hidden="true">' + LOGOMARK + 'Foray</span>\n'
         '          <p style="color:var(--muted); margin-top:16px; max-width:32ch">'
-        'Engineering search for startups, from seed through growth stage.</p>\n'
+        'Recruiting for startups, from seed through growth stage.</p>\n'
         '        </div>\n'
         '        <div><h4>Hiring</h4><ul>\n'
         '          <li><a href="' + home + '#role">Send us a role</a></li>\n'
         '          <li><a href="' + home + '#how">How a search runs</a></li>\n'
         '          <li><a href="' + home + '#book">Book 15 minutes</a></li>\n'
         '        </ul></div>\n'
-        '        <div><h4>Engineers</h4><ul>\n'
+        '        <div><h4>Candidates</h4><ul>\n'
         '          <li><a href="candidates.html">Introduce yourself</a></li>\n'
-        '          <li><a href="candidates.html#work">How we work with you</a></li>\n'
+        '          <li><a href="candidates.html#work">How this works</a></li>\n'
         '        </ul></div>\n'
         '        <div><h4>Foray</h4><ul>\n'
         '          <li style="color:var(--muted)">San Francisco, CA</li>\n'

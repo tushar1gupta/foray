@@ -3,7 +3,7 @@
 
 CREATE TABLE IF NOT EXISTS submissions (
   id          bigserial PRIMARY KEY,
-  kind        text NOT NULL CHECK (kind IN ('company','engineer')),
+  kind        text NOT NULL CHECK (kind IN ('company','candidate','waitlist','engineer')),
   created_at  timestamptz NOT NULL DEFAULT now(),
   name        text NOT NULL,
   email       text NOT NULL,
@@ -20,3 +20,9 @@ CREATE INDEX IF NOT EXISTS submissions_rate_idx    ON submissions (ip_hash, crea
 -- Recent companies:
 --   SELECT created_at, name, email, payload->>'Company', payload->>'Role'
 --   FROM submissions WHERE kind='company' ORDER BY created_at DESC LIMIT 50;
+
+-- 'engineer' is a legacy kind: candidate rows were filed under it before we
+-- recruited across functions. Query both when you want every candidate:
+--   SELECT created_at, name, email, payload->>'What they want next'
+--   FROM submissions WHERE kind IN ('candidate','engineer')
+--   ORDER BY created_at DESC LIMIT 50;

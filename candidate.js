@@ -6,10 +6,10 @@
   var done = document.getElementById("ca-done");
   var btn = document.getElementById("ca-submit");
 
-  /* Mirrors FORMS.engineer in api/submit.js. GitHub, phone and location are
+  /* Mirrors FORMS.candidate in api/submit.js. Portfolio, phone and location are
      collected but not required -- see the note there. */
   var REQUIRED = ["Name", "Email", "LinkedIn", "What they want next"];
-  var OPTIONAL = ["Phone", "GitHub", "Location"];
+  var OPTIONAL = ["Phone", "Portfolio", "Location"];
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   form.addEventListener("submit", function (e) {
@@ -50,7 +50,7 @@
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        kind: "engineer",
+        kind: "candidate",
         fields: fields,
         confirm_url: (form.elements.confirm_url || {}).value || ""
       })

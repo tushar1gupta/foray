@@ -5,11 +5,15 @@ candidate landing page it used to sit behind is parked in
 src/parked/candidates.py. The intake stays at the top, where a hiring manager
 who already knows what they want can act on the first screen.
 
-Copy rule: Foray reads as a recruiting agency here. No agent, no automation, no
+Copy rules: Foray reads as a recruiting agency here. No agent, no automation, no
 "we text them" -- a candidate we have messaged may well look this page up, and
 finding the machine that messaged them described as a product is the impression
 we are avoiding. What we say to buyers is reach, judgment and a success fee.
 The AI disclosures in legal.py stay accurate and are not covered by this rule.
+
+And no function is named. We may run a search for any of them, so this page says
+roles and candidates rather than engineers -- naming one discipline turns away
+the buyer whose opening is in another.
 
 Chrome, palette and components come from landing.py. Nothing here restyles the
 site; it reuses the same tokens and card classes.
@@ -49,13 +53,12 @@ CSS = """
 .co-done{display:flex; flex-direction:column; gap:10px; align-items:flex-start}
 .co-done .big{font-size:19px; font-weight:600}
 
-/* Four facts, so a grid rather than space-between: wrapping a flex row left the
-   fourth one stranded on a line of its own. This wraps 4 -> 2x2 -> 1. */
+/* A grid rather than space-between: a wrapping flex row left the last fact
+   stranded on a line of its own. Three across, then one column. */
 .co-strip{max-width:var(--wrap); margin:0 auto; padding:clamp(28px,3.4vw,40px) var(--gut);
   display:grid; gap:20px 32px; align-items:baseline;
-  grid-template-columns:repeat(4,minmax(0,1fr))}
-@media(max-width:900px){.co-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:480px){.co-strip{grid-template-columns:1fr}}
+  grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:620px){.co-strip{grid-template-columns:1fr}}
 .co-strip .n{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap}
 .co-strip .n b{font-size:clamp(22px,2.4vw,30px); letter-spacing:-.03em}
 .co-strip ul{display:flex; flex-wrap:wrap; gap:10px; list-style:none}
@@ -218,7 +221,7 @@ BAND = """    <section class="lp-band" id="how">
         </div>
 
         <div class="lp-funnel">
-          <div class="lp-funnel-top lbl"><span>Every engineer who could do the job</span>
+          <div class="lp-funnel-top lbl"><span>Everyone who could do the job</span>
             <span class="hit">Five you meet</span></div>
           <div class="lp-bars" aria-hidden="true">{bars}</div>
           <div class="lp-funnel-foot"><span>We do the filtering</span>
@@ -246,12 +249,12 @@ def body():
     <section class="co-hero">
       <div class="wrap">
         <div>
-          <span class="lbl" style="color:var(--primary)">Engineering search &middot; San Francisco</span>
-          <h1>Five engineers worth interviewing. You pay when you hire.</h1>
-          <p class="sub">Foray is a recruiting agency for startups hiring engineers, seed
-            through growth stage. Send us a role and we run the search: we find the people,
-            speak to them ourselves, and bring you a shortlist of five with an honest read
-            on each.</p>
+          <span class="lbl" style="color:var(--primary)">Recruiting for startups &middot; San Francisco</span>
+          <h1>Five candidates worth interviewing. You pay when you hire.</h1>
+          <p class="sub">Foray is a recruiting agency for startups, seed through growth
+            stage. Send us a role &mdash; whatever the function &mdash; and we run the
+            search: we find the people, speak to them ourselves, and bring you a shortlist
+            of five with our read on each.</p>
         </div>
 
         <form class="co-intake" id="co-form" novalidate>
@@ -293,8 +296,6 @@ def body():
       <div class="n"><b>$0</b><span class="lbl" style="color:var(--muted)">until you hire</span></div>
       <div class="n"><b>Seed&ndash;Series C</b><span class="lbl" style="color:var(--muted)">stages
         we cover</span></div>
-      <div class="n"><b>Backend, infra, ML</b><span class="lbl" style="color:var(--muted)">and
-        full stack</span></div>
     </div>
 
 {band}
@@ -313,8 +314,8 @@ def body():
     <section class="lp-crosslink">
       <div class="wrap">
         <a href="candidates.html">
-          <span><b>Are you an engineer?</b> Introduce yourself and we will reach out when a
-            role we are working is a genuine fit.</span>
+          <span><b>Looking for your next role?</b> Introduce yourself and we will keep you
+            in mind for the searches we run.</span>
           <span class="go" aria-hidden="true">&rarr;</span>
         </a>
       </div>

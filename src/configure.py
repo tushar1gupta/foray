@@ -18,13 +18,13 @@ import pathlib
 
 SITE = pathlib.Path(__file__).resolve().parent.parent
 PAGES = {
-    "index.html": ("Foray | Engineering search for startups",
-                   "Foray is a recruiting agency for startups hiring engineers, seed through "
-                   "growth stage. Send us a role and we bring you five candidates worth "
-                   "interviewing. Success fee only, nothing until you hire."),
-    "candidates.html": ("For engineers | Foray",
-                        "Tell us what you want next and we will come to you when one of our "
-                        "searches is a genuine fit. Free for you, always."),
+    "index.html": ("Foray | Recruiting for startups",
+                   "Foray is a recruiting agency for startups, seed through growth stage. "
+                   "Send us a role and we bring you five candidates worth interviewing. "
+                   "Success fee only, nothing until you hire."),
+    "candidates.html": ("For candidates | Foray",
+                        "Tell us what you want next and we will keep you in mind for the "
+                        "searches we run. Free for you, always."),
     # Hand-written rather than generated, but they still want a canonical tag,
     # the share card and a place in the sitemap.
     "privacy.html": ("Privacy policy | Foray",
@@ -128,7 +128,7 @@ def og_card(domain):
     # in iMessage, LinkedIn and email previews. It said "Your autonomous
     # recruiting agent" while we were messaging candidates, which told every one
     # of them they had been contacted by software. It says what we are instead.
-    d.text((64, 236), "Engineering search", font=sans, fill=TEXT)
+    d.text((64, 236), "Recruiting", font=sans, fill=TEXT)
     d.text((64, 312), "for startups.", font=sans, fill=TEXT)
     d.rectangle([64, 410, 150, 412], fill=MINT)
     d.text((64, 440), "Five candidates worth interviewing.", font=tiny, fill=MUT)

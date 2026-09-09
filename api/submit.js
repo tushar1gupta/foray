@@ -25,13 +25,25 @@ const FORMS = {
     subject: f => 'New search: ' + (f.Company || domainOf(f.Email))
       + (f.Role ? ' - ' + f.Role : ''),
   },
-  engineer: {
-    // GitHub is asked for but not required: plenty of strong infra, ML and
-    // backend people have nothing public, and rejecting them costs us the
-    // record we wanted. Phone and Location are optional too, and both are
-    // worth having -- they are how we follow up and how we filter later.
+  /* 'candidate', not 'engineer': we recruit across functions, so the kind a row
+   * carries should not claim a discipline the person never mentioned. 'engineer'
+   * is still accepted below because rows already exist under it -- it is not
+   * submitted by any page any more. Nothing was renamed in place; a migration
+   * that rewrites history to match this month's positioning is not worth the
+   * risk to rows we cannot re-collect. */
+  candidate: {
+    // Portfolio is asked for but not required, and it is deliberately not
+    // called GitHub: a designer has Dribbble, a salesperson has neither, and
+    // rejecting them costs us the record we wanted. Phone and Location are
+    // optional too, and both are worth having -- they are how we follow up and
+    // how we filter later.
     required: ['Name', 'Email', 'LinkedIn', 'What they want next'],
-    subject: f => 'Engineer intake: ' + (f.Name || 'unknown'),
+    subject: f => 'Candidate intake: ' + (f.Name || 'unknown'),
+  },
+  engineer: {
+    // Legacy. Kept so an old cached page cannot start failing; same shape.
+    required: ['Name', 'Email', 'LinkedIn', 'What they want next'],
+    subject: f => 'Candidate intake: ' + (f.Name || 'unknown'),
   },
   waitlist: {
     required: ['Name', 'Email', 'Phone'],
@@ -44,7 +56,7 @@ const FORMS = {
  * only catches an empty box or an obvious typo. */
 const PHONE_DIGITS_MIN = 7;
 
-const CAPS = { 'Job description': 20000, 'What they want next': 8000, Email: 320, Name: 200, Phone: 40, Location: 200 };
+const CAPS = { 'Job description': 20000, 'What they want next': 8000, Email: 320, Name: 200, Phone: 40, Location: 200, Portfolio: 500 };
 const CAP_DEFAULT = 2000;
 const MAX_BODY = 96 * 1024;
 const MAX_FIELDS = 40;
@@ -66,15 +78,15 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
  *
  * Deliberately non-fatal. This runs on every cold start, and if it ever fails
  * -- a role without ALTER, a lock held by something else -- the cost of letting
- * that reject the whole schema step is every company and engineer submission,
- * for a statement they do not need. A waitlist insert would still fail loudly
- * on the constraint itself, which is the right place to find out. */
+ * that reject the whole schema step is every submission that does not need it,
+ * for a statement they do not need. An insert of a newly added kind would still
+ * fail loudly on the constraint itself, which is the right place to find out. */
 async function widenKindCheck() {
   try {
     await pool.query(`
       ALTER TABLE submissions DROP CONSTRAINT IF EXISTS submissions_kind_check;
       ALTER TABLE submissions ADD CONSTRAINT submissions_kind_check
-        CHECK (kind IN ('company','engineer','waitlist'));
+        CHECK (kind IN ('company','candidate','engineer','waitlist'));
     `);
   } catch (err) {
     console.error('could not widen submissions_kind_check:', err.message);
@@ -87,7 +99,7 @@ function ensureSchema() {
     schemaReady = pool.query(`
       CREATE TABLE IF NOT EXISTS submissions (
         id          bigserial PRIMARY KEY,
-        kind        text NOT NULL CHECK (kind IN ('company','engineer')),
+        kind        text NOT NULL CHECK (kind IN ('company','candidate','waitlist','engineer')),
         created_at  timestamptz NOT NULL DEFAULT now(),
         name        text NOT NULL,
         email       text NOT NULL,
